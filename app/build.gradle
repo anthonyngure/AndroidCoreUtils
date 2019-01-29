@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "androidx.navigation.safeargs"
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "ke.co.toshngure.androidcoreutils"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+        pickFirst 'org/joda/time/format/messages_en.properties'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    androidExtensions {
+        experimental = true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Android X
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    // Google Material
+    implementation 'com.google.android.material:material:1.1.0-alpha02'
+
+    // Navigation
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha11'
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0-alpha11"
+
+    /*Dependencies for Lifecycle, including LiveData and ViewModel.*/
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+
+    // if using Java8, use the following instead of lifecycle-compiler
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.0.0"
+
+    /*Paging support*/
+    implementation "androidx.paging:paging-runtime:2.1.0"
+
+    /*Room*/
+    implementation "androidx.room:room-runtime:2.0.0"
+    kapt "androidx.room:room-compiler:2.0.0"
+
+    /*Retrofit*/
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    implementation project(':basecode')
+    implementation project(':images')
+    implementation project(':views')
+
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}

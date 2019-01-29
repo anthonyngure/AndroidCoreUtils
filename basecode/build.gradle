@@ -1,0 +1,103 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.anthonyngure'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+        pickFirst 'org/joda/time/format/messages_en.properties'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+    // if using Java8, use the following instead of lifecycle-compiler
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.0.0"
+
+    /*Paging*/
+    implementation "androidx.paging:paging-runtime:2.1.0"
+
+    /*Room*/
+    implementation "androidx.room:room-runtime:2.0.0"
+    kapt "androidx.room:room-compiler:2.0.0"
+
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+
+    // Navigation
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha11'
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0-alpha11"
+
+    /*Retrofit*/
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    // https://github.com/wasabeef/recyclerview-animators
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
+
+    //Google material
+    implementation 'com.google.android.material:material:1.0.0'
+
+    //OKhttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    // https://github.com/Faltenreich/SkeletonLayout
+    implementation 'com.faltenreich:skeletonlayout:1.0.1'
+
+    // https://github.com/ParkSangGwon/TedPermission
+    implementation 'gun0912.ted:tedpermission:2.2.2'
+
+    // https://github.com/bumptech/glide
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation "com.github.bumptech.glide:okhttp3-integration:4.7.1"
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+
+    // https://github.com/jgilfelt/chuck
+    debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
+    releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}

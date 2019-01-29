@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AttributeView">
+        <attr name="avName" format="string|reference" />
+        <attr name="avValue" format="string|reference" />
+        <attr name="avShowLineView" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="MediaView">
+        <attr name="mvDividerSize" format="dimension" />
+        <attr name="mvPlaceholder" format="integer" />
+        <attr name="mvCornerRadii" format="dimension" />
+        <attr name="mvBackgroundColor" format="color" />
+    </declare-styleable>
+
+</resources>

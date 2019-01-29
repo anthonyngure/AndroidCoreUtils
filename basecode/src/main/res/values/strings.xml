@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Base Code</string>
+    <string name="lorem_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Etiam non enim magna. Morbi dictum, velit
+        vel semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis.
+        Pellentesque vitae metus elit, nec tincidunt tellus.
+    </string>
+    <string name="message_waiting">Please wait…</string>
+    <string name="connection_timed_out">Connection timed out</string>
+    <string name="error_connection">Seems like your connection to the server is taking too long. Please check your network status</string>
+    <string name="server_error">Server error</string>
+    <string name="error_application">An application error occurred</string>
+    <string name="report">Report</string>
+    <string name="retry">Retry</string>
+    <string name="not_found">The requested resource can not be found</string>
+
+    <string name="message_no_more_data">Nothing more :( Tap to retry or pull down to refresh.</string>
+    <string name="message_empty_data">Oops! Nothing here yet :( Tap to refresh</string>
+    <string name="message_loading">Loading…</string>
+    <string name="message_connection_error">Seems like your connection to the server is taking too long :( Tap to retry or check your network status</string>
+    <string name="message_refreshing">Refreshing…</string>
+    <string name="unable_to_refresh">Unable to refresh</string>
+    <string name="error_network_not_available">No internet connection</string>
+    <string name="message_no_internet_connetion">Unable to establish an internet connection. Please ensure your internet connection is working properly!</string>
+    <string name="message_network_error">An error occurred from the server! Please report this error.</string>
+    <string name="one_tab">\u0009</string>
+    <string name="two_tab">\u0009\u0009</string>
+    <string name="three_tab">\u0009\u0009\u0009</string>
+    <string name="four_tab">\u0009\u0009\u0009\u0009</string>
+    <string name="cancel">Cancel</string>
+    <string name="sync">Sync</string>
+</resources>

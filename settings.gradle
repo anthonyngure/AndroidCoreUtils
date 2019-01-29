@@ -1,0 +1,4 @@
+include ':app'
+include ':images'
+include ':basecode'
+include ':views'

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2018.
+  ~
+  ~ Anthony Ngure
+  ~
+  ~ Email : anthonyngure25@gmail.com
+  -->
+
+<resources>
+    <declare-styleable name="NetworkImage">
+        <attr name="niCircled" format="boolean" />
+        <attr name="niBackground" format="reference" />
+        <attr name="niSrc" format="reference" />
+    </declare-styleable>
+
+</resources>

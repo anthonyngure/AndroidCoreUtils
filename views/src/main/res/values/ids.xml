@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="image_index_one" type="id" />
+    <item name="image_index_two" type="id" />
+    <item name="image_index_three" type="id" />
+    <item name="image_index_four" type="id" />
+</resources>

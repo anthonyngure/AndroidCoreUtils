@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="ke.co.toshngure.images">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+
+    <application>
+
+        <activity
+                android:name="com.yalantis.ucrop.UCropActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+                android:name="ke.co.toshngure.images.activity.CameraActivity"
+                android:label="@string/title_activity_camera"
+                android:theme="@style/AppTheme.NoActionBar"/>
+
+    </application>
+
+</manifest>
