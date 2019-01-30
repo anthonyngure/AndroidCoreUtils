@@ -17,16 +17,14 @@
     <string name="message_no_more_data">Nothing more :( Tap to retry or pull down to refresh.</string>
     <string name="message_empty_data">Oops! Nothing here yet :( Tap to refresh</string>
     <string name="message_loading">Loading…</string>
-    <string name="message_connection_error">Seems like your connection to the server is taking too long :( Tap to retry or check your network status</string>
+    <string name="message_connection_error">Unable to establish an internet connection. Please ensure your internet connection is working properly!</string>
     <string name="message_refreshing">Refreshing…</string>
     <string name="unable_to_refresh">Unable to refresh</string>
-    <string name="error_network_not_available">No internet connection</string>
-    <string name="message_no_internet_connetion">Unable to establish an internet connection. Please ensure your internet connection is working properly!</string>
-    <string name="message_network_error">An error occurred from the server! Please report this error.</string>
     <string name="one_tab">\u0009</string>
     <string name="two_tab">\u0009\u0009</string>
     <string name="three_tab">\u0009\u0009\u0009</string>
     <string name="four_tab">\u0009\u0009\u0009\u0009</string>
     <string name="cancel">Cancel</string>
     <string name="sync">Sync</string>
+    <string name="clear">Clear</string>
 </resources>

@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.FrameLayout
 import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.basecode.app.BaseAppFragment
-import ke.co.toshngure.basecode.dataloading.sync.SyncStateManager
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : BaseAppFragment<Any>() {
@@ -22,6 +21,8 @@ class MainFragment : BaseAppFragment<Any>() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        usersBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.usersFragment) }
+
         postsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.postsFragment) }
 
         albumsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.albumsFragment) }
@@ -32,11 +33,6 @@ class MainFragment : BaseAppFragment<Any>() {
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        SyncStateManager.sync(Post::class.java, context)
     }
 
     companion object {

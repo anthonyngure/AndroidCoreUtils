@@ -9,10 +9,7 @@
             android:id="@+id/mainFragment"
             android:name="ke.co.toshngure.androidcoreutils.MainFragment"
             android:label="@string/app_name"
-            tools:layout="@layout/fragment_main">
-
-
-    </fragment>
+            tools:layout="@layout/fragment_main"/>
 
     <fragment
             android:id="@+id/postsFragment"
@@ -44,6 +41,12 @@
             android:name="ke.co.toshngure.androidcoreutils.TestImagesPickerFragment"
             android:label="@string/images_picker"
             tools:layout="@layout/fragment_images_picker"/>
+
+    <fragment
+            android:id="@+id/usersFragment"
+            android:name="ke.co.toshngure.androidcoreutils.users.UsersFragment"
+            android:label="@string/users"
+            tools:layout="@layout/fragment_base"/>
 
 
 </navigation>

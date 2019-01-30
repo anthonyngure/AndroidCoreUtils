@@ -8,7 +8,7 @@ import ke.co.toshngure.basecode.dataloading.data.ItemDao
 @Dao
 interface PhotoDao : ItemDao<Photo> {
 
-    @Query("SELECT * FROM photos WHERE album_id = :albumId")
+    @Query("SELECT * FROM photos WHERE album_id = :albumId ORDER BY id ASC")
     fun getAllPaged(albumId: Long): DataSource.Factory<Int, Photo>
 
     @Query("DELETE FROM PHOTOS WHERE album_id = :albumId")

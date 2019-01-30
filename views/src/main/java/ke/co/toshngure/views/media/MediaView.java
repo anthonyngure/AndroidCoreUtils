@@ -330,7 +330,7 @@ public class MediaView extends ViewGroup implements View.OnClickListener {
                 .error(R.drawable.ic_place_holder)
                 .listener(new Listener(imageView))
                 .into(imageView);
-        /*imageLoader.load(imagePath)
+        /*imageLoader.init(imagePath)
                 .fit()
                 .centerCrop()
                 .error(photoErrorResId)

@@ -63,11 +63,6 @@ public class BaseUtils {
     }
 
 
-
-
-
-
-
     @SuppressLint("MissingPermission")
     public static void makeCall(Context context, String phone) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -160,17 +155,6 @@ public class BaseUtils {
     }
 
 
-    public static int generateColor(Object object) {
-        return ColorGenerator.MATERIAL.getColor(object);
-    }
-
-    public static TextDrawable getTextDrawableAvatar(String text, @Nullable Object object) {
-        if (object == null) {
-            object = text;
-        }
-        return TextDrawable.builder().round().build(text, generateColor(object));
-    }
-
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
@@ -203,5 +187,7 @@ public class BaseUtils {
             }
         }
     }
+
+
 
 }

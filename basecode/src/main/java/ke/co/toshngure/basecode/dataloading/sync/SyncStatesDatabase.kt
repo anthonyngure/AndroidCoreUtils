@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [SyncState::class], version = 1, exportSchema = false)
+@Database(entities = [SyncState::class], version = 5, exportSchema = false)
 abstract class SyncStatesDatabase : RoomDatabase() {
 
     abstract fun syncStates(): SyncStateDao
@@ -15,14 +15,17 @@ abstract class SyncStatesDatabase : RoomDatabase() {
 
         private const val TAG = "SyncStatesDatabase"
 
+
         // For singleton instantiation
         @Volatile
-        private var instance: SyncStatesDatabase? = null
+        private lateinit var instance: SyncStatesDatabase
 
-        fun getInstance(context: Context): SyncStatesDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
-            }
+        fun init(context: Context) {
+            instance = buildDatabase(context).also { instance = it }
+        }
+
+        fun getInstance(): SyncStatesDatabase {
+            return instance
         }
 
         private fun buildDatabase(context: Context): SyncStatesDatabase {

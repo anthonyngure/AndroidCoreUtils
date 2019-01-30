@@ -21,7 +21,11 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
         return item.id
     }
 
-    override fun getCall(before: Long, after: Long): Call<List<Photo>>? {
-        return ApiService.getInstance().photos(albumId, after)
+    override fun getAPICall(before: Long, after: Long): Call<List<Photo>> {
+        return ApiService.getTypicodeInstance().photos(albumId, before)
+    }
+
+    override fun getSyncClass(): Class<Photo> {
+        return Photo::class.java
     }
 }

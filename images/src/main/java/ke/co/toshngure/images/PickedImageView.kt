@@ -31,7 +31,7 @@ class PickedImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     /**
      * @param position is used as request code during crop and assigned to image displayPosition
      * The image displayPosition is used to determin which image to update after cropping
-     * If cropped image uri is not empty we load the cropped uri else we load the MediaStore uri
+     * If cropped image uri is not empty we init the cropped uri else we init the MediaStore uri
      */
     fun setImage(image: Image, glideRequests: GlideRequests, fragment: Fragment,
                  position: Int, removeCall: (image: Image) -> Unit) {

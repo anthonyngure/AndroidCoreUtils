@@ -11,10 +11,7 @@ data class Post(
         @ColumnInfo(name = "user_id") val userId: Long,
         @ColumnInfo(name = "title") val title: String?,
         @ColumnInfo(name = "body") val body: String?,
-        @ColumnInfo(name = "url") val url: String?,
-        @ColumnInfo(name = "thumbnail") val thumbnail: String?,
-        @ColumnInfo(name = "views") val views: Int,
-        @ColumnInfo(name = "update_time") val updateTime: Long
+        @ColumnInfo(name = "views") val views: Int
 ) {
 
 

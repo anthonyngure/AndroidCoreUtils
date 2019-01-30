@@ -11,14 +11,6 @@ import kotlinx.android.synthetic.main.item_post.view.*
 
 class PostViewHolder(view: View, private val glide: GlideRequests) : BaseItemViewHolder<Post>(view) {
 
-    init {
-        view.setOnClickListener {
-            item?.url?.let { url ->
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                view.context.startActivity(intent)
-            }
-        }
-    }
 
     @SuppressLint("SetTextI18n")
     override fun bindTo(item: Post) {
@@ -26,6 +18,5 @@ class PostViewHolder(view: View, private val glide: GlideRequests) : BaseItemVie
         itemView.titleTV.text = Spanny(item.id.toString()).append(" - ").append(item.title ?: "Loading...")
         itemView.bodyTV.text = item.body ?: "..."
         itemView.viewsTV.text = "${item.views} views"
-        itemView.thumbnailIV.loadImageFromNetwork(item.thumbnail, glide)
     }
 }

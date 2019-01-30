@@ -7,21 +7,23 @@ import androidx.annotation.LayoutRes
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ke.co.toshngure.basecode.dataloading.NetworkState
+import ke.co.toshngure.basecode.dataloading.sync.SyncState
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 
-class ItemsAdapter<DaoModel>(diffUtil: DiffUtil.ItemCallback<DaoModel>,
-                             @LayoutRes private val layoutRes: Int,
-                             private val retryCallback: () -> Unit,
-                             private val getItemViewHolder: (View) -> BaseItemViewHolder<DaoModel>,
-                             private val getItemOnClickListener: OnItemClickListener<DaoModel>?)
-    : PagedListAdapter<DaoModel, RecyclerView.ViewHolder>(diffUtil) {
+class ItemsAdapter<DaoModel>(
+    diffUtil: DiffUtil.ItemCallback<DaoModel>,
+    @LayoutRes private val layoutRes: Int,
+    private val retryCallback: () -> Unit,
+    private val getItemViewHolder: (View) -> BaseItemViewHolder<DaoModel>,
+    private val getItemOnClickListener: OnItemClickListener<DaoModel>?
+) : PagedListAdapter<DaoModel, RecyclerView.ViewHolder>(diffUtil) {
 
 
     interface OnItemClickListener<T> {
         fun onClick(item: T)
     }
 
-    private var networkState: NetworkState? = null
+    private var syncState: SyncState? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -46,7 +48,11 @@ class ItemsAdapter<DaoModel>(diffUtil: DiffUtil.ItemCallback<DaoModel>,
                     }
                 }
             }
-            ITEM_TYPE_NETWORK_STATE -> (holder as NetworkStateViewHolder).bindTo(networkState)
+            ITEM_TYPE_NETWORK_STATE -> {
+                syncState?.let {
+                    (holder as NetworkStateViewHolder).bindTo(it)
+                }
+            }
         }
     }
 
@@ -62,33 +68,38 @@ class ItemsAdapter<DaoModel>(diffUtil: DiffUtil.ItemCallback<DaoModel>,
         }
     }
 
-    private fun networkStateIsLoadingOrFailed(): Boolean {
-        return networkState != null && networkState != NetworkState.LOADED
+    private fun shouldShowBottom(): Boolean {
+        return syncState?.let {
+            val syncStatus = SyncStatus.valueOf(it.status)
+            syncStatus == SyncStatus.LOADING_BEFORE ||
+                    syncStatus == SyncStatus.LOADING_BEFORE_EXHAUSTED ||
+                    syncStatus == SyncStatus.LOADING_BEFORE_FAILED
+        } ?: false
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (networkStateIsLoadingOrFailed() && position == (itemCount - 1)) {
+        return if (shouldShowBottom() && position == (itemCount - 1)) {
             ITEM_TYPE_NETWORK_STATE
-        }  else ITEM_TYPE_ITEM
+        } else ITEM_TYPE_ITEM
 
     }
 
     override fun getItemCount(): Int {
-        return super.getItemCount() + if (networkStateIsLoadingOrFailed()) 1 else 0
+        return super.getItemCount() + if (shouldShowBottom()) 1 else 0
     }
 
-    fun setNetworkState(newNetworkState: NetworkState?) {
-        val previousState = this.networkState
-        val hadExtraRow = networkStateIsLoadingOrFailed()
-        this.networkState = newNetworkState
-        val hasExtraRow = networkStateIsLoadingOrFailed()
+    fun setSyncState(newSyncState: SyncState?) {
+        val previousState = this.syncState
+        val hadExtraRow = shouldShowBottom()
+        this.syncState = newSyncState
+        val hasExtraRow = shouldShowBottom()
         if (hadExtraRow != hasExtraRow) {
             if (hadExtraRow) {
                 notifyItemRemoved(super.getItemCount())
             } else {
                 notifyItemInserted(super.getItemCount())
             }
-        } else if (hasExtraRow && previousState != newNetworkState) {
+        } else if (hasExtraRow && previousState != newSyncState) {
             notifyItemChanged(itemCount - 1)
         }
     }

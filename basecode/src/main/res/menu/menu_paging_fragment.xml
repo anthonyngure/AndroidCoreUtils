@@ -9,4 +9,9 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 
+    <item
+            android:id="@+id/action_clear"
+            android:title="@string/clear"
+            app:showAsAction="never" />
+
 </menu>

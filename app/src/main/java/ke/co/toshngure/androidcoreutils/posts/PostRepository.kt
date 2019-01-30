@@ -22,7 +22,15 @@ class PostRepository() : ItemRepository<Post, Post>(AppDatabase.getInstance()) {
         return item.id
     }
 
-    override fun getCall(before: Long, after: Long): Call<List<Post>>? {
-        return ApiService.getInstance().posts(after)
+    override fun getAPICall(before: Long, after: Long): Call<List<Post>> {
+        return ApiService.getTypicodeInstance().posts(before)
+    }
+
+    override fun deleteAll() {
+        AppDatabase.getInstance().posts().deleteAll()
+    }
+
+    override fun getSyncClass(): Class<Post> {
+        return Post::class.java
     }
 }

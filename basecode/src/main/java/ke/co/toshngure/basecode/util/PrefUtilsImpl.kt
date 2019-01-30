@@ -17,7 +17,7 @@ import androidx.annotation.StringRes
  * Email : anthonyngure25@gmail.com.
  */
 
-abstract class PrefUtilsImpl(protected val context: Context, protected val sharedPreferences: SharedPreferences) {
+abstract class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
 
     protected abstract fun invalidate()
 

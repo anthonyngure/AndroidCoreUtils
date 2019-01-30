@@ -17,15 +17,18 @@ class AlbumRepository : ItemRepository<Album, Album>(AppDatabase.getInstance()) 
     override fun index(): DataSource.Factory<Int, Album> =
         AppDatabase.getInstance().albums().getAllPaged()
 
-    override fun clear() =
+    override fun deleteAll() =
         AppDatabase.getInstance().albums().deleteAll()
 
-    override fun getCall(before: Long, after: Long): Call<List<Album>>? {
-        return ApiService.getInstance().albums(after)
+    override fun getAPICall(before: Long, after: Long): Call<List<Album>> {
+        return ApiService.getTypicodeInstance().albums(before)
     }
-
 
     override fun getItemId(item: Album): Long {
         return item.id
+    }
+
+    override fun getSyncClass(): Class<Album> {
+        return Album::class.java
     }
 }

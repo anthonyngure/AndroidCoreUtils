@@ -1,96 +1,135 @@
 package ke.co.toshngure.basecode.dataloading.data
 
+import android.text.TextUtils
 import androidx.annotation.MainThread
 import androidx.paging.PagedList
-import ke.co.toshngure.basecode.dataloading.util.PagingRequestHelper
-import ke.co.toshngure.basecode.extensions.createStatusLiveData
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.logging.BeeLog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.Executor
 
-class ItemBoundaryCallback<Model, ModelListing>(
-        private val ioExecutor: Executor,
-        private val getItemId: (item: ModelListing) -> Long,
-        private val getResponseCall: (before: Long, after: Long) -> Call<List<Model>>?,
-        private val handleResponse: (List<Model>) -> Unit,
-        private val dataLoadingConfig: DataLoadingConfig)
-    : PagedList.BoundaryCallback<ModelListing>() {
+class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) :
+    PagedList.BoundaryCallback<LoadedModel>() {
 
-    val helper = PagingRequestHelper(ioExecutor)
-    val networkState = helper.createStatusLiveData()
+    private var mItemAtEndId = 0L
+    internal val syncStateHelper = SyncStateHelper(repository)
 
-    // Requests initial data from the network, replacing all content currently
-    // in the database.
+
     /**
-     * Database returned 0 items. We should query the backend for more items.
+     * Database returned 0 items. We should query the backend for initial items.
+     * Requests initial data from the network
      */
-    @MainThread
     override fun onZeroItemsLoaded() {
         super.onZeroItemsLoaded()
         BeeLog.i(TAG, "onZeroItemsLoaded")
-        helper.runIfNotRunning(PagingRequestHelper.RequestType.INITIAL) {
-            getResponseCall(0, 0)?.enqueue(createCallback(it))
+        syncStateHelper.recordStatus(SyncStatus.LOADED)
+        syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
+            repository.getAPICall(0, 0).enqueue(createCallback())
         }
     }
 
-    // Requests additional data from the network, appending the results to the
-    // end of the database's existing data.
     /**
      * User reached to the end of the list.
+     * Requests additional data from the network, appending the results to the end of the database's existing data.
      */
     @MainThread
-    override fun onItemAtEndLoaded(itemAtEnd: ModelListing) {
+    override fun onItemAtEndLoaded(itemAtEnd: LoadedModel) {
         super.onItemAtEndLoaded(itemAtEnd)
-        BeeLog.i(TAG, "onItemAtEndLoaded, id = " + getItemId(itemAtEnd))
-        BeeLog.i(TAG, "onItemAtEndLoaded, isRunning = " + helper.isRunning(PagingRequestHelper.RequestType.AFTER))
-        if (dataLoadingConfig.paginates) {
+        mItemAtEndId = repository.getItemId(itemAtEnd)
+        BeeLog.i(TAG, "onItemAtEndLoaded, id = $mItemAtEndId")
+        // BeeLog.i(TAG, "onItemAtEndLoaded, isRunning = " + helper.isRunning(PagingRequestHelper.RequestType.AFTER))
+        if (repository.getDataLoadingConfig().paginates) {
             //When the last item is loaded we will request more data from network if the repo paginates
-            helper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER) { it ->
-                getResponseCall(getItemId(itemAtEnd), 0)?.enqueue(createCallback(it))
+            syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
+                repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())
             }
         } else {
             BeeLog.i(TAG, "onItemAtEndLoaded, pagination is disabled!")
         }
     }
 
-    override fun onItemAtFrontLoaded(itemAtFront: ModelListing) {
+    override fun onItemAtFrontLoaded(itemAtFront: LoadedModel) {
         super.onItemAtFrontLoaded(itemAtFront)
-        BeeLog.i(TAG, "onItemAtFrontLoaded, id = " + getItemId(itemAtFront))
+        BeeLog.i(TAG, "onItemAtFrontLoaded, id = " + repository.getItemId(itemAtFront))
+        syncStateHelper.recordStatus(SyncStatus.LOADED)
         // ignored, since we only ever append to what's in the DB
     }
 
-
-
-    private fun createCallback(requestHelperCallback: PagingRequestHelper.Request.Callback): Callback<List<Model>> {
+    private fun createCallback(): Callback<List<Model>> {
 
         return object : Callback<List<Model>> {
 
             override fun onFailure(call: Call<List<Model>>, t: Throwable) {
-                requestHelperCallback.recordFailure(t)
+                syncStateHelper.recordFailure(t.localizedMessage)
             }
 
             override fun onResponse(call: Call<List<Model>>, response: Response<List<Model>>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { items -> insertItemsIntoDb(items, requestHelperCallback) }
-                            ?: requestHelperCallback.recordFailure(Throwable("Empty response body!"))
+                val data = response.body()
+                if (response.isSuccessful && data != null) {
+                    if (data.isEmpty()) {
+                        syncStateHelper.recordExhausted()
+                    } else {
+                        repository.insertItemsIntoDb(data)
+                        syncStateHelper.recordStatus(SyncStatus.LOADED)
+                    }
                 } else {
-                    requestHelperCallback.recordFailure(Throwable(response.message()))
+                    syncStateHelper.recordFailure(response.message())
                 }
             }
         }
     }
 
+    internal fun sync() {
+        //recordStatus(SyncStatus.SYNCING)
 
-    /**
-     * every time it gets new items, boundary callback simply inserts them into the database and
-     * paging library takes care of refreshing the list if necessary.
-     */
-    private fun insertItemsIntoDb(items: List<Model>, it: PagingRequestHelper.Request.Callback) {
-        ioExecutor.execute {
-            handleResponse(items)
-            it.recordSuccess()
+        val ids = arrayListOf<Long>()
+        for (i in 1..500) {
+            ids.add((i + 10000000000000000))
+        }
+        val data = TextUtils.join(",", ids)
+        //BeeLog.i(model, data)
+        //BeeLog.i(model, "Data Length = ${data.toByteArray().size}")
+
+        //val state = SyncStatesDatabase.getInstance(context).syncStates().findByModel(model)
+
+        //BeeLog.i(model, state?.toString())
+    }
+
+    internal fun refresh() {
+        //recordStatus(SyncStatus.REFRESHING)
+    }
+
+    internal fun retry() {
+        runBlocking(Dispatchers.IO) {
+            val syncState = syncStateHelper.loadSyncState()
+            val syncStatus = SyncStatus.valueOf(syncState.status)
+            syncState.status = SyncStatus.LOADED.value
+            SyncStatesDatabase.getInstance().syncStates().update(syncState)
+            when (syncStatus) {
+                SyncStatus.LOADING_INITIAL_EXHAUSTED,
+                SyncStatus.LOADING_INITIAL_FAILED -> {
+                    syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
+                        repository.getAPICall(0, 0).enqueue(createCallback())
+                    }
+                }
+                SyncStatus.LOADING_BEFORE_FAILED,
+                SyncStatus.LOADING_BEFORE_EXHAUSTED -> {
+                    syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
+                        repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())
+                    }
+                }
+                SyncStatus.LOADING_AFTER_FAILED,
+                SyncStatus.LOADING_AFTER_EXHAUSTED -> {
+
+                }
+                else -> {
+                }
+            }
+
         }
     }
 

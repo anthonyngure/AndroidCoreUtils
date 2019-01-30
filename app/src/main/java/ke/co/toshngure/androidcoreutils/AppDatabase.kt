@@ -10,14 +10,17 @@ import ke.co.toshngure.androidcoreutils.posts.PostDao
 import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.androidcoreutils.albums.AlbumDao
 import ke.co.toshngure.androidcoreutils.photos.Photo
+import ke.co.toshngure.androidcoreutils.users.User
+import ke.co.toshngure.androidcoreutils.users.UserDao
 
 
-@Database(entities = [Post::class, Album::class, Photo::class], version = 1, exportSchema = false)
+@Database(entities = [Post::class, Album::class, Photo::class, User::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun posts(): PostDao
     abstract fun albums(): AlbumDao
     abstract fun photos(): PhotoDao
+    abstract fun users(): UserDao
 
     companion object {
 

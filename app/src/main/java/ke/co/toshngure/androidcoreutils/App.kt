@@ -1,6 +1,7 @@
 package ke.co.toshngure.androidcoreutils
 
 import android.app.Application
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.logging.BeeLog
 
 class App : Application() {
@@ -17,6 +18,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        SyncStatesDatabase.init(this)
         instance = this
         BeeLog.init(BuildConfig.DEBUG, TAG)
     }

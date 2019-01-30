@@ -9,7 +9,9 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "sync_states")
 data class SyncState(
-        @PrimaryKey var model: String,
-        var maxCache: Long = 500,
-        var lastSyncTimestamp: Long = 0
+    @PrimaryKey var model: String,
+    var maxCache: Long = 500,
+    var lastSyncTimestamp: Long = 0,
+    var status: String,
+    var error: String? = null
 )

@@ -7,8 +7,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,21 +17,25 @@ import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
+import ke.co.toshngure.basecode.extensions.hide
+import ke.co.toshngure.basecode.extensions.show
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 import kotlinx.android.synthetic.main.fragment_base.*
 
 
-abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
+abstract class PagingFragment<Model, LoadedModel> : BaseAppFragment<Any>() {
 
-    private lateinit var modelList: ItemListViewModel<Model, ModelListing>
-    private lateinit var config: Config
+    private lateinit var mItemListViewModel: ItemListViewModel<Model, LoadedModel>
+    private lateinit var mConfig: PagingFragmentConfig<Model, LoadedModel>
+    private lateinit var mItemRepository: ItemRepository<Model, LoadedModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // DataManager.sync(Model::class.java)
         setHasOptionsMenu(true)
-        config = getConfig()
+        mConfig = getConfig()
+        mItemRepository = mConfig.repository
     }
 
 
@@ -41,47 +43,102 @@ abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
         super.onSetUpContentView(container)
         LayoutInflater.from(container.context).inflate(R.layout.basecode_fragment_paging, container, true)
 
-
         listRV.apply {
             layoutManager = LinearLayoutManager(listRV.context)
             // itemAnimator = SlideInUpAnimator(OvershootInterpolator(1f))
             itemAnimator = SlideInUpAnimator()
         }
-
-        if (config.withDivider) listRV.addItemDecoration(
-            DividerItemDecoration(
-                listRV.context,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        if (mConfig.withDivider) {
+            listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
+        }
 
         onSetUpRecyclerView(listRV)
+
+        noDataLayout.setOnClickListener { mItemRepository.retry() }
+
+        errorLayout.setOnClickListener { mItemRepository.retry() }
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         @Suppress("UNCHECKED_CAST")
-        modelList = getViewModel() as ItemListViewModel<Model, ModelListing>
+        mItemListViewModel = getViewModel() as ItemListViewModel<Model, LoadedModel>
 
         val adapter = ItemsAdapter(
-            createDiffUtilItemCallback(),
-            config.layoutRes, this::retry, this::createItemViewHolder, createOnItemClickListener()
+            mConfig.diffUtilItemCallback, mConfig.layoutRes, this::retry,
+            this::createItemViewHolder, mConfig.itemClickListener
         )
 
         listRV.adapter = adapter
 
-        modelList.items.observe(this, Observer<PagedList<ModelListing>> {
-            adapter.submitList(it)
-        })
-        modelList.networkState.observe(this, Observer {
-            adapter.setNetworkState(it)
+        mItemListViewModel.syncState.observe(this, Observer {
+
+            adapter.setSyncState(it)
+
+            syncingProgressBar.hide()
+
+            loadingLayout.hide()
+            noDataLayout.hide()
+            errorLayout.hide()
+
+            it?.let { syncState ->
+
+                val syncStatus = SyncStatus.valueOf(syncState.status)
+                statusTV.text = syncStatus.name
+
+                when (syncStatus) {
+
+
+                    //region INITIAL DATA
+                    SyncStatus.LOADING_INITIAL -> {
+                        loadingLayout.show()
+                    }
+                    SyncStatus.LOADING_INITIAL_FAILED -> {
+                        errorLayout.show()
+                        errorMessageTV.text = syncState.error
+                    }
+                    SyncStatus.LOADING_INITIAL_EXHAUSTED -> {
+                        noDataLayout.show()
+                    }
+                    //endregion
+
+                    //region NEWER DATA
+                    SyncStatus.LOADING_AFTER -> {
+
+                    }
+                    SyncStatus.LOADING_AFTER_FAILED -> {
+
+                    }
+                    SyncStatus.LOADING_AFTER_EXHAUSTED -> {
+                    }
+                    //endregion
+
+
+                    SyncStatus.SYNCING -> {
+                        syncingProgressBar.show()
+                    }
+                    SyncStatus.SYNCING_FAILED -> {
+                    }
+                    SyncStatus.LOADED -> {
+                    }
+                    SyncStatus.REFRESHING -> {
+                        swipeRefreshLayout.isRefreshing = true
+                    }
+                    SyncStatus.REFRESHING_FAILED -> {
+                        swipeRefreshLayout.isRefreshing = false
+                    }
+                    else -> {}
+                }
+            } ?: loadingLayout.show()
         })
 
-        modelList.refreshState.observe(this, Observer {
-            swipeRefreshLayout.isRefreshing = it == NetworkState.LOADING
+        mItemListViewModel.items.observe(this, Observer {
+            adapter.submitList(it)
         })
-        val repo = createRepository()
-        modelList.load(repo)
+
+        mItemListViewModel.init(mItemRepository)
     }
 
 
@@ -89,7 +146,7 @@ abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <M : ViewModel?> create(modelClass: Class<M>): M {
                 @Suppress("UNCHECKED_CAST")
-                return ItemListViewModel<Model, ModelListing>() as M
+                return ItemListViewModel<Model, LoadedModel>() as M
             }
         })[ItemListViewModel::class.java]
     }
@@ -97,15 +154,15 @@ abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
 
     override fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
         super.onSetUpSwipeRefreshLayout(swipeRefreshLayout)
-        swipeRefreshLayout.isEnabled = config.refreshEnabled
+        swipeRefreshLayout.isEnabled = mConfig.refreshEnabled
         swipeRefreshLayout.setOnRefreshListener {
-            modelList.refresh()
+            mItemRepository.refresh()
         }
     }
 
 
     private fun retry() {
-        modelList.retry()
+        mItemRepository.retry()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -116,7 +173,11 @@ abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sync -> {
-                toast("Sync")
+                mItemRepository.sync()
+                true
+            }
+            R.id.action_clear -> {
+                mItemRepository.clear()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -125,17 +186,10 @@ abstract class PagingFragment<Model, ModelListing> : BaseAppFragment<Any>() {
 
     protected open fun onSetUpRecyclerView(recyclerView: RecyclerView) {}
 
-    protected abstract fun createRepository(): ItemRepository<Model, ModelListing>
+    protected abstract fun getConfig(): PagingFragmentConfig<Model, LoadedModel>
 
-    protected abstract fun createDiffUtilItemCallback(): DiffUtil.ItemCallback<ModelListing>
+    protected abstract fun createItemViewHolder(itemView: View): BaseItemViewHolder<LoadedModel>
 
-    protected abstract fun getConfig(): Config
-
-    protected abstract fun createItemViewHolder(itemView: View): BaseItemViewHolder<ModelListing>
-
-    protected open fun createOnItemClickListener(): ItemsAdapter.OnItemClickListener<ModelListing>? {
-        return null
-    }
 
 }
 

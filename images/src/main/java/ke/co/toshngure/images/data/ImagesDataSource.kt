@@ -22,7 +22,7 @@ class ImagesDataSource(private val bucket: String? = null, private val context: 
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Image>) {
         if (bucket == null) {
-            // When not loading from a specific folder we first load all the folders
+            // When not loading from a specific folder we first init all the folders
             countAndGetFolders()
             callback.onResult(query(params.requestedLoadSize, params.requestedStartPosition), 0)
         } else {

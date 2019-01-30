@@ -13,6 +13,11 @@
             android:padding="@dimen/activity_vertical_margin">
 
         <com.google.android.material.button.MaterialButton
+                android:id="@+id/usersBtn"
+                style="@style/MainButtons"
+                android:text="@string/users"/>
+
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/postsBtn"
                 style="@style/MainButtons"
                 android:text="@string/posts"/>

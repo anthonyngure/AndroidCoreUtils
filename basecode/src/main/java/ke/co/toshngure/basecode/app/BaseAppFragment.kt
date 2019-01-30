@@ -48,6 +48,7 @@ abstract class BaseAppFragment<D> : Fragment() {
     private var mPermissionsRationale =
         "Required permissions have been denied. Please allow requested permissions to proceed\n" +
                 "\n Go to [Setting] > [Permission]"
+
     private var mActiveRetrofitCallback: CancelableCallback? = null
 
     private inner class RequiredPermissionsListener(private val navigationAction: () -> Unit) : PermissionListener {
@@ -162,7 +163,7 @@ abstract class BaseAppFragment<D> : Fragment() {
                 if (BeeLog.DEBUG) {
                     showNetworkErrorDialog(t.message)
                 } else {
-                    showNetworkErrorDialog(getString(R.string.message_network_error))
+                    showNetworkErrorDialog(getString(R.string.message_connection_error))
                 }
             }
         }
@@ -237,7 +238,7 @@ abstract class BaseAppFragment<D> : Fragment() {
     private fun showNetworkErrorDialog(message: String?) {
         activity?.let {
             AlertDialog.Builder(it)
-                .setMessage(message ?: getString(R.string.message_network_error))
+                .setMessage(message ?: getString(R.string.message_connection_error))
                 .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
                 .setNegativeButton(R.string.cancel) { _, _ -> }
                 .show()

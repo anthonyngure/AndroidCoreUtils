@@ -1,4 +1,4 @@
-/*
+package ke.co.toshngure.basecode.dataloading.util;/*
  * Copyright 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ke.co.toshngure.basecode.dataloading.util;
+import androidx.annotation.*;
+import androidx.paging.DataSource;
 
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import androidx.annotation.AnyThread;
-import androidx.annotation.GuardedBy;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import androidx.paging.DataSource;
-
 /**
  * A helper class for {@link androidx.paging.PagedList.BoundaryCallback BoundaryCallback}s and
  * {@link DataSource}s to help with tracking network requests.
@@ -48,7 +41,7 @@ import androidx.paging.DataSource;
  *
  *     {@literal @}Override
  *     public void onItemAtFrontLoaded({@literal @}NonNull MyItem itemAtFront) {
- *         helper.runIfNotRunning(PagingRequestHelper.RequestType.BEFORE,
+ *         helper.runIfPossible(PagingRequestHelper.RequestType.BEFORE,
  *                 helperCallback -> api.getTopBefore(itemAtFront.getName(), 10).enqueue(
  *                         new Callback&lt;ApiResponse>() {
  *                             {@literal @}Override
@@ -67,7 +60,7 @@ import androidx.paging.DataSource;
  *
  *     {@literal @}Override
  *     public void onItemAtEndLoaded({@literal @}NonNull MyItem itemAtEnd) {
- *         helper.runIfNotRunning(PagingRequestHelper.RequestType.AFTER,
+ *         helper.runIfPossible(PagingRequestHelper.RequestType.AFTER,
  *                 helperCallback -> api.getTopBefore(itemAtEnd.getName(), 10).enqueue(
  *                         new Callback&lt;ApiResponse>() {
  *                             {@literal @}Override
@@ -116,7 +109,6 @@ public class PagingRequestHelper {
                     new RequestQueue(RequestType.AFTER)};
     @NonNull
     final CopyOnWriteArrayList<Listener> mListeners = new CopyOnWriteArrayList<>();
-
     /**
      * Creates a new PagingRequestHelper with the given {@link Executor} which is used to run
      * retry actions.
@@ -126,7 +118,6 @@ public class PagingRequestHelper {
     public PagingRequestHelper(@NonNull Executor retryService) {
         mRetryService = retryService;
     }
-
     /**
      * Adds a new listener that will be notified when any request changes {@link Status state}.
      *
@@ -137,7 +128,6 @@ public class PagingRequestHelper {
     public boolean addListener(@NonNull Listener listener) {
         return mListeners.add(listener);
     }
-
     /**
      * Removes the given listener from the listeners list.
      *
@@ -147,7 +137,6 @@ public class PagingRequestHelper {
     public boolean removeListener(@NonNull Listener listener) {
         return mListeners.remove(listener);
     }
-
     /**
      * Runs the given {@link Request} if no other requests in the given request type is already
      * running.
@@ -183,12 +172,6 @@ public class PagingRequestHelper {
         wrapper.run();
         return true;
     }
-
-    public boolean isRunning(@NonNull RequestType type) {
-        RequestQueue queue = mRequestQueues[type.ordinal()];
-        return queue.mRunning != null;
-    }
-
     @GuardedBy("mLock")
     private StatusReport prepareStatusReportLocked() {
         Throwable[] errors = new Throwable[]{
@@ -203,12 +186,10 @@ public class PagingRequestHelper {
                 errors
         );
     }
-
     @GuardedBy("mLock")
     private Status getStatusForLocked(RequestType type) {
         return mRequestQueues[type.ordinal()].mStatus;
     }
-
     @AnyThread
     @VisibleForTesting
     void recordResult(@NonNull RequestWrapper wrapper, @Nullable Throwable throwable) {
@@ -234,13 +215,11 @@ public class PagingRequestHelper {
             dispatchReport(report);
         }
     }
-
     private void dispatchReport(StatusReport report) {
         for (Listener listener : mListeners) {
             listener.onStatusChange(report);
         }
     }
-
     /**
      * Retries all failed requests.
      *
@@ -263,7 +242,6 @@ public class PagingRequestHelper {
         }
         return retried;
     }
-
     static class RequestWrapper implements Runnable {
         @NonNull
         final Request mRequest;
@@ -271,19 +249,16 @@ public class PagingRequestHelper {
         final PagingRequestHelper mHelper;
         @NonNull
         final RequestType mType;
-
         RequestWrapper(@NonNull Request request, @NonNull PagingRequestHelper helper,
                        @NonNull RequestType type) {
             mRequest = request;
             mHelper = helper;
             mType = type;
         }
-
         @Override
         public void run() {
             mRequest.run(new Request.Callback(this, mHelper));
         }
-
         void retry(Executor service) {
             service.execute(new Runnable() {
                 @Override
@@ -293,7 +268,6 @@ public class PagingRequestHelper {
             });
         }
     }
-
     /**
      * Runner class that runs a request tracked by the {@link PagingRequestHelper}.
      * <p>
@@ -311,7 +285,6 @@ public class PagingRequestHelper {
          * @param callback The callback that should be invoked with the result.
          */
         void run(Callback callback);
-
         /**
          * Callback class provided to the {@link #run(Callback)} method to report the result.
          */
@@ -319,12 +292,10 @@ public class PagingRequestHelper {
             private final AtomicBoolean mCalled = new AtomicBoolean();
             private final RequestWrapper mWrapper;
             private final PagingRequestHelper mHelper;
-
             Callback(RequestWrapper wrapper, PagingRequestHelper helper) {
                 mWrapper = wrapper;
                 mHelper = helper;
             }
-
             /**
              * Call this method when the request succeeds and new data is fetched.
              */
@@ -337,7 +308,6 @@ public class PagingRequestHelper {
                             "already called recordSuccess or recordFailure");
                 }
             }
-
             /**
              * Call this method with the failure message and the request can be retried via
              * {@link #retryAllFailed()}.
@@ -360,7 +330,6 @@ public class PagingRequestHelper {
             }
         }
     }
-
     /**
      * Data class that holds the information about the current status of the ongoing requests
      * using this helper.
@@ -383,7 +352,6 @@ public class PagingRequestHelper {
         public final Status after;
         @NonNull
         private final Throwable[] mErrors;
-
         StatusReport(@NonNull Status initial, @NonNull Status before, @NonNull Status after,
                      @NonNull Throwable[] errors) {
             this.initial = initial;
@@ -391,7 +359,6 @@ public class PagingRequestHelper {
             this.after = after;
             this.mErrors = errors;
         }
-
         /**
          * Convenience method to check if there are any running requests.
          *
@@ -402,7 +369,6 @@ public class PagingRequestHelper {
                     || before == Status.RUNNING
                     || after == Status.RUNNING;
         }
-
         /**
          * Convenience method to check if there are any requests that resulted in an error.
          *
@@ -413,7 +379,6 @@ public class PagingRequestHelper {
                     || before == Status.FAILED
                     || after == Status.FAILED;
         }
-
         /**
          * Returns the error for the given request type.
          *
@@ -425,7 +390,6 @@ public class PagingRequestHelper {
         public Throwable getErrorFor(@NonNull RequestType type) {
             return mErrors[type.ordinal()];
         }
-
         @Override
         public String toString() {
             return "StatusReport{"
@@ -435,7 +399,6 @@ public class PagingRequestHelper {
                     + ", mErrors=" + Arrays.toString(mErrors)
                     + '}';
         }
-
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -447,7 +410,6 @@ public class PagingRequestHelper {
             // Probably incorrect - comparing Object[] arrays with Arrays.equals
             return Arrays.equals(mErrors, that.mErrors);
         }
-
         @Override
         public int hashCode() {
             int result = initial.hashCode();
@@ -457,7 +419,6 @@ public class PagingRequestHelper {
             return result;
         }
     }
-
     /**
      * Listener interface to get notified by request status changes.
      */
@@ -469,7 +430,6 @@ public class PagingRequestHelper {
          */
         void onStatusChange(@NonNull StatusReport report);
     }
-
     /**
      * Represents the status of a Request for each {@link RequestType}.
      */
@@ -487,7 +447,6 @@ public class PagingRequestHelper {
          */
         FAILED
     }
-
     /**
      * Available request types.
      */
@@ -510,7 +469,6 @@ public class PagingRequestHelper {
          */
         AFTER
     }
-
     class RequestQueue {
         @NonNull
         final RequestType mRequestType;
@@ -522,7 +480,6 @@ public class PagingRequestHelper {
         Throwable mLastError;
         @NonNull
         Status mStatus = Status.SUCCESS;
-
         RequestQueue(@NonNull RequestType requestType) {
             mRequestType = requestType;
         }

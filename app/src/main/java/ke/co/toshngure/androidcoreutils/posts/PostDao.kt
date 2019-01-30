@@ -7,7 +7,7 @@ import ke.co.toshngure.basecode.dataloading.data.ItemDao
 @Dao
 interface PostDao : ItemDao<Post> {
 
-    @Query("SELECT * FROM posts ORDER BY update_time DESC")
+    @Query("SELECT * FROM posts ORDER BY id ASC")
     fun getAllPaged(): DataSource.Factory<Int, Post>
 
     @Query("DELETE FROM posts")
