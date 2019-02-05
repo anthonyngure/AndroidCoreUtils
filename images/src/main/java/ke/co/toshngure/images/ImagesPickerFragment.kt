@@ -25,8 +25,8 @@ import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.util.GridSpacingItemDecoration
 import ke.co.toshngure.basecode.util.Spanny
 import ke.co.toshngure.images.activity.CameraActivity
+import ke.co.toshngure.images.data.Image
 import ke.co.toshngure.images.data.ImagesViewModel
-import ke.co.toshngure.images.model.Image
 import ke.co.toshngure.pennycharm.core.GlideApp
 import ke.co.toshngure.pennycharm.core.GlideRequests
 import ke.co.toshngure.views.media.NetworkImage
@@ -38,7 +38,7 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
     private val mPickedImagesListAdapter = PickedImagesListAdapter()
     private lateinit var mImageViewModel: ImagesViewModel
     private lateinit var mImagesListAdapter: ImagesListAdapter
-    private lateinit var mPickedImageList: MutableList<Image>
+    private val mPickedImageList: MutableList<Image> = mutableListOf()
     private lateinit var mGlideRequests: GlideRequests
     private var mDoneMenuItem: MenuItem? = null
 
@@ -90,10 +90,6 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
         pickedImagesRV.layoutManager = layoutManager
         pickedImagesRV.adapter = mPickedImagesListAdapter
 
-        // Get draft images and notify adapter
-        mPickedImageList = getCachedSelection()
-        mPickedImagesListAdapter.notifyDataSetChanged()
-
         val imagesLayoutManager = GridLayoutManager(imagesRV.context, 4)
         imagesRV.layoutManager = imagesLayoutManager
         imagesRV.addItemDecoration(GridSpacingItemDecoration(4, 2, false))
@@ -112,12 +108,6 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
 
 
         cameraIV.setOnClickListener {
-            /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val imageFile = File(it.context.cacheDir, "camera_" + SystemClock.elapsedRealtime())
-            val uri = Uri.fromFile(imageFile)
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
-            startActivityForResult(intent, maximumImages() + 1)*/
-
             val intent = Intent(context, CameraActivity::class.java)
             startActivityWithPermissionsCheck(intent, maximumImages() + 1, Manifest.permission.CAMERA)
         }
@@ -146,6 +136,7 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
 
     override fun onStart() {
         super.onStart()
+
         mImageViewModel = getViewModel()
 
         mImageViewModel.imagesList.observe(this, Observer { list ->
@@ -171,10 +162,6 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
 
     protected open fun multipleImages(): Boolean {
         return true
-    }
-
-    protected open fun getCachedSelection(): MutableList<Image> {
-        return mutableListOf()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -212,7 +199,6 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
         super.onPrepareOptionsMenu(menu)
         menu.findItem(R.id.action_skip)?.isVisible = skipButtonEnable()
         mDoneMenuItem = menu.findItem(R.id.action_done)
-        mDoneMenuItem?.isVisible = getCachedSelection().size > 0
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -229,6 +215,12 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
                 super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    private fun removePickedImage(image: Image) {
+        mPickedImageList.remove(image)
+        mDoneMenuItem?.isVisible = mPickedImageList.size > 0
+        mPickedImagesListAdapter.notifyDataSetChanged()
     }
 
     private inner class PickedImagesListAdapter :
@@ -282,11 +274,6 @@ open class ImagesPickerFragment<D> : BaseAppFragment<D>() {
 
     }
 
-    private fun removePickedImage(image: Image) {
-        mPickedImageList.remove(image)
-        mDoneMenuItem?.isVisible = mPickedImageList.size > 0
-        mPickedImagesListAdapter.notifyDataSetChanged()
-    }
 
     private inner class ImagesListAdapter(diffCallback: DiffUtil.ItemCallback<Image>) :
         PagedListAdapter<Image, ImagesListAdapter.ImageSelectionViewHolder>(diffCallback) {

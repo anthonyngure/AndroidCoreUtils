@@ -7,7 +7,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import ke.co.toshngure.images.model.Image
 
 class ImagesViewModel(private val context: Context) : ViewModel() {
 

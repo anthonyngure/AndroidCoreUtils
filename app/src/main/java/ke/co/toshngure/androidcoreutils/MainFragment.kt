@@ -1,13 +1,14 @@
 package ke.co.toshngure.androidcoreutils
 
 import android.Manifest
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.basecode.app.BaseAppFragment
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class MainFragment : BaseAppFragment<Any>() {
 
@@ -32,6 +33,14 @@ class MainFragment : BaseAppFragment<Any>() {
                 R.id.testImagesPickerFragment, null,
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
+        }
+
+        clearFab.setOnClickListener {
+            runBlocking(Dispatchers.IO) {
+                AppDatabase.getInstance().clearAllTables()
+
+                SyncStatesDatabase.getInstance().clearAllTables()
+            }
         }
     }
 

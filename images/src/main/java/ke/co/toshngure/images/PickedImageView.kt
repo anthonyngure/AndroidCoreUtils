@@ -9,7 +9,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.yalantis.ucrop.UCrop
-import ke.co.toshngure.images.model.Image
+import ke.co.toshngure.images.data.Image
 import ke.co.toshngure.pennycharm.core.GlideRequests
 import kotlinx.android.synthetic.main.view_picked_image.view.*
 import java.io.File
@@ -33,36 +33,38 @@ class PickedImageView @JvmOverloads constructor(context: Context, attrs: Attribu
      * The image displayPosition is used to determin which image to update after cropping
      * If cropped image uri is not empty we init the cropped uri else we init the MediaStore uri
      */
-    fun setImage(image: Image, glideRequests: GlideRequests, fragment: Fragment,
-                 position: Int, removeCall: (image: Image) -> Unit) {
+    fun setImage(
+        image: Image, glideRequests: GlideRequests, fragment: Fragment,
+        position: Int, removeCall: (image: Image) -> Unit
+    ) {
+
         image.displayPosition = position
-        val uri = image.croppedUri?.let { it } ?: image.uri
-        if (image.fromNetwork){
-            imageNI.loadImageFromNetwork(image.path, glideRequests)
-        } else {
-            imageNI.loadImageFromMediaStore(uri, glideRequests)
-        }
+
+        val path = image.croppedPath?.let { it } ?: image.path
+
+        imageNI.loadImageFromMediaStore(path, glideRequests)
+
         removeBtn.setOnClickListener {
             removeCall(image)
         }
-        uri?.let {
-            setOnClickListener {
-                val destinationUri = Uri.fromFile(File(context.cacheDir, "cropped_" + SystemClock.elapsedRealtime() + ".jpg"))
-                context?.let { ctx ->
-                    val options = UCrop.Options()
-                    options.setToolbarWidgetColor(ContextCompat.getColor(ctx, R.color.colorAccent))
-                    options.setStatusBarColor(ContextCompat.getColor(ctx, R.color.colorAccent))
-                    options.setToolbarColor(ContextCompat.getColor(ctx, R.color.colorPrimary))
-                    options.setToolbarCropDrawable(R.drawable.ic_done_black_24dp)
-                    options.setToolbarCancelDrawable(R.drawable.ic_clear_black_24dp)
-                    options.setShowCropFrame(true)
-                    options.setShowCropGrid(true)
-                    UCrop.of(uri, destinationUri)
-                            .withOptions(options)
-                            .withAspectRatio(1f, 1f)
-                            .withMaxResultSize(612, 612)
-                            .start(ctx, fragment, image.displayPosition)
-                }
+
+        setOnClickListener {
+            val destinationUri =
+                Uri.fromFile(File(context.cacheDir, "cropped_" + SystemClock.elapsedRealtime() + ".jpg"))
+            context?.let { ctx ->
+                val options = UCrop.Options()
+                options.setToolbarWidgetColor(ContextCompat.getColor(ctx, R.color.colorAccent))
+                options.setStatusBarColor(ContextCompat.getColor(ctx, R.color.colorAccent))
+                options.setToolbarColor(ContextCompat.getColor(ctx, R.color.colorPrimary))
+                options.setToolbarCropDrawable(R.drawable.ic_done_black_24dp)
+                options.setToolbarCancelDrawable(R.drawable.ic_clear_black_24dp)
+                options.setShowCropFrame(true)
+                options.setShowCropGrid(true)
+                UCrop.of(Uri.fromFile(File(path)), destinationUri)
+                    .withOptions(options)
+                    .withAspectRatio(1f, 1f)
+                    .withMaxResultSize(612, 612)
+                    .start(ctx, fragment, image.displayPosition)
             }
         }
     }

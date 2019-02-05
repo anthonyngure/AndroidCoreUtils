@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.net.Uri
 import android.provider.MediaStore
 import androidx.annotation.Nullable
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.paging.PositionalDataSource
 import ke.co.toshngure.images.ImagesPickerFragment
-import ke.co.toshngure.images.model.Image
 import java.io.File
 
 class ImagesDataSource(private val bucket: String? = null, private val context: Context) : PositionalDataSource<Image>() {
@@ -76,9 +74,11 @@ class ImagesDataSource(private val bucket: String? = null, private val context: 
 
                     val file = makeSafeFile(path)
                     if (file != null && file.exists() && !file.isHidden) {
-                        val image = Image(id, name, path, bucket, Uri.fromFile(file))
-                        // Add to all folders
+                        val image = Image(id =id, name = name, path = path, bucket = bucket)
+                        //Add to all folders
                         images.add(image)
+
+                        // ImagesDatabase.getInstance().images().insert(image)
                     }
                 } while (c.moveToPrevious())
 
