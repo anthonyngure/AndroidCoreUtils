@@ -12,7 +12,6 @@ object NetworkUtils {
     interface Callback {
         fun onAuthError(statusCode: Int)
         fun getAuthToken() : String?
-        fun getContext() : Context
     }
 
     private var mClientInstance: OkHttpClient? = null
@@ -33,7 +32,6 @@ object NetworkUtils {
         return OkHttpClient.Builder()
 
             .addInterceptor(logger)
-            .addInterceptor(ChuckInterceptor(callback?.getContext()?.applicationContext))
 
             // Add an Interceptor to the OkHttpClient.
             .addInterceptor { chain ->
