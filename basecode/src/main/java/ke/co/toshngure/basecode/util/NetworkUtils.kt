@@ -11,7 +11,7 @@ object NetworkUtils {
 
     interface Callback {
         fun onAuthError(statusCode: Int)
-        fun getAuthToken() : String
+        fun getAuthToken() : String?
         fun getContext() : Context
     }
 
