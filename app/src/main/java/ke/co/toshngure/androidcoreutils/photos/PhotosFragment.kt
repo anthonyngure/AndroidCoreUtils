@@ -11,8 +11,6 @@ import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 class PhotosFragment : PagingFragment<Photo, Photo>() {
 
 
-
-
     override fun getConfig(): PagingFragmentConfig<Photo, Photo> =
         PagingFragmentConfig(
             layoutRes = R.layout.item_photo,
