@@ -84,9 +84,10 @@ internal class SyncStateHelper<Model, LoadedModel>(private val repository: ItemR
 
     @WorkerThread
     internal fun loadSyncState(): SyncState {
-        var syncState = SyncStatesDatabase.getInstance().syncStates().findByModel(repository.getSyncId())
+        val syncId = repository.mItemRepositoryConfig.syncClass.simpleName
+        var syncState = SyncStatesDatabase.getInstance().syncStates().findByModel(syncId)
         if (syncState == null) {
-            syncState = SyncState(repository.getSyncId(), status = SyncStatus.LOADED.value)
+            syncState = SyncState(syncId, status = SyncStatus.LOADED.value)
             SyncStatesDatabase.getInstance().syncStates().insert(syncState)
         }
         return syncState

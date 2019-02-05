@@ -42,7 +42,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         mItemAtEndId = repository.getItemId(itemAtEnd)
         BeeLog.i(TAG, "onItemAtEndLoaded, id = $mItemAtEndId")
         // BeeLog.i(TAG, "onItemAtEndLoaded, isRunning = " + helper.isRunning(PagingRequestHelper.RequestType.AFTER))
-        if (repository.getDataLoadingConfig().paginates) {
+        if (repository.getItemRepositoryConfig().paginates) {
             //When the last item is loaded we will request more data from network if the repo paginates
             syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
                 repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())

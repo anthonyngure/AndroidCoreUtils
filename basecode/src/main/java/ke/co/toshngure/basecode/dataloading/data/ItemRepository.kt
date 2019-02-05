@@ -5,15 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.room.RoomDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 
 
-abstract class ItemRepository<Model, LoadedModel> constructor(val db: RoomDatabase) {
+abstract class ItemRepository<Model, LoadedModel> {
 
     private lateinit var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>
+
+    internal val mItemRepositoryConfig  = this.getItemRepositoryConfig()
+
 
     /**
      * Inserts the response into the database.
@@ -22,7 +24,7 @@ abstract class ItemRepository<Model, LoadedModel> constructor(val db: RoomDataba
      */
     internal fun insertItemsIntoDb(items: List<Model>) {
         runBlocking(Dispatchers.IO) {
-            db.runInTransaction { save(items) }
+            mItemRepositoryConfig.db.runInTransaction { save(items) }
         }
     }
 
@@ -59,14 +61,14 @@ abstract class ItemRepository<Model, LoadedModel> constructor(val db: RoomDataba
     fun list(): LiveData<PagedList<LoadedModel>> {
 
         //Get config
-        val dataLoadingConfig = getDataLoadingConfig()
+        val dataLoadingConfig = getItemRepositoryConfig()
 
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
         mBoundaryCallback = ItemBoundaryCallback(this)
 
         // create a data source factory from Room
-        val dataSourceFactory = index()
+        val dataSourceFactory = mItemRepositoryConfig.dataSourceFactory
 
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(true)
@@ -83,17 +85,12 @@ abstract class ItemRepository<Model, LoadedModel> constructor(val db: RoomDataba
 
     abstract fun getAPICall(before: Long, after: Long): Call<List<Model>>
 
-    /**
-     * Get a paged data source factory
-     */
-    protected abstract fun index(): DataSource.Factory<Int, LoadedModel>
-
 
     /**
      * To save items into the db, called inside a transaction in background
      */
     protected open fun save(items: List<Model>) {
-        getDao().insert(items)
+        mItemRepositoryConfig.itemDao.insert(items)
     }
 
     /**
@@ -107,31 +104,15 @@ abstract class ItemRepository<Model, LoadedModel> constructor(val db: RoomDataba
      */
     open fun clear() {
         runBlocking(Dispatchers.IO) {
-            db.runInTransaction { deleteAll() }
+            mItemRepositoryConfig.db.runInTransaction { deleteAll() }
         }
     }
 
     /**
      * To get id of an item
      */
-    protected abstract fun getDao(): ItemDao<Model>
-
-    /**
-     * To get id of an item
-     */
     abstract fun getItemId(item: LoadedModel): Long
 
-    abstract fun getSyncClass(): Class<Model>
 
-    /**
-     * To delete all cached items, called inside a transaction in background
-     */
-    internal fun getSyncId(): String {
-        return getSyncClass().simpleName
-    }
-
-
-    internal open fun getDataLoadingConfig(): DataLoadingConfig {
-        return DataLoadingConfig()
-    }
+    abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model, LoadedModel>
 }

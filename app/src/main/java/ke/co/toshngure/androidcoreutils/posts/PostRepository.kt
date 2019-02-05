@@ -5,17 +5,12 @@ import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
+import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
 import retrofit2.Call
 
-class PostRepository() : ItemRepository<Post, Post>(AppDatabase.getInstance()) {
+class PostRepository() : ItemRepository<Post, Post>() {
 
-    override fun getDao(): ItemDao<Post> {
-        return AppDatabase.getInstance().posts()
-    }
 
-    override fun index(): DataSource.Factory<Int, Post> {
-        return  AppDatabase.getInstance().posts().getAllPaged()
-    }
 
 
     override fun getItemId(item: Post): Long {
@@ -30,7 +25,13 @@ class PostRepository() : ItemRepository<Post, Post>(AppDatabase.getInstance()) {
         AppDatabase.getInstance().posts().deleteAll()
     }
 
-    override fun getSyncClass(): Class<Post> {
-        return Post::class.java
+
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Post, Post> {
+        return ItemRepositoryConfig(
+            syncClass = Post::class.java,
+            dataSourceFactory = AppDatabase.getInstance().posts().getAllPaged(),
+            itemDao = AppDatabase.getInstance().posts(),
+            db = AppDatabase.getInstance()
+        )
     }
 }

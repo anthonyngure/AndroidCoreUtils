@@ -3,18 +3,13 @@ package ke.co.toshngure.androidcoreutils.photos
 import androidx.paging.DataSource
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.albums.Album
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
+import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
 import retrofit2.Call
 
-class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(AppDatabase.getInstance()) {
-
-    override fun getDao(): ItemDao<Photo> {
-        return AppDatabase.getInstance().photos()
-    }
-
-    override fun index(): DataSource.Factory<Int, Photo> =
-        AppDatabase.getInstance().photos().getAllPaged(albumId)
+class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>() {
 
 
     override fun getItemId(item: Photo): Long {
@@ -25,7 +20,12 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
         return ApiService.getTypicodeInstance().photos(albumId, before)
     }
 
-    override fun getSyncClass(): Class<Photo> {
-        return Photo::class.java
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Photo,Photo> {
+        return ItemRepositoryConfig(
+            syncClass = Photo::class.java,
+            itemDao = AppDatabase.getInstance().photos(),
+            db = AppDatabase.getInstance(),
+            dataSourceFactory = AppDatabase.getInstance().photos().getAllPaged(albumId)
+        )
     }
 }

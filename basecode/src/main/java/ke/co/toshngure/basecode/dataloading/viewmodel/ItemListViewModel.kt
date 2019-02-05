@@ -25,6 +25,6 @@ class ItemListViewModel<Model, ModelListing> : ViewModel() {
 
     fun init(repository: ItemRepository<Model, ModelListing>) {
         this.repository.value = repository
-        this.syncClass.value = repository.getSyncClass()
+        this.syncClass.value = repository.mItemRepositoryConfig.syncClass
     }
 }
