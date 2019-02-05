@@ -2,11 +2,11 @@ package ke.co.toshngure.androidcoreutils.posts
 
 import android.view.View
 import ke.co.toshngure.androidcoreutils.R
+import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.pennycharm.core.GlideApp
 
 class PostsFragment : PagingFragment<Post, Post>() {
 

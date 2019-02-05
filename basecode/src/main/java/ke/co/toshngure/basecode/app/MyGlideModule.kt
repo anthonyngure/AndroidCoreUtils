@@ -1,4 +1,4 @@
-package ke.co.toshngure.pennycharm.core
+package ke.co.toshngure.basecode.app
 
 import android.content.Context
 import com.bumptech.glide.Glide

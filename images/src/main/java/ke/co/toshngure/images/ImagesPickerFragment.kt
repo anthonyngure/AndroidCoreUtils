@@ -22,13 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yalantis.ucrop.UCrop
 import ke.co.toshngure.basecode.app.BaseAppFragment
+import ke.co.toshngure.basecode.app.GlideApp
+import ke.co.toshngure.basecode.app.GlideRequests
 import ke.co.toshngure.basecode.dataloading.util.GridSpacingItemDecoration
 import ke.co.toshngure.basecode.util.Spanny
 import ke.co.toshngure.images.activity.CameraActivity
 import ke.co.toshngure.images.data.Image
 import ke.co.toshngure.images.data.ImagesViewModel
-import ke.co.toshngure.pennycharm.core.GlideApp
-import ke.co.toshngure.pennycharm.core.GlideRequests
 import ke.co.toshngure.views.media.NetworkImage
 import kotlinx.android.synthetic.main.fragment_images_picker.*
 

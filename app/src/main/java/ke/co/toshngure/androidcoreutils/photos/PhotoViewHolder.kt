@@ -1,9 +1,9 @@
 package ke.co.toshngure.androidcoreutils.photos
 
 import android.view.View
+import ke.co.toshngure.basecode.app.GlideRequests
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.util.Spanny
-import ke.co.toshngure.pennycharm.core.GlideRequests
 import kotlinx.android.synthetic.main.item_photo.view.*
 
 class PhotoViewHolder(itemView: View, private val glide: GlideRequests) : BaseItemViewHolder<Photo>(itemView) {

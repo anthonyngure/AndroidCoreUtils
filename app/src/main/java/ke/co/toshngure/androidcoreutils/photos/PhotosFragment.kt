@@ -1,14 +1,12 @@
 package ke.co.toshngure.androidcoreutils.photos
 
 import android.view.View
-import androidx.recyclerview.widget.DiffUtil
 import ke.co.toshngure.androidcoreutils.Extras
 import ke.co.toshngure.androidcoreutils.R
+import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.pennycharm.core.GlideApp
 
 class PhotosFragment : PagingFragment<Photo, Photo>() {
 

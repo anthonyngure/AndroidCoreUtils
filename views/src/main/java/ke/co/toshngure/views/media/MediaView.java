@@ -26,8 +26,8 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import ke.co.toshngure.basecode.app.GlideRequests;
 import ke.co.toshngure.views.R;
-import ke.co.toshngure.pennycharm.core.GlideRequests;
 
 public class MediaView extends ViewGroup implements View.OnClickListener {
 

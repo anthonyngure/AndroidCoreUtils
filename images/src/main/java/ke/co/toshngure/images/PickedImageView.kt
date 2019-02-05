@@ -9,8 +9,8 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.yalantis.ucrop.UCrop
+import ke.co.toshngure.basecode.app.GlideRequests
 import ke.co.toshngure.images.data.Image
-import ke.co.toshngure.pennycharm.core.GlideRequests
 import kotlinx.android.synthetic.main.view_picked_image.view.*
 import java.io.File
 

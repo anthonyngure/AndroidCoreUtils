@@ -17,13 +17,13 @@ object NetworkUtils {
 
     private var mClientInstance: OkHttpClient? = null
 
-    fun getClientInstance(callback: Callback): OkHttpClient {
+    fun getClientInstance(callback: Callback? = null): OkHttpClient {
         return mClientInstance ?: synchronized(this) {
             mClientInstance ?: buildClient(callback).also { mClientInstance = it }
         }
     }
 
-    private fun buildClient(callback: Callback): OkHttpClient {
+    private fun buildClient(callback: Callback? = null): OkHttpClient {
         val logger = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
             BeeLog.i("OkHttpClient", it)
         })
@@ -33,7 +33,7 @@ object NetworkUtils {
         return OkHttpClient.Builder()
 
             .addInterceptor(logger)
-            .addInterceptor(ChuckInterceptor(callback.getContext().applicationContext))
+            .addInterceptor(ChuckInterceptor(callback?.getContext()?.applicationContext))
 
             // Add an Interceptor to the OkHttpClient.
             .addInterceptor { chain ->
@@ -44,7 +44,7 @@ object NetworkUtils {
                 val request = original.newBuilder()
                     .method(original.method(), original.body())
                     .header("Accept", "application/json")
-                    .header("Authorization", "Bearer ${callback.getAuthToken()}")
+                    .header("Authorization", "Bearer ${callback?.getAuthToken()}")
 
                 // Add the modified request to the chain.
                 val response = chain.proceed(request.build())
@@ -52,7 +52,7 @@ object NetworkUtils {
 
                 if (response.code() == 401 || response.code() == 403) {
                     mClientInstance?.dispatcher()?.cancelAll()
-                    callback.onAuthError(response.code())
+                    callback?.onAuthError(response.code())
                 }
 
                 response
