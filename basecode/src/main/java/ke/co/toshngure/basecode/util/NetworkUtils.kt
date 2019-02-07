@@ -49,8 +49,8 @@ object NetworkUtils {
 
 
                 if (response.code() == 401 || response.code() == 403) {
-                    mClientInstance?.dispatcher()?.cancelAll()
                     callback?.onAuthError(response.code())
+                    mClientInstance?.dispatcher()?.cancelAll()
                 }
 
                 response
