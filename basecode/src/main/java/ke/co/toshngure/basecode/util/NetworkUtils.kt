@@ -15,8 +15,12 @@ object NetworkUtils {
     }
 
     private var mClientInstance: OkHttpClient? = null
+    private var mCallback: Callback? = null
 
     fun getClientInstance(callback: Callback? = null): OkHttpClient {
+        if (callback != mCallback){
+            mClientInstance = null
+        }
         return mClientInstance ?: synchronized(this) {
             mClientInstance ?: buildClient(callback).also { mClientInstance = it }
         }
