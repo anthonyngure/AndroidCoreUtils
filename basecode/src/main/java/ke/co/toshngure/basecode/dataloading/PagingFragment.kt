@@ -30,6 +30,7 @@ abstract class PagingFragment<Model, LoadedModel> : BaseAppFragment<Any>() {
     private lateinit var mItemListViewModel: ItemListViewModel<Model, LoadedModel>
     private lateinit var mConfig: PagingFragmentConfig<Model, LoadedModel>
     private lateinit var mItemRepository: ItemRepository<Model, LoadedModel>
+    protected lateinit var mAdapter: ItemsAdapter<LoadedModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,16 +67,16 @@ abstract class PagingFragment<Model, LoadedModel> : BaseAppFragment<Any>() {
         @Suppress("UNCHECKED_CAST")
         mItemListViewModel = getViewModel() as ItemListViewModel<Model, LoadedModel>
 
-        val adapter = ItemsAdapter(
+        mAdapter = ItemsAdapter(
             mConfig.diffUtilItemCallback, mConfig.layoutRes, this::retry,
             this::createItemViewHolder, mConfig.itemClickListener
         )
 
-        listRV.adapter = adapter
+        listRV.adapter = mAdapter
 
         mItemListViewModel.syncState.observe(this, Observer {
 
-            adapter.setSyncState(it)
+            mAdapter.setSyncState(it)
 
             syncingProgressBar.hide()
 
@@ -129,13 +130,14 @@ abstract class PagingFragment<Model, LoadedModel> : BaseAppFragment<Any>() {
                     SyncStatus.REFRESHING_FAILED -> {
                         swipeRefreshLayout.isRefreshing = false
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             } ?: loadingLayout.show()
         })
 
         mItemListViewModel.items.observe(this, Observer {
-            adapter.submitList(it)
+            mAdapter.submitList(it)
         })
 
         mItemListViewModel.init(mItemRepository)

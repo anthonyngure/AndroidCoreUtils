@@ -8,7 +8,6 @@
 
 package ke.co.toshngure.basecode.app
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
@@ -32,8 +31,11 @@ import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
+import ke.co.toshngure.basecode.extensions.hide
+import ke.co.toshngure.basecode.extensions.show
 import ke.co.toshngure.basecode.logging.BeeLog
 import kotlinx.android.synthetic.main.fragment_base.*
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,11 +72,12 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadingLayout.visibility = View.GONE
+        loadingLayout.hide()
         onSetUpCollapsibleView(collapsibleViewContainer)
         initSwipeToRefresh()
         onSetUpTopView(topViewContainer)
         onSetUpContentView(contentViewContainer)
+        onSetUpBottomView(bottomViewContainer)
     }
 
 
@@ -108,6 +111,8 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
+    protected open fun onSetUpBottomView(container: FrameLayout) {}
+
 
     fun toast(message: Any) {
 
@@ -131,9 +136,7 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     protected fun makeRequest() {
         getApiCall()?.let { call ->
-            loadingLayout.visibility = View.VISIBLE
-            loadingProgressBar.visibility = View.VISIBLE
-            loadingMessageTV.setText(R.string.message_waiting)
+            loadingLayout.show()
             val callback = CancelableCallback()
             call.enqueue(callback)
             mActiveRetrofitCallback = callback
@@ -159,7 +162,6 @@ abstract class BaseAppFragment<D> : Fragment() {
             BeeLog.e(TAG, t)
             if (!canceled) {
                 mActiveRetrofitCallback = null
-                loadingProgressBar.visibility = View.GONE
                 if (BeeLog.DEBUG) {
                     showNetworkErrorDialog(t.message)
                 } else {
@@ -168,17 +170,15 @@ abstract class BaseAppFragment<D> : Fragment() {
             }
         }
 
-        @SuppressLint("SetTextI18n")
         override fun onResponse(call: Call<D>, response: Response<D>) {
             BeeLog.e(TAG, "onResponse, $response")
+            loadingLayout.hide()
             if (!canceled) {
                 mActiveRetrofitCallback = null
-                loadingProgressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val body: D? = response.body()
                     when {
                         body != null -> {
-                            loadingLayout.visibility = View.GONE
                             DataHandlerTask(
                                 this@BaseAppFragment::processDataInBackground,
                                 this@BaseAppFragment::onDataReady
@@ -196,15 +196,14 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
     private fun getErrorMessage(response: Response<D>): String {
-        // All errors will come with status code 400
-        if (response.code() == 400) {
-            val errorBody = response.errorBody()
-            errorBody?.let {
-                val apiError = Gson().fromJson(it.string(), ApiError::class.java)
-                return apiError.message
-            } ?: response.message()
-        }
-        return response.message()
+        val errorBody = response.errorBody()
+        return errorBody?.let {
+             getErrorMessageFromResponseBody(response.code(), it)
+        } ?: response.message()
+    }
+
+    protected open fun getErrorMessageFromResponseBody(statusCode: Int, data: ResponseBody): String {
+        return getString(R.string.message_connection_error)
     }
 
     protected open fun processDataInBackground(data: D): D {
@@ -240,8 +239,9 @@ abstract class BaseAppFragment<D> : Fragment() {
             AlertDialog.Builder(it)
                 .setMessage(message ?: getString(R.string.message_connection_error))
                 .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
-                .setNegativeButton(R.string.cancel) { _, _ -> }
-                .show()
+                .setNegativeButton(R.string.cancel) { _, _ ->
+
+                }.show()
         }
     }
 
