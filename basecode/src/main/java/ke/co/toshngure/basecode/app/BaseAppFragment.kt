@@ -256,29 +256,29 @@ abstract class BaseAppFragment<D> : Fragment() {
         }
     }
 
-    protected fun showErrorSnack(@StringRes msg: Int) {
+    fun showErrorSnack(@StringRes msg: Int) {
         showErrorSnack(getString(msg))
     }
 
-    protected fun navigateWithPermissionsCheck(directions: NavDirections, vararg permissions: String) {
+    fun navigateWithPermissionsCheck(directions: NavDirections, vararg permissions: String) {
         navigateWithPermissionsCheck(*permissions, navigationAction = {
             view?.findNavController()?.navigate(directions, defaultNavOptions())
         })
     }
 
-    protected fun navigateWithPermissionsCheck(@IdRes resId: Int, args: Bundle? = null, vararg permissions: String) {
+    fun navigateWithPermissionsCheck(@IdRes resId: Int, args: Bundle? = null, vararg permissions: String) {
         navigateWithPermissionsCheck(*permissions, navigationAction = {
             view?.findNavController()?.navigate(resId, args, defaultNavOptions())
         })
     }
 
-    protected fun startActivityWithPermissionsCheck(intent: Intent, vararg permissions: String) {
+    fun startActivityWithPermissionsCheck(intent: Intent, vararg permissions: String) {
         navigateWithPermissionsCheck(*permissions, navigationAction = {
             startActivity(intent)
         })
     }
 
-    protected fun startActivityWithPermissionsCheck(intent: Intent, requestCode: Int, vararg permissions: String) {
+    fun startActivityWithPermissionsCheck(intent: Intent, requestCode: Int, vararg permissions: String) {
         navigateWithPermissionsCheck(*permissions, navigationAction = {
             startActivityForResult(intent, requestCode)
         })
