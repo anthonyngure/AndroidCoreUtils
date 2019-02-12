@@ -258,6 +258,7 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     fun showErrorSnack(@StringRes msg: Int) {
         showErrorSnack(getString(msg))
+
     }
 
     fun navigateWithPermissionsCheck(directions: NavDirections, vararg permissions: String) {
