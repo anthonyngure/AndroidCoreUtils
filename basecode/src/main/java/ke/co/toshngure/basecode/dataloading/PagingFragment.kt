@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 import kotlinx.android.synthetic.main.fragment_base.*
 
 
-abstract class PagingFragment<Model, LoadedModel> : BaseAppFragment<Any>() {
+abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
     private lateinit var mItemListViewModel: ItemListViewModel<Model, LoadedModel>
     private lateinit var mConfig: PagingFragmentConfig<Model, LoadedModel>
