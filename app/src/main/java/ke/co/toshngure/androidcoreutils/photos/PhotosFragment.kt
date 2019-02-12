@@ -8,7 +8,7 @@ import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 
-class PhotosFragment : PagingFragment<Photo, Photo>() {
+class PhotosFragment : PagingFragment<Photo, Photo,Any>() {
 
 
     override fun getConfig(): PagingFragmentConfig<Photo, Photo> =

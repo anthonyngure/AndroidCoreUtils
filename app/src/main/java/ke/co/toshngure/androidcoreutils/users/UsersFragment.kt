@@ -8,7 +8,7 @@ import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 
-class UsersFragment : PagingFragment<User, User>(), ItemsAdapter.OnItemClickListener<User> {
+class UsersFragment : PagingFragment<User, User, Any>(), ItemsAdapter.OnItemClickListener<User> {
 
     override fun onClick(item: User) {
         toast(item.name)

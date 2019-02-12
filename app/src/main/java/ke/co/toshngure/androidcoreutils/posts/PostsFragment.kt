@@ -8,7 +8,7 @@ import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 
-class PostsFragment : PagingFragment<Post, Post>() {
+class PostsFragment : PagingFragment<Post, Post,Any>() {
 
     override fun getConfig(): PagingFragmentConfig<Post, Post> {
         return PagingFragmentConfig(

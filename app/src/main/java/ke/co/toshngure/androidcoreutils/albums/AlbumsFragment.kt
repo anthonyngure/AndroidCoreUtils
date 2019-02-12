@@ -10,7 +10,7 @@ import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.extensions.navigate
 
-class AlbumsFragment : PagingFragment<Album, Album>(), ItemsAdapter.OnItemClickListener<Album> {
+class AlbumsFragment : PagingFragment<Album, Album,Any>(), ItemsAdapter.OnItemClickListener<Album> {
 
     override fun onClick(item: Album) {
         val args = Bundle()
