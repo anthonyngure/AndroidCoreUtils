@@ -6,6 +6,7 @@ import androidx.paging.PagedList
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.util.NetworkUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
@@ -13,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) :
-    PagedList.BoundaryCallback<LoadedModel>() {
+        PagedList.BoundaryCallback<LoadedModel>() {
 
     private var mItemAtEndId = 0L
     internal val syncStateHelper = SyncStateHelper(repository)
@@ -26,9 +27,14 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
     override fun onZeroItemsLoaded() {
         super.onZeroItemsLoaded()
         BeeLog.i(TAG, "onZeroItemsLoaded")
-        syncStateHelper.recordStatus(SyncStatus.LOADED)
-        syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
-            repository.getAPICall(0, 0).enqueue(createCallback())
+        if (repository.mItemRepositoryConfig.connects) {
+            syncStateHelper.recordStatus(SyncStatus.LOADED)
+            syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
+                repository.getAPICall(0, 0).enqueue(createCallback())
+            }
+        } else {
+            BeeLog.i(TAG, "onZeroItemsLoaded, connection is disabled!")
+            syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
         }
     }
 
@@ -42,7 +48,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         mItemAtEndId = repository.getItemId(itemAtEnd)
         BeeLog.i(TAG, "onItemAtEndLoaded, id = $mItemAtEndId")
         // BeeLog.i(TAG, "onItemAtEndLoaded, isRunning = " + helper.isRunning(PagingRequestHelper.RequestType.AFTER))
-        if (repository.getItemRepositoryConfig().paginates) {
+        if (repository.mItemRepositoryConfig.paginates) {
             //When the last item is loaded we will request more data from network if the repo paginates
             syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
                 repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())
@@ -77,7 +83,12 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                         syncStateHelper.recordStatus(SyncStatus.LOADED)
                     }
                 } else {
-                    syncStateHelper.recordFailure(response.message())
+                    val errorBody = response.errorBody()
+                    errorBody?.let {
+                        val errorMessage = NetworkUtils.getCallback()
+                                .getErrorMessageFromResponseBody(response.code(), it)
+                        syncStateHelper.recordFailure(errorMessage)
+                    } ?: syncStateHelper.recordFailure(response.message())
                 }
             }
         }
@@ -112,8 +123,14 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
             when (syncStatus) {
                 SyncStatus.LOADING_INITIAL_EXHAUSTED,
                 SyncStatus.LOADING_INITIAL_FAILED -> {
-                    syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
-                        repository.getAPICall(0, 0).enqueue(createCallback())
+                    // If it does not connect, just ignore the retry
+                    if (repository.mItemRepositoryConfig.connects){
+                        syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
+                            repository.getAPICall(0, 0).enqueue(createCallback())
+                        }
+                    } else {
+                        BeeLog.i(TAG, "retry, connection is disabled!")
+                        syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
                     }
                 }
                 SyncStatus.LOADING_BEFORE_FAILED,

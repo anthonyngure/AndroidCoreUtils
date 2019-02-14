@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import ke.co.toshngure.basecode.extensions.hide
+import ke.co.toshngure.basecode.util.Spanny
 
 class AttributeView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
@@ -27,16 +29,23 @@ class AttributeView @JvmOverloads constructor(context: Context, attrs: Attribute
         typedArray.recycle()
     }
 
-    /*fun setAttr(productAttribute: ProductAttribute) {
-        nameTV.text = productAttribute.name
-        valueTV.text = productAttribute.value.toString().replace("/", " / ")
-    }*/
+    fun hideLineView(){
+        lineView.hide()
+    }
 
     fun setName(text: String?) {
         this.nameTV.text = text
     }
 
+    fun setName(text: Spanny) {
+        this.nameTV.text = text
+    }
+
     fun setValue(text: String?) {
+        this.valueTV.text = text
+    }
+
+    fun setValue(text: Spanny) {
         this.valueTV.text = text
     }
 

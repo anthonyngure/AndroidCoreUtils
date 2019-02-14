@@ -1,7 +1,9 @@
 package ke.co.toshngure.androidcoreutils.albums
 
+import androidx.paging.DataSource
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
 import retrofit2.Call
@@ -23,9 +25,15 @@ class AlbumRepository : ItemRepository<Album, Album>() {
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Album, Album> {
         return ItemRepositoryConfig(
             syncClass = Album::class.java,
-            itemDao = AppDatabase.getInstance().albums(),
-            db = AppDatabase.getInstance(),
-            dataSourceFactory = AppDatabase.getInstance().albums().getAllPaged()
+            db = AppDatabase.getInstance()
         )
+    }
+
+    override fun getItemDataSource(): DataSource.Factory<Int, Album> {
+        return AppDatabase.getInstance().albums().getAllPaged()
+    }
+
+    override fun getItemDao(): ItemDao<Album> {
+        return AppDatabase.getInstance().albums()
     }
 }

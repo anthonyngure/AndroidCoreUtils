@@ -29,9 +29,15 @@ class PostRepository() : ItemRepository<Post, Post>() {
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Post, Post> {
         return ItemRepositoryConfig(
             syncClass = Post::class.java,
-            dataSourceFactory = AppDatabase.getInstance().posts().getAllPaged(),
-            itemDao = AppDatabase.getInstance().posts(),
             db = AppDatabase.getInstance()
         )
+    }
+
+    override fun getItemDao(): ItemDao<Post> {
+        return AppDatabase.getInstance().posts()
+    }
+
+    override fun getItemDataSource(): DataSource.Factory<Int, Post> {
+        return AppDatabase.getInstance().posts().getAllPaged()
     }
 }

@@ -26,6 +26,7 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
@@ -34,6 +35,8 @@ import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.extensions.hide
 import ke.co.toshngure.basecode.extensions.show
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.util.DrawableUtils
+import ke.co.toshngure.basecode.util.NetworkUtils
 import kotlinx.android.synthetic.main.fragment_base.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -78,6 +81,8 @@ abstract class BaseAppFragment<D> : Fragment() {
         onSetUpTopView(topViewContainer)
         onSetUpContentView(contentViewContainer)
         onSetUpBottomView(bottomViewContainer)
+        onSetUpTopFab(topFab)
+        onSetUpBottomFab(bottomFab)
     }
 
 
@@ -112,6 +117,12 @@ abstract class BaseAppFragment<D> : Fragment() {
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
     protected open fun onSetUpBottomView(container: FrameLayout) {}
+
+    protected open fun onSetUpTopFab(topFab: FloatingActionButton) {}
+
+    protected open fun onSetUpBottomFab(bottomFab: FloatingActionButton) {
+
+    }
 
 
     fun toast(message: Any) {
@@ -185,7 +196,7 @@ abstract class BaseAppFragment<D> : Fragment() {
                             ).execute(body)
                         }
                         else -> {
-                            showNetworkErrorDialog("Invalid body response")
+                            showNetworkErrorDialog(getErrorMessage(response))
                         }
                     }
                 } else {
@@ -198,12 +209,8 @@ abstract class BaseAppFragment<D> : Fragment() {
     private fun getErrorMessage(response: Response<D>): String {
         val errorBody = response.errorBody()
         return errorBody?.let {
-             getErrorMessageFromResponseBody(response.code(), it)
+             NetworkUtils.getCallback().getErrorMessageFromResponseBody(response.code(), it)
         } ?: response.message()
-    }
-
-    protected open fun getErrorMessageFromResponseBody(statusCode: Int, data: ResponseBody): String {
-        return getString(R.string.message_connection_error)
     }
 
     protected open fun processDataInBackground(data: D): D {
@@ -216,8 +223,7 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     private class DataHandlerTask<D>(
         private val processData: (data: D) -> D,
-        private val onFinish: (data: D) -> Unit
-    ) : AsyncTask<D, Void, D>() {
+        private val onFinish: (data: D) -> Unit) : AsyncTask<D, Void, D>() {
         override fun doInBackground(vararg params: D): D {
             return processData(params[0])
         }
@@ -240,7 +246,7 @@ abstract class BaseAppFragment<D> : Fragment() {
                 .setMessage(message ?: getString(R.string.message_connection_error))
                 .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
                 .setNegativeButton(R.string.cancel) { _, _ ->
-
+                    loadingLayout.hide()
                 }.show()
         }
     }
@@ -307,7 +313,7 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
     companion object {
-        private const val TAG = "BaseAppFragment"
+        const val TAG = "BaseAppFragment"
     }
 
 

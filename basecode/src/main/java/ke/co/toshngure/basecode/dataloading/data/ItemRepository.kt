@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import ke.co.toshngure.basecode.logging.BeeLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
@@ -14,7 +15,12 @@ abstract class ItemRepository<Model, LoadedModel> {
 
     private lateinit var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>
 
-    internal val mItemRepositoryConfig  = this.getItemRepositoryConfig()
+    internal var mItemRepositoryConfig: ItemRepositoryConfig<Model,LoadedModel>
+
+    init {
+        mItemRepositoryConfig = this.getItemRepositoryConfig()
+        BeeLog.i(TAG, "mItemRepositoryConfig = $mItemRepositoryConfig")
+    }
 
 
     /**
@@ -68,16 +74,16 @@ abstract class ItemRepository<Model, LoadedModel> {
         mBoundaryCallback = ItemBoundaryCallback(this)
 
         // create a data source factory from Room
-        val dataSourceFactory = mItemRepositoryConfig.dataSourceFactory
+        val dataSourceFactory = getItemDataSource()
 
         val config: PagedList.Config = PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
-            .setPageSize(dataLoadingConfig.dbPerPage)
-            .build()
+                .setEnablePlaceholders(true)
+                .setPageSize(dataLoadingConfig.dbPerPage)
+                .build()
 
 
         val builder = LivePagedListBuilder(dataSourceFactory, config)
-            .setBoundaryCallback(mBoundaryCallback)
+                .setBoundaryCallback(mBoundaryCallback)
 
         return builder.build()
     }
@@ -90,7 +96,7 @@ abstract class ItemRepository<Model, LoadedModel> {
      * To save items into the db, called inside a transaction in background
      */
     protected open fun save(items: List<Model>) {
-        mItemRepositoryConfig.itemDao.insert(items)
+        getItemDao().insert(items)
     }
 
     /**
@@ -115,4 +121,12 @@ abstract class ItemRepository<Model, LoadedModel> {
 
 
     abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model, LoadedModel>
+
+    abstract fun getItemDataSource(): DataSource.Factory<Int, LoadedModel>
+
+    abstract fun getItemDao(): ItemDao<Model>
+
+    companion object {
+        const val TAG = "ItemRepository"
+    }
 }

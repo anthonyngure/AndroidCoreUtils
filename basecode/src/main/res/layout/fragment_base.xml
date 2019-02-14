@@ -1,41 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <ProgressBar
-                android:id="@+id/syncingProgressBar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:contentScrim="@android:color/transparent"
-                app:expandedTitleTextAppearance="@style/TransparentText"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:contentScrim="@android:color/transparent"
+            app:expandedTitleTextAppearance="@style/TransparentText"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <!-- app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"-->
-            <FrameLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    android:id="@+id/syncingProgressBar"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <FrameLayout
                     android:id="@+id/collapsibleViewContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.85"/>
+                    app:layout_collapseParallaxMultiplier="0.85" />
+            </LinearLayout>
+
+            <!-- app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"-->
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -44,36 +52,36 @@
 
     <!--region Top View Content and Content View and Bottom View -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
-            tools:visibility="visible"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible">
 
         <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/bottomViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true" />
+
+            <FrameLayout
+                android:id="@+id/topViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true" />
+
+            <FrameLayout
+                android:id="@+id/contentViewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            <FrameLayout
-                    android:id="@+id/bottomViewContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"/>
-
-            <FrameLayout
-                    android:id="@+id/topViewContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"/>
-
-            <FrameLayout
-                    android:id="@+id/contentViewContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_above="@id/bottomViewContainer"
-                    android:layout_below="@id/topViewContainer"/>
+                android:layout_above="@id/bottomViewContainer"
+                android:layout_below="@id/topViewContainer" />
 
 
         </RelativeLayout>
@@ -83,29 +91,29 @@
 
     <!--region Loading Layout-->
     <LinearLayout
-            android:id="@+id/loadingLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:background="@android:color/white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible">
 
         <ProgressBar
-                android:id="@+id/loadingProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin" />
 
         <TextView
-                android:id="@+id/loadingMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/message_loading"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+            android:id="@+id/loadingMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_loading"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
 
     </LinearLayout>
@@ -113,34 +121,34 @@
 
     <!--region No Data Layout-->
     <LinearLayout
-            android:id="@+id/noDataLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:visibility="gone"
-            tools:visibility="gone"
-            android:fillViewport="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
+        android:id="@+id/noDataLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:fillViewport="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="gone">
 
         <ImageView
-                android:id="@+id/noDataIV"
-                android:layout_width="94dp"
-                android:layout_height="94dp"
-                android:src="@drawable/ic_cloud_queue_black_24dp"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:contentDescription="@string/message_empty_data"/>
+            android:id="@+id/noDataIV"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/message_empty_data"
+            android:src="@drawable/ic_cloud_queue_black_24dp" />
 
         <TextView
-                android:id="@+id/noDataMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/message_empty_data"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+            android:id="@+id/noDataMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_empty_data"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
 
     </LinearLayout>
@@ -148,57 +156,75 @@
 
     <!--region Error Layout-->
     <LinearLayout
-            android:id="@+id/errorLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:visibility="gone"
-            tools:visibility="gone"
-            android:fillViewport="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
+        android:id="@+id/errorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:fillViewport="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="gone">
 
         <ImageView
-                android:id="@+id/errorIV"
-                android:layout_width="94dp"
-                android:layout_height="94dp"
-                android:src="@drawable/ic_cloud_off_black_24dp"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:contentDescription="@string/message_empty_data"/>
+            android:id="@+id/errorIV"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/message_empty_data"
+            android:src="@drawable/ic_cloud_off_black_24dp" />
 
         <TextView
-                android:id="@+id/errorMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/message_connection_error"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+            android:id="@+id/errorMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/message_connection_error"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
 
     </LinearLayout>
     <!--endregion-->
 
     <TextView
-            android:id="@+id/statusTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:padding="@dimen/list_row_padding"
-            android:background="?attr/colorAccent"/>
+        android:id="@+id/statusTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:background="?attr/colorAccent"
+        android:padding="@dimen/list_row_padding" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/topFab"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/colorPrimary"
-            android:layout_margin="@dimen/fab_margin"
-            app:layout_anchor="@id/appBarLayout"
-            app:layout_anchorGravity="bottom|end"/>
+        android:id="@+id/topFab"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_cloud_queue_black_24dp"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorPrimary"
+        app:fabSize="mini"
+        app:layout_anchor="@id/appBarLayout"
+        app:layout_anchorGravity="bottom|end"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/bottomFab"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_cloud_queue_black_24dp"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorPrimary"
+        tools:visibility="visible" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

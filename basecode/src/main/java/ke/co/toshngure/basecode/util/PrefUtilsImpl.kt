@@ -26,7 +26,7 @@ abstract class PrefUtilsImpl(protected val context: Context, private val sharedP
         invalidate()
     }
 
-    fun writeString(@StringRes key: Int, value: String) {
+    fun writeString(@StringRes key: Int, value: String?) {
         sharedPreferences.edit().putString(resolveKey(key), value).apply()
         invalidate()
     }
@@ -74,7 +74,7 @@ abstract class PrefUtilsImpl(protected val context: Context, private val sharedP
         return sharedPreferences.getBoolean(resolveKey(key), false)
     }
 
-    fun clear() {
+    protected fun clear() {
         sharedPreferences.edit().clear().apply()
         invalidate()
     }

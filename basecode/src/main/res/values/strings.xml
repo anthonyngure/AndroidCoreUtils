@@ -15,7 +15,7 @@
     <string name="not_found">The requested resource can not be found</string>
 
     <string name="message_no_more_data">Nothing more :( Tap to retry or pull down to refresh.</string>
-    <string name="message_empty_data">Oops! Nothing here yet :( Tap to refresh</string>
+    <string name="message_empty_data">Nothing here yet :( Tap to refresh</string>
     <string name="message_loading">Loading…</string>
     <string name="message_connection_error">Unable to establish an internet connection. Please ensure your internet connection is working properly!</string>
     <string name="message_refreshing">Refreshing…</string>

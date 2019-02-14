@@ -23,9 +23,15 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Photo,Photo> {
         return ItemRepositoryConfig(
             syncClass = Photo::class.java,
-            itemDao = AppDatabase.getInstance().photos(),
-            db = AppDatabase.getInstance(),
-            dataSourceFactory = AppDatabase.getInstance().photos().getAllPaged(albumId)
+            db = AppDatabase.getInstance()
         )
+    }
+
+    override fun getItemDao(): ItemDao<Photo> {
+        return AppDatabase.getInstance().photos()
+    }
+
+    override fun getItemDataSource(): DataSource.Factory<Int, Photo> {
+        return AppDatabase.getInstance().photos().getAllPaged(albumId)
     }
 }

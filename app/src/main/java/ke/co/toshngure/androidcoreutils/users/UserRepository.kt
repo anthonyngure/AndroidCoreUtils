@@ -29,9 +29,15 @@ class UserRepository : ItemRepository<User, User>() {
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<User, User> {
         return ItemRepositoryConfig(
             syncClass = User::class.java,
-            dataSourceFactory = AppDatabase.getInstance().users().getAllPaged(),
-            itemDao =  AppDatabase.getInstance().users(),
             db = AppDatabase.getInstance()
         )
+    }
+
+    override fun getItemDao(): ItemDao<User> {
+        return AppDatabase.getInstance().users()
+    }
+
+    override fun getItemDataSource(): DataSource.Factory<Int, User> {
+        return AppDatabase.getInstance().users().getAllPaged()
     }
 }
