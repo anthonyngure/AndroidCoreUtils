@@ -33,10 +33,6 @@ class PostRepository() : ItemRepository<Post, Post>() {
         )
     }
 
-    override fun getDatabase(): RoomDatabase {
-        return AppDatabase.getInstance()
-    }
-
     override fun getItemDao(): ItemDao<Post> {
         return AppDatabase.getInstance().posts()
     }

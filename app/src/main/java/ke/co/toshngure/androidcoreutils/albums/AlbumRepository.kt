@@ -30,9 +30,6 @@ class AlbumRepository : ItemRepository<Album, Album>() {
         )
     }
 
-    override fun getDatabase(): RoomDatabase {
-        return AppDatabase.getInstance()
-    }
 
     override fun getItemDataSource(): DataSource.Factory<Int, Album> {
         return AppDatabase.getInstance().albums().getAllPaged()

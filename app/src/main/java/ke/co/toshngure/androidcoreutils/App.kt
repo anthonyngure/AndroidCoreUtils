@@ -1,39 +1,58 @@
 package ke.co.toshngure.androidcoreutils
 
 import android.app.Application
+import android.content.Context
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.NetworkUtils
 import okhttp3.ResponseBody
 
-class App : Application(), NetworkUtils.Callback {
-    override fun onAuthError(statusCode: Int) {
+class App : Application() {
 
-    }
 
-    override fun getAuthToken(): String? {
-        return null
-    }
 
-    override fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody): String {
-        return responseBody.string()
-    }
+
+
 
     companion object {
         private const val TAG = "PagingWithRoom"
 
         // For singleton instantiation
         @Volatile
-        private lateinit var instance: App
+        private lateinit var mInstance: App
 
-        fun getInstance(): App = instance
+        fun getInstance(): App = mInstance
+
+        class NetworkUtilsCallback : NetworkUtils.Callback {
+
+            override fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String {
+                BeeLog.i(TAG, responseBody)
+                return responseBody?.string() ?:  mInstance.getString(R.string.message_connection_error)
+            }
+
+            override fun getContext(): Context {
+                return mInstance
+            }
+
+
+            override fun onAuthError(statusCode: Int) {
+
+            }
+
+            override fun getAuthToken(): String? {
+                return null
+            }
+
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
-        NetworkUtils.init(this)
+        mInstance = this
+        NetworkUtils.init(NetworkUtilsCallback())
         SyncStatesDatabase.init(this)
-        instance = this
-        BeeLog.init(BuildConfig.DEBUG, TAG)
+        BeeLog.init(BuildConfig.DEBUG, TAG, this)
+
+
     }
 }

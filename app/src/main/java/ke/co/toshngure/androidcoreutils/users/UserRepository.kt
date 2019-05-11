@@ -33,10 +33,6 @@ class UserRepository : ItemRepository<User, User>() {
         )
     }
 
-    override fun getDatabase(): RoomDatabase {
-        return AppDatabase.getInstance()
-    }
-
     override fun getItemDao(): ItemDao<User> {
         return AppDatabase.getInstance().users()
     }

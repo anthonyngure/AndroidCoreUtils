@@ -27,9 +27,6 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
         )
     }
 
-    override fun getDatabase(): RoomDatabase {
-        return AppDatabase.getInstance()
-    }
 
     override fun getItemDao(): ItemDao<Photo> {
         return AppDatabase.getInstance().photos()

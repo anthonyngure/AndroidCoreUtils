@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.View
 import ke.co.toshngure.androidcoreutils.Extras
 import ke.co.toshngure.androidcoreutils.R
+import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.PagingFragment
-import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
-import ke.co.toshngure.basecode.extensions.navigate
 
 class AlbumsFragment : PagingFragment<Album, Album,Any>(), ItemsAdapter.OnItemClickListener<Album> {
 
@@ -18,15 +17,15 @@ class AlbumsFragment : PagingFragment<Album, Album,Any>(), ItemsAdapter.OnItemCl
         navigateWithPermissionsCheck(R.id.photosFragment, args)
     }
 
-
-    override fun getConfig(): PagingFragmentConfig<Album, Album> {
-        return PagingFragmentConfig(
+    override fun getPagingConfig(): PagingConfig<Album, Album> {
+        return PagingConfig(
             layoutRes = R.layout.item_album,
             diffUtilItemCallback = Album.DIFF_UTIL_CALLBACK,
             repository = AlbumRepository(),
             itemClickListener = this
         )
     }
+
 
     override fun createItemViewHolder(itemView: View): BaseItemViewHolder<Album> = AlbumViewHolder(itemView)
 

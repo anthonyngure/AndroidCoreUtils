@@ -1,0 +1,43 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    app:contentPadding="@dimen/list_row_padding"
+    android:layout_margin="@dimen/list_row_padding"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/containerLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/list_row_padding"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/headingTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_row_padding"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/messageTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:text="@string/lorem_text"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/dismissBtn"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/dismiss"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

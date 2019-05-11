@@ -4,17 +4,16 @@ import android.view.View
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.dataloading.PagingFragment
-import ke.co.toshngure.basecode.dataloading.PagingFragmentConfig
+import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 
 class PostsFragment : PagingFragment<Post, Post,Any>() {
 
-    override fun getConfig(): PagingFragmentConfig<Post, Post> {
-        return PagingFragmentConfig(
+
+    override fun getPagingConfig(): PagingConfig<Post, Post> {
+        return PagingConfig(
             layoutRes = R.layout.item_post,
             withDivider = false,
-            refreshEnabled = true,
             diffUtilItemCallback = Post.DIFF_CALLBACK,
             repository = PostRepository()
         )
