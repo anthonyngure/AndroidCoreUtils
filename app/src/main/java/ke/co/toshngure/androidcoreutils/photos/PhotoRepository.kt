@@ -1,6 +1,7 @@
 package ke.co.toshngure.androidcoreutils.photos
 
 import androidx.paging.DataSource
+import androidx.room.RoomDatabase
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
 import ke.co.toshngure.androidcoreutils.albums.Album
@@ -22,9 +23,12 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
 
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Photo,Photo> {
         return ItemRepositoryConfig(
-            syncClass = Photo::class.java,
-            db = AppDatabase.getInstance()
+            syncClass = Photo::class.java
         )
+    }
+
+    override fun getDatabase(): RoomDatabase {
+        return AppDatabase.getInstance()
     }
 
     override fun getItemDao(): ItemDao<Photo> {

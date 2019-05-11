@@ -1,25 +1,27 @@
 package ke.co.toshngure.basecode.dataloading.data
 
+import android.os.Bundle
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import ke.co.toshngure.basecode.extensions.executeAsync
 import ke.co.toshngure.basecode.logging.BeeLog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 
 
 abstract class ItemRepository<Model, LoadedModel> {
 
+    protected var arguments : Bundle? = null
+
     private lateinit var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>
 
-    internal var mItemRepositoryConfig: ItemRepositoryConfig<Model,LoadedModel>
+    private var mItemRepositoryConfig: ItemRepositoryConfig<Model, LoadedModel>
 
     init {
         mItemRepositoryConfig = this.getItemRepositoryConfig()
-        BeeLog.i(TAG, "mItemRepositoryConfig = $mItemRepositoryConfig")
+        //BeeLog.i(TAG, "mItemRepositoryConfig = $mItemRepositoryConfig")
     }
 
 
@@ -29,9 +31,7 @@ abstract class ItemRepository<Model, LoadedModel> {
      * paging library takes care of refreshing the list if necessary.
      */
     internal fun insertItemsIntoDb(items: List<Model>) {
-        runBlocking(Dispatchers.IO) {
-            mItemRepositoryConfig.db.runInTransaction { save(items) }
-        }
+        executeAsync { save(items) }
     }
 
 
@@ -53,25 +53,19 @@ abstract class ItemRepository<Model, LoadedModel> {
     }
 
     /**
-     * To do a sync for changes of all cached items
-     */
-    @MainThread
-    internal fun sync() {
-        mBoundaryCallback.sync()
-    }
-
-    /**
      * Returns a Listing for posts.
      */
     @MainThread
-    fun list(): LiveData<PagedList<LoadedModel>> {
+    fun list(args: Bundle?): LiveData<PagedList<LoadedModel>> {
 
-        //Get config
-        val dataLoadingConfig = getItemRepositoryConfig()
+        this.arguments = args
 
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
         mBoundaryCallback = ItemBoundaryCallback(this)
+
+        //Get config
+        val dataLoadingConfig = getItemRepositoryConfig()
 
         // create a data source factory from Room
         val dataSourceFactory = getItemDataSource()
@@ -89,8 +83,9 @@ abstract class ItemRepository<Model, LoadedModel> {
     }
 
 
-    abstract fun getAPICall(before: Long, after: Long): Call<List<Model>>
-
+    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? {
+        return null
+    }
 
     /**
      * To save items into the db, called inside a transaction in background
@@ -108,10 +103,22 @@ abstract class ItemRepository<Model, LoadedModel> {
     /**
      * To delete all cached items
      */
-    open fun clear() {
-        runBlocking(Dispatchers.IO) {
-            mItemRepositoryConfig.db.runInTransaction { deleteAll() }
+    internal fun clear() {
+        executeAsync {
+            deleteAll()
         }
+    }
+
+    fun getSyncClass(): Class<Model> {
+        return mItemRepositoryConfig.syncClass
+    }
+
+    open fun getTab(): String {
+        return ""
+    }
+
+    open fun getPaginates(): Boolean {
+        return true
     }
 
     /**

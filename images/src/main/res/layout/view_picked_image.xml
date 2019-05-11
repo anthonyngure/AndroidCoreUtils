@@ -17,8 +17,20 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="@dimen/list_row_padding"
-        android:tint="@color/colorPrimary"
+        android:tint="@android:color/white"
         android:src="@drawable/ic_clear_black_24dp"
+        app:backgroundTint="?attr/colorPrimary"
+        app:elevation="0dp"
+        app:useCompatPadding="false"
         app:fabSize="mini"/>
+
+    <TextView
+            android:id="@+id/debugTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:textColor="@android:color/white"
+            android:background="?attr/colorPrimary"
+            android:text="@string/app_name"/>
 
 </com.google.android.material.card.MaterialCardView>

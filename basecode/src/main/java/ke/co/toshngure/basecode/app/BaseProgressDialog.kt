@@ -35,7 +35,7 @@ class BaseProgressDialog(private val mContext: Context) {
 
     init {
         this.mBottomSheetDialog = BottomSheetDialog(mContext)
-        this.mView = LayoutInflater.from(mContext).inflate(R.layout.view_progress_dialog, null)
+        this.mView = LayoutInflater.from(mContext).inflate(R.layout.basecode_view_progress_dialog, null)
         this.mMessageTV = mView.findViewById(R.id.messageTV)
     }
 

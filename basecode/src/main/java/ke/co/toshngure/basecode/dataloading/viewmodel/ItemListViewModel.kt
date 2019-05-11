@@ -1,30 +1,31 @@
 package ke.co.toshngure.basecode.dataloading.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import ke.co.toshngure.basecode.dataloading.data.ItemBoundaryCallback
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 
-class ItemListViewModel<Model, ModelListing> : ViewModel() {
+class ItemListViewModel<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) : ViewModel() {
 
-    private val repository = MutableLiveData<ItemRepository<Model, ModelListing>>()
+    private val args = MutableLiveData<Bundle?>()
 
-    private val syncClass = MutableLiveData<Class<Model>>()
-
-    val syncState = Transformations.switchMap(syncClass) {
-        SyncStatesDatabase.getInstance().syncStates().findByModelLive(it.simpleName)
+    private val repoResult = Transformations.map(args) {
+        repository.list(args.value)
     }
 
-    private val repoResult = Transformations.map(repository) { it.list() }
-    val items = Transformations.switchMap(repoResult) { it }
+    val items = Transformations.switchMap(repoResult) {
+        it
+    }
+
+    val syncState = Transformations.switchMap(repoResult) {
+        val model = repository.getSyncClass().simpleName
+        SyncStatesDatabase.getInstance().syncStates().findLive(model, repository.getTab())
+    }
 
 
-    fun init(repository: ItemRepository<Model, ModelListing>) {
-        this.repository.value = repository
-        this.syncClass.value = repository.mItemRepositoryConfig.syncClass
+    fun loadWithArgs(args: Bundle? = null){
+        this.args.value = args
     }
 }

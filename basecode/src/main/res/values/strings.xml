@@ -7,17 +7,15 @@
     </string>
     <string name="message_waiting">Please wait…</string>
     <string name="connection_timed_out">Connection timed out</string>
-    <string name="error_connection">Seems like your connection to the server is taking too long. Please check your network status</string>
+    <string name="message_connection_error">Seems like your device has an internet connection problem. Please ensure your internet connection is working properly!</string>
     <string name="server_error">Server error</string>
     <string name="error_application">An application error occurred</string>
     <string name="report">Report</string>
     <string name="retry">Retry</string>
     <string name="not_found">The requested resource can not be found</string>
-
     <string name="message_no_more_data">Nothing more :( Tap to retry or pull down to refresh.</string>
-    <string name="message_empty_data">Nothing here yet :( Tap to refresh</string>
+    <string name="message_empty_data">No data :( Tap to refresh</string>
     <string name="message_loading">Loading…</string>
-    <string name="message_connection_error">Unable to establish an internet connection. Please ensure your internet connection is working properly!</string>
     <string name="message_refreshing">Refreshing…</string>
     <string name="unable_to_refresh">Unable to refresh</string>
     <string name="one_tab">\u0009</string>
@@ -27,4 +25,8 @@
     <string name="cancel">Cancel</string>
     <string name="sync">Sync</string>
     <string name="clear">Clear</string>
+    <string name="close">Close</string>
+    <string name="log_items">Log Items</string>
+    <string name="view_log_items">View Log Items</string>
+    <string name="search">Search</string>
 </resources>

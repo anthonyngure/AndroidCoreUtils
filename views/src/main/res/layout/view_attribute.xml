@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-            android:layout_width="match_parent"
+        android:id="@+id/nameValueLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/nameTV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:weightSum="100">
+            android:layout_marginBottom="0dp"
+            android:layout_weight="40"
+            android:text="@string/app_name"
+            android:gravity="start"/>
 
         <TextView
-                android:id="@+id/nameTV"
-                android:layout_width="0dp"
-                android:layout_weight="40"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"/>
-
-        <TextView
-                android:id="@+id/valueTV"
-                android:layout_width="0dp"
-                android:layout_weight="60"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:layout_marginStart="@dimen/list_row_padding"
-                android:layout_marginEnd="@dimen/list_row_padding"/>
+            android:id="@+id/valueTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_row_padding"
+            android:layout_marginEnd="@dimen/list_row_padding"
+            android:gravity="start"
+            android:layout_weight="60"
+            android:text="@string/app_name" />
     </LinearLayout>
 
-    <ke.co.toshngure.views.LineView
-            android:id="@+id/lineView"
-            android:layout_marginTop="@dimen/list_row_padding"
-            android:layout_marginBottom="@dimen/list_row_padding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <View
+        android:id="@+id/lineView"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorDivider"
+        android:layout_marginTop="@dimen/list_row_padding"
+        android:layout_marginBottom="@dimen/list_row_padding" />
 
 </LinearLayout>

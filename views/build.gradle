@@ -58,7 +58,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    //Android X
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
+
+    // Google Material
+    implementation 'com.google.android.material:material:1.1.0-alpha03'
 
     // https://github.com/bumptech/glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'

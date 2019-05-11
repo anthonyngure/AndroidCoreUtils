@@ -1,48 +1,47 @@
 package ke.co.toshngure.basecode.dataloading.data
 
-import android.text.TextUtils
 import androidx.annotation.WorkerThread
+import ke.co.toshngure.basecode.dataloading.sync.SyncResponse
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import ke.co.toshngure.basecode.extensions.executeAsync
 
-internal class SyncStateHelper<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) {
-
+class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val syncTab: String = "") {
 
 
     fun runIfPossible(syncStatus: SyncStatus, request: () -> Unit) {
-        runBlocking(Dispatchers.IO) {
+        executeAsync {
             val syncState = loadSyncState()
-            if (syncState.status != syncStatus.value && !stateIsExhaustedOrFailed(syncStatus)){
+            if (syncState.status != syncStatus.value && !stateIsExhaustedOrFailed(syncStatus)) {
                 recordStatus(syncStatus)
                 request.invoke()
             }
         }
     }
 
-    private fun stateIsExhaustedOrFailed(syncStatus: SyncStatus) : Boolean{
+
+    private fun stateIsExhaustedOrFailed(syncStatus: SyncStatus): Boolean {
         val syncState = loadSyncState()
         return when (syncStatus) {
             SyncStatus.LOADING_INITIAL -> {
                 syncState.status == SyncStatus.LOADING_INITIAL_EXHAUSTED.value ||
-                syncState.status == SyncStatus.LOADING_INITIAL_FAILED.value
+                        syncState.status == SyncStatus.LOADING_INITIAL_FAILED.value
             }
             SyncStatus.LOADING_BEFORE -> {
                 syncState.status == SyncStatus.LOADING_BEFORE_EXHAUSTED.value ||
-                syncState.status == SyncStatus.LOADING_BEFORE_FAILED.value
+                        syncState.status == SyncStatus.LOADING_BEFORE_FAILED.value
             }
             SyncStatus.LOADING_AFTER -> {
                 syncState.status == SyncStatus.LOADING_AFTER_EXHAUSTED.value ||
-                syncState.status == SyncStatus.LOADING_AFTER_FAILED.value
+                        syncState.status == SyncStatus.LOADING_AFTER_FAILED.value
             }
             else -> false
         }
     }
 
-    internal fun recordStatus(syncStatus: SyncStatus) {
-        runBlocking(Dispatchers.IO) {
+    fun recordStatus(syncStatus: SyncStatus) {
+        executeAsync {
             val syncState = loadSyncState()
             syncState.status = syncStatus.value
             SyncStatesDatabase.getInstance().syncStates().update(syncState)
@@ -50,15 +49,14 @@ internal class SyncStateHelper<Model, LoadedModel>(private val repository: ItemR
     }
 
     internal fun recordFailure(error: String) {
-        runBlocking(Dispatchers.IO) {
+        executeAsync {
             val syncState = loadSyncState()
             val syncStatus = SyncStatus.valueOf(syncState.status)
             when (syncStatus) {
                 SyncStatus.LOADING_INITIAL -> syncState.status = SyncStatus.LOADING_INITIAL_FAILED.value
                 SyncStatus.LOADING_BEFORE -> syncState.status = SyncStatus.LOADING_BEFORE_FAILED.value
                 SyncStatus.LOADING_AFTER -> syncState.status = SyncStatus.LOADING_AFTER_FAILED.value
-                SyncStatus.SYNCING -> syncState.status = SyncStatus.SYNCING_FAILED.value
-                SyncStatus.REFRESHING -> syncState.status = SyncStatus.REFRESHING_FAILED.value
+                //SyncStatus.REFRESHING -> syncState.status = SyncStatus.REFRESHING_FAILED.value
                 else -> {
                 }
             }
@@ -68,14 +66,15 @@ internal class SyncStateHelper<Model, LoadedModel>(private val repository: ItemR
     }
 
     internal fun recordExhausted() {
-        runBlocking(Dispatchers.IO) {
+        executeAsync {
             val syncState = loadSyncState()
             val syncStatus = SyncStatus.valueOf(syncState.status)
             when (syncStatus) {
                 SyncStatus.LOADING_INITIAL -> syncState.status = SyncStatus.LOADING_INITIAL_EXHAUSTED.value
                 SyncStatus.LOADING_BEFORE -> syncState.status = SyncStatus.LOADING_BEFORE_EXHAUSTED.value
                 SyncStatus.LOADING_AFTER -> syncState.status = SyncStatus.LOADING_AFTER_EXHAUSTED.value
-                else -> { }
+                else -> {
+                }
             }
 
             SyncStatesDatabase.getInstance().syncStates().update(syncState)
@@ -83,11 +82,12 @@ internal class SyncStateHelper<Model, LoadedModel>(private val repository: ItemR
     }
 
     @WorkerThread
-    internal fun loadSyncState(): SyncState {
-        val syncId = repository.mItemRepositoryConfig.syncClass.simpleName
-        var syncState = SyncStatesDatabase.getInstance().syncStates().findByModel(syncId)
+    fun loadSyncState(): SyncState {
+        val model = syncClass.simpleName
+        val tab = syncTab
+        var syncState = SyncStatesDatabase.getInstance().syncStates().find(model, tab)
         if (syncState == null) {
-            syncState = SyncState(syncId, status = SyncStatus.LOADED.value)
+            syncState = SyncState(model, tab, status = SyncStatus.LOADED.value)
             SyncStatesDatabase.getInstance().syncStates().insert(syncState)
         }
         return syncState

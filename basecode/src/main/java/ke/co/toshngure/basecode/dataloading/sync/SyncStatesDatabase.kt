@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [SyncState::class], version = 5, exportSchema = false)
+@Database(entities = [SyncState::class], version = 12, exportSchema = false)
 abstract class SyncStatesDatabase : RoomDatabase() {
 
     abstract fun syncStates(): SyncStateDao

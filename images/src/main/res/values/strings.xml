@@ -3,4 +3,7 @@
     <string name="title_activity_camera">Camera</string>
     <string name="skip">Skip</string>
     <string name="done">Done</string>
+    <string name="pref_learnt_cropping_and_removing_picked_images"/>
+    <string name="title_activity_preview_picture">Image Preview</string>
+    <string name="pref_learnt_viewing_stories" />
 </resources>

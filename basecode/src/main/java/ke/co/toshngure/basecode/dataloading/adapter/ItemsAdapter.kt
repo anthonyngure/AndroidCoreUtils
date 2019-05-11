@@ -7,16 +7,18 @@ import androidx.annotation.LayoutRes
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
+import ke.co.toshngure.basecode.logging.BeeLog
 
-class ItemsAdapter<DaoModel>(
-    diffUtil: DiffUtil.ItemCallback<DaoModel>,
-    @LayoutRes private val layoutRes: Int,
-    private val retryCallback: () -> Unit,
-    private val getItemViewHolder: (View) -> BaseItemViewHolder<DaoModel>,
-    private val getItemOnClickListener: OnItemClickListener<DaoModel>?
-) : PagedListAdapter<DaoModel, RecyclerView.ViewHolder>(diffUtil) {
+class ItemsAdapter<LoadedModel>(
+        diffUtil: DiffUtil.ItemCallback<LoadedModel>,
+        @LayoutRes private val layoutRes: Int,
+        private val getItemViewHolder: (View) -> BaseItemViewHolder<LoadedModel>,
+        private val getItemOnClickListener: OnItemClickListener<LoadedModel>?,
+        private val itemRepository: ItemRepository<*, LoadedModel>
+) : PagedListAdapter<LoadedModel, RecyclerView.ViewHolder>(diffUtil) {
 
 
     interface OnItemClickListener<T> {
@@ -28,7 +30,7 @@ class ItemsAdapter<DaoModel>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ITEM_TYPE_ITEM -> getItemViewHolder(inflate(parent, layoutRes))
-            ITEM_TYPE_NETWORK_STATE -> NetworkStateViewHolder.create(parent, retryCallback)
+            ITEM_TYPE_NETWORK_STATE -> NetworkStateViewHolder.create(parent, itemRepository)
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
     }
@@ -38,7 +40,7 @@ class ItemsAdapter<DaoModel>(
             ITEM_TYPE_ITEM -> {
                 val item = getItem(position)
                 @Suppress("UNCHECKED_CAST")
-                val itemHolder = holder as BaseItemViewHolder<DaoModel>
+                val itemHolder = holder as BaseItemViewHolder<LoadedModel>
                 item?.let {
                     itemHolder.bindTo(item)
                     if (getItemOnClickListener != null) {
@@ -57,11 +59,12 @@ class ItemsAdapter<DaoModel>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        BeeLog.i(TAG, "onBindViewHolder, payloads = $payloads")
         if (payloads.isNotEmpty()) {
             val item = getItem(position)
             item?.let {
                 @Suppress("UNCHECKED_CAST")
-                (holder as BaseItemViewHolder<DaoModel>).update(it)
+                (holder as BaseItemViewHolder<LoadedModel>).update(it)
             }
         } else {
             onBindViewHolder(holder, position)
@@ -104,7 +107,20 @@ class ItemsAdapter<DaoModel>(
         }
     }
 
+    override fun getItemId(position: Int): Long {
+        return when (getItemViewType(position)) {
+            ITEM_TYPE_ITEM -> {
+                val item = getItem(position)
+                item?.let {
+                    itemRepository.getItemId(it)
+                } ?: super.getItemId(position)
+            }
+            else -> super.getItemId(position)
+        }
+    }
+
     companion object {
+        private const val TAG = "ItemsAdapter"
         private const val ITEM_TYPE_ITEM = 0
         private const val ITEM_TYPE_NETWORK_STATE = 1
         fun inflate(parent: ViewGroup, @LayoutRes layoutRes: Int): View {

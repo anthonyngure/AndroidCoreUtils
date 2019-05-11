@@ -29,9 +29,8 @@ class MainFragment : BaseAppFragment<Any>() {
         albumsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.albumsFragment) }
 
         imagesPickerBtn.setOnClickListener {
-            navigateWithPermissionsCheck(
-                R.id.testImagesPickerFragment, null,
-                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            navigateWithPermissionsCheck(R.id.testImagesPickerFragment, null,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             )
         }
 

@@ -1,11 +1,13 @@
 package ke.co.toshngure.androidcoreutils
 
-import ke.co.toshngure.images.ImagesPickerFragment
+import ke.co.toshngure.images.fragment.ImagesPickerFragment
 
 class TestImagesPickerFragment : ImagesPickerFragment<Any>() {
 
     override fun maximumImages(): Int {
-        return 100
+        //return 100
+        return 10
+        //return 1
     }
 
 }

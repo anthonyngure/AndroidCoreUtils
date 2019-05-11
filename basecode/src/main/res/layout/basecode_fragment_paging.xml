@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:scrollbars="vertical"
     android:fadeScrollbars="true"
-    android:scrollbarThumbVertical="@color/colorAccent"
+    android:scrollbarThumbVertical="?attr/colorPrimary"
     android:scrollbarSize="1.5dp" />

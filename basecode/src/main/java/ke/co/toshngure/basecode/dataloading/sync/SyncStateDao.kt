@@ -8,11 +8,11 @@ import ke.co.toshngure.basecode.dataloading.data.ItemDao
 @Dao
 interface SyncStateDao : ItemDao<SyncState> {
 
-    @Query("SELECT * FROM sync_states WHERE model = :model")
-    fun findByModel(model: String): SyncState?
+    @Query("SELECT * FROM sync_states WHERE model = :model AND tab = :tab")
+    fun find(model: String, tab: String = ""): SyncState?
 
-    @Query("SELECT * FROM sync_states WHERE model = :model")
-    fun findByModelLive(model: String): LiveData<SyncState?>
+    @Query("SELECT * FROM sync_states WHERE model = :model AND tab = :tab")
+    fun findLive(model: String, tab: String = ""): LiveData<SyncState?>
 
     @Query("DELETE FROM sync_states")
     fun deleteAll()

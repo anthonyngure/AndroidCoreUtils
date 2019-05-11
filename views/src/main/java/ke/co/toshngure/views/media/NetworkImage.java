@@ -77,7 +77,14 @@ public class NetworkImage extends FrameLayout {
         FrameLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         if (circled) {
-            mImageView = new CircleImageView(context);
+            CircleImageView imageView =  new CircleImageView(context);
+            int borderColor = typedArray.getColor(R.styleable.NetworkImage_niBorderColor, Color.WHITE);
+            int borderWidth = typedArray.getDimensionPixelOffset(R.styleable.NetworkImage_niBorderWidth, 0);
+            imageView.setBorderColor(borderColor);
+            imageView.setBorderWidth(borderWidth);
+            imageView.setBorderOverlay(true);
+            mImageView = imageView;
+           // mImageView = new CircleImageView(context);
             mBackgroundImageView = new CircleImageView(context);
         } else {
             mImageView = new AppCompatImageView(context);

@@ -1,84 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                     xmlns:tools="http://schemas.android.com/tools"
-                                                     android:layout_width="match_parent"
-                                                     android:layout_height="match_parent"
-                                                     tools:context="ke.co.toshngure.images.activity.CameraActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ke.co.toshngure.images.activity.CameraActivity">
 
-    <include layout="@layout/layout_appbar"/>
+    <include layout="@layout/basecode_layout_appbar" />
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- Controls -->
         <LinearLayout
-                android:id="@+id/controlsLL"
-                android:layout_alignParentBottom="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:background="@color/colorAccent">
+            android:id="@+id/controlsLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="?attr/colorPrimary"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
             <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:id="@+id/toggleCameraBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_camera_rear_black_24dp"
-                    app:iconGravity="textStart"/>
+                android:id="@+id/toggleCameraBtn"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_camera_rear_black_24dp"
+                app:iconGravity="textStart" />
 
             <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2">
 
                 <ImageView
-                        android:id="@+id/captureIV"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:layout_gravity="center"
-                        android:tint="@android:color/white"
-                        android:background="?attr/selectableItemBackground"
-                        android:src="@drawable/ic_photo_camera_black_24dp"
-                        tools:ignore="ContentDescription"/>
+                    android:id="@+id/captureIV"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_photo_camera_black_24dp"
+                    android:tint="@android:color/white"
+                    tools:ignore="ContentDescription" />
 
             </FrameLayout>
 
             <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:id="@+id/flashBtn"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_flash_off_black_24dp"
-                    app:iconGravity="textStart"/>
+                android:id="@+id/flashBtn"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton.Icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:icon="@drawable/ic_flash_off_black_24dp"
+                app:iconGravity="textStart" />
 
         </LinearLayout>
 
 
         <com.otaliastudios.cameraview.CameraView
-                android:id="@+id/cameraView"
-                android:layout_above="@id/controlsLL"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cameraPictureSizeAspectRatio="1:1"
-                app:cameraPictureSizeMaxHeight="612"
-                app:cameraPictureSizeMaxWidth="612"
-                app:cameraPictureSizeSmallest="true"
-                app:cameraGrid="draw4x4"
-                app:cameraGesturePinch="zoom"
-                app:cameraGridColor="@color/colorPrimary"
-                app:cameraMode="picture"
-                app:cameraPlaySounds="true"
-                app:cameraWhiteBalance="auto"
-                app:cameraAudio="off"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:id="@+id/cameraView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/controlsLL"
+            app:cameraAudio="off"
+            app:cameraGesturePinch="zoom"
+            app:cameraGrid="draw4x4"
+            app:cameraGridColor="@color/colorPrimary"
+            app:cameraMode="picture"
+            app:cameraPictureSizeAspectRatio="1:1"
+            app:cameraPictureSizeMaxHeight="612"
+            app:cameraPictureSizeMaxWidth="612"
+            app:cameraPictureSizeSmallest="true"
+            app:cameraPlaySounds="true"
+            app:cameraWhiteBalance="auto"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </RelativeLayout>
 

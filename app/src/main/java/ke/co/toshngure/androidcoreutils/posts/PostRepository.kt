@@ -1,6 +1,7 @@
 package ke.co.toshngure.androidcoreutils.posts
 
 import androidx.paging.DataSource
+import androidx.room.RoomDatabase
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
@@ -28,9 +29,12 @@ class PostRepository() : ItemRepository<Post, Post>() {
 
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Post, Post> {
         return ItemRepositoryConfig(
-            syncClass = Post::class.java,
-            db = AppDatabase.getInstance()
+            syncClass = Post::class.java
         )
+    }
+
+    override fun getDatabase(): RoomDatabase {
+        return AppDatabase.getInstance()
     }
 
     override fun getItemDao(): ItemDao<Post> {

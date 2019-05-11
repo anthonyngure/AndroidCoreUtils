@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.app.BaseAppFragment
+import ke.co.toshngure.basecode.app.LoadingConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
@@ -21,33 +22,42 @@ import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
 import ke.co.toshngure.basecode.extensions.hide
 import ke.co.toshngure.basecode.extensions.show
+import ke.co.toshngure.basecode.extensions.showIf
+import ke.co.toshngure.basecode.logging.BeeLog
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
-import kotlinx.android.synthetic.main.fragment_base.*
+import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 
 
 abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
+    private lateinit var mConfig: PagingConfig<Model, LoadedModel>
     private lateinit var mItemListViewModel: ItemListViewModel<Model, LoadedModel>
-    private lateinit var mConfig: PagingFragmentConfig<Model, LoadedModel>
     private lateinit var mItemRepository: ItemRepository<Model, LoadedModel>
-    protected lateinit var mAdapter: ItemsAdapter<LoadedModel>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        mConfig = getConfig()
-        mItemRepository = mConfig.repository
-    }
+    private lateinit var mAdapter: ItemsAdapter<LoadedModel>
 
 
     override fun onSetUpContentView(container: FrameLayout) {
         super.onSetUpContentView(container)
         LayoutInflater.from(container.context).inflate(R.layout.basecode_fragment_paging, container, true)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mConfig = getPagingConfig()
+        mItemRepository = mConfig.repository
+
+        mAdapter = ItemsAdapter(mConfig.diffUtilItemCallback, mConfig.layoutRes,
+                this::createItemViewHolder, mConfig.itemClickListener, mItemRepository)
+        mAdapter.setHasStableIds(true)
+
 
         listRV.apply {
             layoutManager = LinearLayoutManager(listRV.context)
             // itemAnimator = SlideInUpAnimator(OvershootInterpolator(1f))
             itemAnimator = SlideInUpAnimator()
+            adapter = mAdapter
         }
         if (mConfig.withDivider) {
             listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
@@ -64,21 +74,21 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
         @Suppress("UNCHECKED_CAST")
         mItemListViewModel = getViewModel() as ItemListViewModel<Model, LoadedModel>
 
-        mAdapter = ItemsAdapter(
-            mConfig.diffUtilItemCallback, mConfig.layoutRes, this::retry,
-            this::createItemViewHolder, mConfig.itemClickListener
-        )
-
-        listRV.adapter = mAdapter
+        mItemListViewModel.items.observe(this, Observer {
+            mAdapter.submitList(it)
+        })
 
         mItemListViewModel.syncState.observe(this, Observer {
 
-            mAdapter.setSyncState(it)
+            //BeeLog.i(TAG, it)
 
-            syncingProgressBar.hide()
+            swipeRefreshLayout.isRefreshing = false
+
+            mAdapter.setSyncState(it)
 
             loadingLayout.hide()
             noDataLayout.hide()
@@ -94,18 +104,18 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
                     //region INITIAL DATA
                     SyncStatus.LOADING_INITIAL -> {
-                        loadingLayout.show()
+                        loadingLayout?.show()
                     }
                     SyncStatus.LOADING_INITIAL_FAILED -> {
-                        errorLayout.show()
-                        errorMessageTV.text = syncState.error
+                        errorLayout?.show()
+                        errorMessageTV?.text = syncState.error
                     }
                     SyncStatus.LOADING_INITIAL_EXHAUSTED -> {
-                        noDataLayout.show()
+                        noDataLayout?.showIf(mLoadingConfig.showNoDataLayout)
                     }
                     //endregion
 
-                    //region NEWER DATA
+                    //region OLD DATA
                     SyncStatus.LOADING_AFTER -> {
 
                     }
@@ -116,31 +126,20 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
                     }
                     //endregion
 
-
-                    SyncStatus.SYNCING -> {
-                        syncingProgressBar.show()
-                    }
-                    SyncStatus.SYNCING_FAILED -> {
-                    }
                     SyncStatus.LOADED -> {
                     }
-                    SyncStatus.REFRESHING -> {
-                        swipeRefreshLayout.isRefreshing = true
-                    }
-                    SyncStatus.REFRESHING_FAILED -> {
-                        swipeRefreshLayout.isRefreshing = false
-                    }
                     else -> {
+
                     }
                 }
-            } ?: loadingLayout.show()
+            } ?: run {
+                BeeLog.i(TAG, "SyncState is null")
+                loadingLayout?.show()
+            }
         })
 
-        mItemListViewModel.items.observe(this, Observer {
-            mAdapter.submitList(it)
-        })
+        mItemListViewModel.loadWithArgs(mConfig.arguments)
 
-        mItemListViewModel.init(mItemRepository)
     }
 
 
@@ -148,7 +147,7 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <M : ViewModel?> create(modelClass: Class<M>): M {
                 @Suppress("UNCHECKED_CAST")
-                return ItemListViewModel<Model, LoadedModel>() as M
+                return ItemListViewModel(mItemRepository) as M
             }
         })[ItemListViewModel::class.java]
     }
@@ -156,10 +155,11 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
     override fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
         super.onSetUpSwipeRefreshLayout(swipeRefreshLayout)
-        swipeRefreshLayout.isEnabled = mConfig.refreshEnabled
-        swipeRefreshLayout.setOnRefreshListener {
-            mItemRepository.refresh()
-        }
+        swipeRefreshLayout.setOnRefreshListener { onRefresh(swipeRefreshLayout) }
+    }
+
+    protected fun loadWithArgs(args: Bundle?) {
+        mItemListViewModel.loadWithArgs(args)
     }
 
 
@@ -168,16 +168,14 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_paging_fragment, menu)
+        if (BeeLog.DEBUG) {
+            inflater.inflate(R.menu.menu_paging_fragment, menu)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_sync -> {
-                mItemRepository.sync()
-                true
-            }
             R.id.action_clear -> {
                 mItemRepository.clear()
                 true
@@ -186,12 +184,18 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         }
     }
 
+    protected open fun onRefresh(swipeRefreshLayout: SwipeRefreshLayout?) {
+    }
+
     protected open fun onSetUpRecyclerView(recyclerView: RecyclerView) {}
 
-    protected abstract fun getConfig(): PagingFragmentConfig<Model, LoadedModel>
+    protected abstract fun getPagingConfig(): PagingConfig<Model, LoadedModel>
 
     protected abstract fun createItemViewHolder(itemView: View): BaseItemViewHolder<LoadedModel>
 
+    companion object {
+        private const val TAG = "PagingFragment"
+    }
 
 }
 

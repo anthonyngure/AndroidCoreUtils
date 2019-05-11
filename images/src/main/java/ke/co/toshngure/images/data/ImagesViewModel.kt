@@ -11,14 +11,20 @@ import androidx.paging.PagedList
 class ImagesViewModel(private val context: Context) : ViewModel() {
 
     private val mConfig = PagedList.Config.Builder()
-        .setPageSize(4)
-        .setEnablePlaceholders(false)
-        .build()
+            .setPageSize(10)
+            .setInitialLoadSizeHint(30)
+            .setEnablePlaceholders(false)
+            .build()
 
-    private val mBucketMutableLiveData = MutableLiveData<String>()
+    private val mBucketMutableLiveData = MutableLiveData<String?>()
 
     val imagesList: LiveData<PagedList<Image>> = Transformations.switchMap(mBucketMutableLiveData) {
-        LivePagedListBuilder<Int, Image>(ImagesDataSourceFactory(it, context), mConfig).build()
+
+        val images = it?.let { bucket ->
+            ImagesDatabase.getInstance(context).images().getAllPagedByFolder(bucket)
+        } ?: ImagesDatabase.getInstance(context).images().getAllPaged()
+
+        LivePagedListBuilder<Int, Image>(images, mConfig).build()
     }
 
     fun loadImages(bucket: String? = null) {

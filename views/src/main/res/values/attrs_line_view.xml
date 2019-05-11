@@ -7,12 +7,11 @@
   -->
 
 <resources>
-    <declare-styleable name="LineView">
-        <attr name="lvWithText" format="boolean" />
-        <attr name="lvLineSize" format="dimension" />
-        <attr name="lvLineColor" format="color" />
-        <attr name="lvColor" format="color" />
-        <attr name="lvTextColor" format="color" />
-        <attr name="lvText" format="string" />
+    <declare-styleable name="TextLineView">
+        <attr name="tlvLineSize" format="dimension" />
+        <attr name="tlvLineColor" format="color" />
+        <attr name="tlvColor" format="color" />
+        <attr name="tlvTextColor" format="color" />
+        <attr name="tlvText" format="string" />
     </declare-styleable>
 </resources>

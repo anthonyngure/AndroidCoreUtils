@@ -7,5 +7,6 @@
   -->
 
 <resources>
+    <string name="dismiss">Dismiss</string>
     <string name="just_now">Just Now</string>
 </resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+    <RelativeLayout
+            android:id="@+id/topLayout"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/list_row_padding"
+            android:layout_marginEnd="@dimen/list_row_padding"
+            tools:ignore="UseCompoundDrawables">
+
+        <TextView
+                android:id="@+id/selectionCountTV"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="@dimen/list_row_padding"
+                android:layout_marginLeft="@dimen/list_row_padding"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/selectionCountTV"
+                android:layout_toStartOf="@id/selectionCountTV">
+
+            <ImageView
+                    android:id="@+id/cameraIV"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/ic_photo_camera_black_24dp"
+                    tools:ignore="ContentDescription" />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                    android:id="@+id/foldersMS"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="@dimen/list_row_padding"
+                    android:layout_marginStart="@dimen/list_row_padding"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pickedImagesRV"
+            android:layout_above="@id/topLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/list_row_padding"
+            android:scrollbarSize="3dp"
+            android:scrollbars="horizontal"
+            android:scrollbarThumbHorizontal="?attr/colorAccent"
+            android:fadeScrollbars="false"/>
+
+</RelativeLayout>

@@ -2,10 +2,15 @@ package ke.co.toshngure.basecode.util
 
 import android.content.Context
 import android.net.ConnectivityManager
+import com.ihsanbal.logging.Level
+import com.ihsanbal.logging.LoggingInterceptor
+import com.readystatesoftware.chuck.ChuckInterceptor
 import ke.co.toshngure.basecode.logging.BeeLog
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.internal.platform.Platform
+import java.util.concurrent.TimeUnit
+
 
 class NetworkUtils private constructor() {
 
@@ -37,15 +42,43 @@ class NetworkUtils private constructor() {
 
         private fun buildClient(): OkHttpClient {
 
-            val logger = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
-                BeeLog.i("OkHttpClient", it)
-            })
 
-            logger.level = HttpLoggingInterceptor.Level.BODY
+            // .BASIC)
+            // .NONE // No logs
+            //   .BASIC // Logging url,method,headers and body.
+            //   .HEADERS // Logging headers
+            //    .BODY // Logging body
+
 
             return OkHttpClient.Builder()
 
-                    .addInterceptor(logger)
+                    .hostnameVerifier { _, _ -> true }
+
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+
+                    .followRedirects(false)
+
+                    .addInterceptor(LoggingInterceptor.Builder()
+                            .loggable(BeeLog.DEBUG)
+                            .setLevel(Level.BASIC)
+                            .log(Platform.INFO)
+                            .request("OkHttpClientRequest")
+                            .response("OkHttpClientResponse")
+                            //.addHeader("version", BuildConfig.VERSION_NAME)
+                            //.addQueryParam("query", "0")
+                            .enableAndroidStudio_v3_LogsHack(true) /* enable fix for logCat logging issues with pretty format */
+                            //              .logger(new Logger() {
+                            //                  @Override
+                            //                  public void log(int level, String tag, String msg) {
+                            //                      Log.w(tag, msg);
+                            //                  }
+                            //              })
+                            //              .executor(Executors.newSingleThreadExecutor())
+                            .build())
+
+                    .addInterceptor(ChuckInterceptor(mCallback.getContext()))
 
                     // Add an Interceptor to the OkHttpClient.
                     .addInterceptor { chain ->
@@ -84,7 +117,8 @@ class NetworkUtils private constructor() {
     interface Callback {
         fun onAuthError(statusCode: Int)
         fun getAuthToken(): String?
-        fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody): String
+        fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String
+        fun getContext(): Context
     }
 
 

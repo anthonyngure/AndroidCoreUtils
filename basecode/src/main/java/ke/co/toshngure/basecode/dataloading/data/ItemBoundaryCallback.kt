@@ -1,14 +1,12 @@
 package ke.co.toshngure.basecode.dataloading.data
 
-import android.text.TextUtils
 import androidx.annotation.MainThread
 import androidx.paging.PagedList
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
+import ke.co.toshngure.basecode.extensions.executeAsync
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.NetworkUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,7 +15,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         PagedList.BoundaryCallback<LoadedModel>() {
 
     private var mItemAtEndId = 0L
-    internal val syncStateHelper = SyncStateHelper(repository)
+    internal val syncStateHelper = SyncStateHelper(repository.getSyncClass(), repository.getTab())
 
 
     /**
@@ -26,14 +24,14 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
      */
     override fun onZeroItemsLoaded() {
         super.onZeroItemsLoaded()
-        BeeLog.i(TAG, "onZeroItemsLoaded")
-        if (repository.mItemRepositoryConfig.connects) {
+        BeeLog.i(getTag(), "onZeroItemsLoaded")
+        repository.getAPICall(0, 0)?.let {
             syncStateHelper.recordStatus(SyncStatus.LOADED)
             syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
-                repository.getAPICall(0, 0).enqueue(createCallback())
+                it.enqueue(createCallback())
             }
-        } else {
-            BeeLog.i(TAG, "onZeroItemsLoaded, connection is disabled!")
+        } ?: run {
+            BeeLog.i(getTag(), "onZeroItemsLoaded, connection is disabled!")
             syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
         }
     }
@@ -45,22 +43,30 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
     @MainThread
     override fun onItemAtEndLoaded(itemAtEnd: LoadedModel) {
         super.onItemAtEndLoaded(itemAtEnd)
+
         mItemAtEndId = repository.getItemId(itemAtEnd)
-        BeeLog.i(TAG, "onItemAtEndLoaded, id = $mItemAtEndId")
-        // BeeLog.i(TAG, "onItemAtEndLoaded, isRunning = " + helper.isRunning(PagingRequestHelper.RequestType.AFTER))
-        if (repository.mItemRepositoryConfig.paginates) {
-            //When the last item is loaded we will request more data from network if the repo paginates
-            syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
-                repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())
+
+        BeeLog.i(getTag(), "onItemAtEndLoaded, id = $mItemAtEndId")
+
+        repository.getAPICall(mItemAtEndId, 0)?.let {
+            if (repository.getPaginates()) {
+                //When the last item is loaded we will request more data from network if the repo paginates
+                syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
+                    it.enqueue(createCallback())
+                }
+            } else {
+                BeeLog.i(getTag(), "onItemAtEndLoaded, pagination is disabled!")
             }
-        } else {
-            BeeLog.i(TAG, "onItemAtEndLoaded, pagination is disabled!")
+        } ?: run {
+            BeeLog.i(getTag(), "onZeroItemsLoaded, connection is disabled!")
         }
+
+
     }
 
     override fun onItemAtFrontLoaded(itemAtFront: LoadedModel) {
         super.onItemAtFrontLoaded(itemAtFront)
-        BeeLog.i(TAG, "onItemAtFrontLoaded, id = " + repository.getItemId(itemAtFront))
+        BeeLog.i(getTag(), "onItemAtFrontLoaded, id = " + repository.getItemId(itemAtFront))
         syncStateHelper.recordStatus(SyncStatus.LOADED)
         // ignored, since we only ever append to what's in the DB
     }
@@ -70,18 +76,25 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         return object : Callback<List<Model>> {
 
             override fun onFailure(call: Call<List<Model>>, t: Throwable) {
-                syncStateHelper.recordFailure(t.localizedMessage)
+                if (BeeLog.DEBUG) {
+                    syncStateHelper.recordFailure(t.localizedMessage)
+                } else {
+                    val error = NetworkUtils.getCallback().getErrorMessageFromResponseBody(0, null)
+                    syncStateHelper.recordFailure(error)
+                }
             }
 
             override fun onResponse(call: Call<List<Model>>, response: Response<List<Model>>) {
                 val data = response.body()
                 if (response.isSuccessful && data != null) {
                     if (data.isEmpty()) {
+                        BeeLog.i(getTag(), "Data empty, recordExhausted()")
                         syncStateHelper.recordExhausted()
                     } else {
                         repository.insertItemsIntoDb(data)
                         syncStateHelper.recordStatus(SyncStatus.LOADED)
                     }
+
                 } else {
                     val errorBody = response.errorBody()
                     errorBody?.let {
@@ -94,28 +107,13 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         }
     }
 
-    internal fun sync() {
-        //recordStatus(SyncStatus.SYNCING)
-
-        val ids = arrayListOf<Long>()
-        for (i in 1..500) {
-            ids.add((i + 10000000000000000))
-        }
-        val data = TextUtils.join(",", ids)
-        //BeeLog.i(model, data)
-        //BeeLog.i(model, "Data Length = ${data.toByteArray().size}")
-
-        //val state = SyncStatesDatabase.getInstance(context).syncStates().findByModel(model)
-
-        //BeeLog.i(model, state?.toString())
-    }
 
     internal fun refresh() {
         //recordStatus(SyncStatus.REFRESHING)
     }
 
     internal fun retry() {
-        runBlocking(Dispatchers.IO) {
+        executeAsync {
             val syncState = syncStateHelper.loadSyncState()
             val syncStatus = SyncStatus.valueOf(syncState.status)
             syncState.status = SyncStatus.LOADED.value
@@ -124,19 +122,19 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                 SyncStatus.LOADING_INITIAL_EXHAUSTED,
                 SyncStatus.LOADING_INITIAL_FAILED -> {
                     // If it does not connect, just ignore the retry
-                    if (repository.mItemRepositoryConfig.connects){
+                    repository.getAPICall(0, 0)?.let {
                         syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
-                            repository.getAPICall(0, 0).enqueue(createCallback())
+                            it.enqueue(createCallback())
                         }
-                    } else {
-                        BeeLog.i(TAG, "retry, connection is disabled!")
+                    } ?: run {
+                        BeeLog.i(getTag(), "retry, connection is disabled!")
                         syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
                     }
                 }
                 SyncStatus.LOADING_BEFORE_FAILED,
                 SyncStatus.LOADING_BEFORE_EXHAUSTED -> {
                     syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
-                        repository.getAPICall(mItemAtEndId, 0).enqueue(createCallback())
+                        repository.getAPICall(mItemAtEndId, 0)?.enqueue(createCallback())
                     }
                 }
                 SyncStatus.LOADING_AFTER_FAILED,
@@ -150,8 +148,8 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
         }
     }
 
-    companion object {
-        private const val TAG = "ItemBoundaryCallback"
+    fun getTag(): String {
+        return "ItemBoundaryCallback-${repository.getSyncClass().simpleName}-${repository.getTab()}"
     }
 
 }

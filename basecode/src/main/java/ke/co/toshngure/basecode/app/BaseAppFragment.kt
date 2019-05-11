@@ -12,15 +12,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
@@ -28,17 +33,17 @@ import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.extensions.hide
+import ke.co.toshngure.basecode.extensions.hideIf
 import ke.co.toshngure.basecode.extensions.show
+import ke.co.toshngure.basecode.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.DrawableUtils
+import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.NetworkUtils
-import kotlinx.android.synthetic.main.fragment_base.*
-import okhttp3.ResponseBody
+import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,9 +55,11 @@ import retrofit2.Response
 
 abstract class BaseAppFragment<D> : Fragment() {
 
+    internal lateinit var mLoadingConfig: LoadingConfig
+
     private var mPermissionsRationale =
-        "Required permissions have been denied. Please allow requested permissions to proceed\n" +
-                "\n Go to [Setting] > [Permission]"
+            "Required permissions have been denied. Please allow requested permissions to proceed\n" +
+                    "\n Go to [Setting] > [Permission]"
 
     private var mActiveRetrofitCallback: CancelableCallback? = null
 
@@ -60,24 +67,46 @@ abstract class BaseAppFragment<D> : Fragment() {
 
 
         override fun onPermissionGranted() {
-            navigationAction()
+            navigationAction.invoke()
         }
 
         override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base, container, false)
+        return inflater.inflate(R.layout.basecode_fragment_base_app, container, false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mLoadingConfig = getLoadingConfig()
+
+        noDataMessageTV.setText(mLoadingConfig.noDataMessage)
+        noDataIV.setImageResource(mLoadingConfig.noDataIcon)
+
+        statusTV.showIf(BeeLog.DEBUG)
+
         loadingLayout.hide()
+        if (mLoadingConfig.withLoadingLayoutAtTop) {
+            loadingLayout.gravity = Gravity.TOP or Gravity.CENTER
+            (loadingProgressBar.layoutParams as LinearLayout.LayoutParams).topMargin = BaseUtils.dpToPx(56)
+        } else {
+            loadingLayout.gravity = Gravity.CENTER
+        }
+
+        noDataLayout.hide()
+        errorLayout.hide()
+
         onSetUpCollapsibleView(collapsibleViewContainer)
-        initSwipeToRefresh()
+        onSetUpSwipeRefreshLayout(swipeRefreshLayout)
         onSetUpTopView(topViewContainer)
         onSetUpContentView(contentViewContainer)
         onSetUpBottomView(bottomViewContainer)
@@ -85,47 +114,51 @@ abstract class BaseAppFragment<D> : Fragment() {
         onSetUpBottomFab(bottomFab)
     }
 
+    protected open fun getLoadingConfig(): LoadingConfig {
+        return LoadingConfig()
+    }
 
-    private fun initSwipeToRefresh() {
+    protected open fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
 
-        swipeRefreshLayout.isEnabled = false
+        swipeRefreshLayout.isEnabled = mLoadingConfig.refreshEnabled
 
         swipeRefreshLayout.setColorSchemeResources(
-            R.color.colorPrimary,
-            R.color.colorAccent,
-            R.color.colorPrimaryDark
+                R.color.colorPrimary,
+                R.color.colorAccent,
+                R.color.colorPrimaryDark
         )
 
         swipeRefreshLayout.setOnRefreshListener {
-            if (!swipeRefreshLayout.isRefreshing && getApiCall() != null) {
+            if (!swipeRefreshLayout.isRefreshing) {
                 swipeRefreshLayout.isRefreshing = true
                 makeRequest()
-            } else {
-                swipeRefreshLayout.isRefreshing = false
             }
         }
-        onSetUpSwipeRefreshLayout(swipeRefreshLayout)
     }
-
-
-    protected open fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {}
 
     protected open fun onSetUpCollapsibleView(container: FrameLayout) {}
 
     protected open fun onSetUpTopView(container: FrameLayout) {}
 
+    /**
+     * For this to work make sure the root inflated at {@link #onSetUpTopView(FrameLayout)
+     * is {@link NestedScrollView}
+     */
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
     protected open fun onSetUpBottomView(container: FrameLayout) {}
 
-    protected open fun onSetUpTopFab(topFab: FloatingActionButton) {}
+    protected open fun onSetUpTopFab(topFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+        BaseUtils.tintImageView(bottomFab, ContextCompat.getColor(topFab.context, android.R.color.white))
+    }
 
-    protected open fun onSetUpBottomFab(bottomFab: FloatingActionButton) {
-
+    protected open fun onSetUpBottomFab(bottomFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+        bottomFab.setImageResource(iconRes)
+        BaseUtils.tintImageView(bottomFab, ContextCompat.getColor(topFab.context, android.R.color.white))
     }
 
 
-    fun toast(message: Any) {
+    public fun toast(message: Any) {
 
         try {
             Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT).show()
@@ -135,24 +168,26 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     }
 
-    fun toastDebug(msg: Any) {
+    public fun toastDebug(msg: Any) {
         if (BeeLog.DEBUG) {
             toast(msg)
         }
     }
 
-    fun toast(@StringRes string: Int) {
+    public fun toast(@StringRes string: Int) {
         toast(getString(string))
     }
 
     protected fun makeRequest() {
+
         getApiCall()?.let { call ->
-            loadingLayout.show()
+            onShowLoading()
             val callback = CancelableCallback()
             call.enqueue(callback)
             mActiveRetrofitCallback = callback
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -171,10 +206,11 @@ abstract class BaseAppFragment<D> : Fragment() {
         override fun onFailure(call: Call<D>, t: Throwable) {
             BeeLog.e(TAG, "onFailure")
             BeeLog.e(TAG, t)
+            onHideLoading()
             if (!canceled) {
                 mActiveRetrofitCallback = null
                 if (BeeLog.DEBUG) {
-                    showNetworkErrorDialog(t.message)
+                    showNetworkErrorDialog(t.localizedMessage)
                 } else {
                     showNetworkErrorDialog(getString(R.string.message_connection_error))
                 }
@@ -183,22 +219,16 @@ abstract class BaseAppFragment<D> : Fragment() {
 
         override fun onResponse(call: Call<D>, response: Response<D>) {
             BeeLog.e(TAG, "onResponse, $response")
-            loadingLayout.hide()
+            onHideLoading()
             if (!canceled) {
                 mActiveRetrofitCallback = null
-                if (response.isSuccessful) {
-                    val body: D? = response.body()
-                    when {
-                        body != null -> {
-                            DataHandlerTask(
-                                this@BaseAppFragment::processDataInBackground,
-                                this@BaseAppFragment::onDataReady
-                            ).execute(body)
-                        }
-                        else -> {
-                            showNetworkErrorDialog(getErrorMessage(response))
-                        }
-                    }
+                if (response.isSuccessful && response.body() != null) {
+                    val body = response.body()
+                    DataHandlerTask(this@BaseAppFragment::processDataInBackground,
+                            this@BaseAppFragment::onDataReady).execute(body)
+                } else if (response.code() == 404) {
+                    errorLayout.show()
+                    errorMessageTV.setText(mLoadingConfig.noDataMessage)
                 } else {
                     showNetworkErrorDialog(getErrorMessage(response))
                 }
@@ -209,8 +239,80 @@ abstract class BaseAppFragment<D> : Fragment() {
     private fun getErrorMessage(response: Response<D>): String {
         val errorBody = response.errorBody()
         return errorBody?.let {
-             NetworkUtils.getCallback().getErrorMessageFromResponseBody(response.code(), it)
+            NetworkUtils.getCallback().getErrorMessageFromResponseBody(response.code(), it)
         } ?: response.message()
+    }
+
+    protected open fun onShowLoading() {
+        onShowLoading(loadingLayout)
+        onShowLoading(loadingLayout, collapsibleViewContainer)
+        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
+        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
+        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer, bottomViewContainer)
+    }
+
+    protected open fun onShowLoading(loadingLayout: LinearLayout?) {}
+
+    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?) {}
+
+    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?) {
+    }
+
+    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
+    }
+
+
+    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?,
+                                     bottomViewContainer: FrameLayout?) {
+
+        collapsibleViewContainer?.hideIf(mLoadingConfig.showLoading) // Should be hidden when showing loading layout
+        loadingLayout?.showIf(mLoadingConfig.showLoading && !mLoadingConfig.skeletonize)
+        noDataLayout?.hide()
+        errorLayout?.hide()
+        loadingMessageTV.setText(mLoadingConfig.loadingMessage)
+        if (mLoadingConfig.skeletonize) {
+            skeletonLayout?.showSkeleton()
+        }
+    }
+
+
+    protected open fun onHideLoading() {
+        onHideLoading(loadingLayout)
+        onHideLoading(loadingLayout, collapsibleViewContainer)
+        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
+        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
+        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer, bottomViewContainer)
+    }
+
+    protected open fun onHideLoading(loadingLayout: LinearLayout?) {}
+
+    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?) {}
+
+    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?) {
+    }
+
+    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
+    }
+
+
+    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?,
+                                     bottomViewContainer: FrameLayout?) {
+        collapsibleViewContainer?.show()
+        loadingLayout?.hide()
+        noDataLayout?.hide()
+        errorLayout?.hide()
+        if (swipeRefreshLayout?.isRefreshing == true) {
+            swipeRefreshLayout?.isRefreshing = false
+        }
+        if (mLoadingConfig.skeletonize) {
+            skeletonLayout?.showOriginal()
+        }
     }
 
     protected open fun processDataInBackground(data: D): D {
@@ -222,8 +324,8 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
     private class DataHandlerTask<D>(
-        private val processData: (data: D) -> D,
-        private val onFinish: (data: D) -> Unit) : AsyncTask<D, Void, D>() {
+            private val processData: (data: D) -> D,
+            private val onFinish: (data: D) -> Unit) : AsyncTask<D, Void, D>() {
         override fun doInBackground(vararg params: D): D {
             return processData(params[0])
         }
@@ -241,14 +343,17 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
     private fun showNetworkErrorDialog(message: String?) {
-        activity?.let {
-            AlertDialog.Builder(it)
-                .setMessage(message ?: getString(R.string.message_connection_error))
-                .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    loadingLayout.hide()
-                }.show()
+        if (mLoadingConfig.showErrorDialog) {
+            activity?.let {
+                AlertDialog.Builder(it)
+                        .setCancelable(false)
+                        .setMessage(message ?: getString(R.string.message_connection_error))
+                        .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
+                        .setNegativeButton(R.string.close) { _, _ -> }
+                        .show()
+            }
         }
+
     }
 
     protected fun hideKeyboardFrom(view: View) {
@@ -264,52 +369,68 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     fun showErrorSnack(@StringRes msg: Int) {
         showErrorSnack(getString(msg))
-
     }
 
-    fun navigateWithPermissionsCheck(directions: NavDirections, vararg permissions: String) {
-        navigateWithPermissionsCheck(*permissions, navigationAction = {
-            view?.findNavController()?.navigate(directions, defaultNavOptions())
+    fun navigateWithPermissionsCheck(directions: NavDirections, permissions: Array<String> = arrayOf(),
+                                     popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false) {
+
+        handleActionWithPermissions(*permissions, action = {
+            view?.findNavController()?.navigate(directions, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
+
     }
 
-    fun navigateWithPermissionsCheck(@IdRes resId: Int, args: Bundle? = null, vararg permissions: String) {
-        navigateWithPermissionsCheck(*permissions, navigationAction = {
-            view?.findNavController()?.navigate(resId, args, defaultNavOptions())
+    fun navigateWithPermissionsCheck(@IdRes resId: Int, args: Bundle? = null, permissions: Array<String> = arrayOf(),
+                                     popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false) {
+        handleActionWithPermissions(*permissions, action = {
+            view?.findNavController()?.navigate(resId, args, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
     }
 
     fun startActivityWithPermissionsCheck(intent: Intent, vararg permissions: String) {
-        navigateWithPermissionsCheck(*permissions, navigationAction = {
+        handleActionWithPermissions(*permissions, action = {
             startActivity(intent)
         })
     }
 
     fun startActivityWithPermissionsCheck(intent: Intent, requestCode: Int, vararg permissions: String) {
-        navigateWithPermissionsCheck(*permissions, navigationAction = {
+        handleActionWithPermissions(*permissions, action = {
             startActivityForResult(intent, requestCode)
         })
     }
 
-    private fun defaultNavOptions(): NavOptions {
-        return NavOptions.Builder()
-            .setEnterAnim(R.anim.slide_in_right)
-            .setExitAnim(R.anim.slide_out_left)
-            .setPopEnterAnim(R.anim.slide_in_left)
-            .setPopExitAnim(R.anim.slide_out_right)
-            .build()
+    private fun defaultNavOptions(popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false): NavOptions {
+        return if (popUpToDestinationId != 0) {
+            NavOptions.Builder()
+                    .setPopUpTo(popUpToDestinationId, popUpToInclusive)
+                    .build()
+        } else {
+            NavOptions.Builder()
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(R.anim.slide_in_left)
+                    .setPopExitAnim(R.anim.slide_out_right).build()
+        }
     }
 
-    private fun navigateWithPermissionsCheck(vararg permissions: String, navigationAction: () -> Unit) {
+    private fun handleActionWithPermissions(vararg permissions: String, action: () -> Unit) {
         if (!permissions.isNullOrEmpty()) {
             TedPermission.with(context)
-                .setPermissionListener(RequiredPermissionsListener(navigationAction))
-                .setDeniedMessage(mPermissionsRationale)
-                .setPermissions(*permissions)
-                .check()
+                    .setPermissionListener(RequiredPermissionsListener(action))
+                    .setDeniedMessage(mPermissionsRationale)
+                    .setPermissions(*permissions)
+                    .check()
         } else {
-            navigationAction()
+            action.invoke()
         }
+    }
+
+    protected fun setTitle(@StringRes title: Int) {
+        setTitle(getString(title))
+    }
+
+    protected fun setTitle(title: String?) {
+        (activity as AppCompatActivity).supportActionBar?.title = title
     }
 
     companion object {

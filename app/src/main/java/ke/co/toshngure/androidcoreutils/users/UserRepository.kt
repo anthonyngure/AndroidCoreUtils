@@ -1,6 +1,7 @@
 package ke.co.toshngure.androidcoreutils.users
 
 import androidx.paging.DataSource
+import androidx.room.RoomDatabase
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.App
 import ke.co.toshngure.androidcoreutils.AppDatabase
@@ -28,9 +29,12 @@ class UserRepository : ItemRepository<User, User>() {
 
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<User, User> {
         return ItemRepositoryConfig(
-            syncClass = User::class.java,
-            db = AppDatabase.getInstance()
+            syncClass = User::class.java
         )
+    }
+
+    override fun getDatabase(): RoomDatabase {
+        return AppDatabase.getInstance()
     }
 
     override fun getItemDao(): ItemDao<User> {

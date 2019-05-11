@@ -1,17 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_sync"
-        android:title="@string/sync"
-        android:icon="@drawable/ic_sync_black_24dp"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-
-    <item
-            android:id="@+id/action_clear"
-            android:title="@string/clear"
-            app:showAsAction="never" />
+        android:id="@+id/action_clear"
+        android:title="@string/clear"
+        app:showAsAction="never" />
 
 </menu>

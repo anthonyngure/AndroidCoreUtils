@@ -17,9 +17,9 @@ import androidx.annotation.StringRes
  * Email : anthonyngure25@gmail.com.
  */
 
-abstract class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
+open class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
 
-    protected abstract fun invalidate()
+    protected open fun invalidate(){}
 
     open fun remove(@StringRes key: Int) {
         sharedPreferences.edit().remove(resolveKey(key)).apply()
