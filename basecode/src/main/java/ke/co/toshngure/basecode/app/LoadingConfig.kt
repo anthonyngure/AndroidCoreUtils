@@ -12,6 +12,7 @@ data class LoadingConfig(
         val showLoading: Boolean = true,
         val showErrorDialog: Boolean = true,
         val withLoadingLayoutAtTop: Boolean = false,
+        val withNoDataLayoutAtTop: Boolean = false,
         @StringRes val loadingMessage: Int = R.string.message_waiting,
         val skeletonize: Boolean = false,
         @StringRes val noDataMessage: Int = R.string.message_empty_data,

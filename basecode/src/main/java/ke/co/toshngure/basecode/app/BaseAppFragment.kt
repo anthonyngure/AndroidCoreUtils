@@ -103,6 +103,13 @@ abstract class BaseAppFragment<D> : Fragment() {
         }
 
         noDataLayout.hide()
+        if (mLoadingConfig.withNoDataLayoutAtTop) {
+            noDataLayout.gravity = Gravity.TOP or Gravity.CENTER
+            (noDataIV.layoutParams as LinearLayout.LayoutParams).topMargin = BaseUtils.dpToPx(56)
+        } else {
+            loadingLayout.gravity = Gravity.CENTER
+        }
+
         errorLayout.hide()
 
         onSetUpCollapsibleView(collapsibleViewContainer)

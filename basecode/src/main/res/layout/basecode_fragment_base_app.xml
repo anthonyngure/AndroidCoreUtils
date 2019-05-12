@@ -46,32 +46,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <FrameLayout
-                    android:id="@+id/bottomViewContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true" />
-
-                <FrameLayout
                     android:id="@+id/topViewContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true" />
+                    tools:layout_height="100dp"
+                    tools:background="@color/colorAccent"/>
 
                 <FrameLayout
                     android:id="@+id/contentViewContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_above="@id/bottomViewContainer"
-                    android:layout_below="@id/topViewContainer" />
+                    android:layout_height="wrap_content"
+                    tools:layout_height="200dp"
+                    tools:background="@color/colorPrimary"/>
 
+                <FrameLayout
+                    android:id="@+id/bottomViewContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout_height="100dp"
+                    tools:background="@color/colorAccent"/>
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </com.faltenreich.skeletonlayout.SkeletonLayout>
 
@@ -89,7 +90,7 @@
         android:padding="@dimen/activity_vertical_margin"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ProgressBar
             android:id="@+id/loadingProgressBar"
@@ -178,7 +179,6 @@
 
     </LinearLayout>
     <!--endregion-->
-
 
     <TextView
         android:id="@+id/statusTV"

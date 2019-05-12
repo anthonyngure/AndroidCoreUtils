@@ -63,7 +63,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.0.0"
     kapt "androidx.room:room-compiler:2.0.0"
 
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
 
     // Navigation
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
