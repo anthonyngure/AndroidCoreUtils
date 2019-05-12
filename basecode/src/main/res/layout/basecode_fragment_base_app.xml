@@ -179,6 +179,7 @@
     </LinearLayout>
     <!--endregion-->
 
+
     <TextView
         android:id="@+id/statusTV"
         android:layout_width="wrap_content"
