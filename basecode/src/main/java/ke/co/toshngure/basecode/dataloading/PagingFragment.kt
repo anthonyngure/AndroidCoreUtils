@@ -14,7 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.app.BaseAppFragment
-import ke.co.toshngure.basecode.app.LoadingConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
@@ -62,6 +61,7 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         if (mConfig.withDivider) {
             listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
         }
+        listRV.isNestedScrollingEnabled = false
 
         onSetUpRecyclerView(listRV)
 
