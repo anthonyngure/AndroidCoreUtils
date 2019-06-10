@@ -31,15 +31,13 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
-import ke.co.toshngure.basecode.extensions.hide
-import ke.co.toshngure.basecode.extensions.hideIf
-import ke.co.toshngure.basecode.extensions.show
-import ke.co.toshngure.basecode.extensions.showIf
+import ke.co.toshngure.basecode.extensions.*
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.NetworkUtils
@@ -116,9 +114,9 @@ abstract class BaseAppFragment<D> : Fragment() {
         onSetUpSwipeRefreshLayout(swipeRefreshLayout)
         onSetUpTopView(topViewContainer)
         onSetUpContentView(contentViewContainer)
-        onSetUpBottomView(bottomViewContainer)
         onSetUpTopFab(topFab)
         onSetUpBottomFab(bottomFab)
+        onSetUpBottomExtendedFab(extendedBottomFab)
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -141,6 +139,8 @@ abstract class BaseAppFragment<D> : Fragment() {
                 makeRequest()
             }
         }
+
+
     }
 
     protected open fun onSetUpCollapsibleView(container: FrameLayout) {}
@@ -153,10 +153,9 @@ abstract class BaseAppFragment<D> : Fragment() {
      */
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
-    protected open fun onSetUpBottomView(container: FrameLayout) {}
-
     protected open fun onSetUpTopFab(topFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
-        BaseUtils.tintImageView(bottomFab, ContextCompat.getColor(topFab.context, android.R.color.white))
+        topFab.setImageResource(iconRes)
+        BaseUtils.tintImageView(topFab, ContextCompat.getColor(topFab.context, android.R.color.white))
     }
 
     protected open fun onSetUpBottomFab(bottomFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
@@ -164,6 +163,24 @@ abstract class BaseAppFragment<D> : Fragment() {
         BaseUtils.tintImageView(bottomFab, ContextCompat.getColor(topFab.context, android.R.color.white))
     }
 
+    protected open fun onSetUpBottomExtendedFab(extendedBottomFab: ExtendedFloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+        extendedBottomFab.setIconResource(iconRes)
+        extendedBottomFab.setIconTintResource(android.R.color.white)
+
+        // When the extended fab is shown, we have to set some margin bottom to the contentViewContainer
+        extendedBottomFab.viewTreeObserver.addOnGlobalLayoutListener {
+            extendedBottomFab.postDelayed({
+                contentViewContainer?.let {
+                    val params = contentViewContainer.layoutParams as LinearLayout.LayoutParams
+                    if (extendedBottomFab.isVisible()){
+                        params.setMargins(0, 0, 0, BaseUtils.dpToPx(78))
+                    } else{
+                        params.setMargins(0, 0, 0, 0)
+                    }
+                }
+            }, 1000)
+        }
+    }
 
     public fun toast(message: Any) {
 
@@ -255,7 +272,6 @@ abstract class BaseAppFragment<D> : Fragment() {
         onShowLoading(loadingLayout, collapsibleViewContainer)
         onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
         onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
-        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer, bottomViewContainer)
     }
 
     protected open fun onShowLoading(loadingLayout: LinearLayout?) {}
@@ -268,21 +284,12 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
                                      topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
-    }
-
-
-    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?,
-                                     bottomViewContainer: FrameLayout?) {
 
         collapsibleViewContainer?.hideIf(mLoadingConfig.showLoading) // Should be hidden when showing loading layout
-        loadingLayout?.showIf(mLoadingConfig.showLoading && !mLoadingConfig.skeletonize)
+        loadingLayout?.showIf(mLoadingConfig.showLoading)
         noDataLayout?.hide()
         errorLayout?.hide()
         loadingMessageTV.setText(mLoadingConfig.loadingMessage)
-        if (mLoadingConfig.skeletonize) {
-            skeletonLayout?.showSkeleton()
-        }
     }
 
 
@@ -291,7 +298,6 @@ abstract class BaseAppFragment<D> : Fragment() {
         onHideLoading(loadingLayout, collapsibleViewContainer)
         onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
         onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
-        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer, bottomViewContainer)
     }
 
     protected open fun onHideLoading(loadingLayout: LinearLayout?) {}
@@ -302,14 +308,9 @@ abstract class BaseAppFragment<D> : Fragment() {
                                      topViewContainer: FrameLayout?) {
     }
 
+
     protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
                                      topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
-    }
-
-
-    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?,
-                                     bottomViewContainer: FrameLayout?) {
         collapsibleViewContainer?.show()
         loadingLayout?.hide()
         noDataLayout?.hide()
@@ -317,9 +318,7 @@ abstract class BaseAppFragment<D> : Fragment() {
         if (swipeRefreshLayout?.isRefreshing == true) {
             swipeRefreshLayout?.isRefreshing = false
         }
-        if (mLoadingConfig.skeletonize) {
-            skeletonLayout?.showOriginal()
-        }
+        extendedBottomFab.hide()
     }
 
     protected open fun processDataInBackground(data: D): D {
@@ -372,6 +371,16 @@ abstract class BaseAppFragment<D> : Fragment() {
         view?.let {
             Snackbar.make(it, msg, Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok) {}.show()
         }
+    }
+
+    protected fun showSnack(msg: String) {
+        view?.let {
+            Snackbar.make(it, msg, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {}.show()
+        }
+    }
+
+    fun showSnack(@StringRes msg: Int) {
+        showSnack(getString(msg))
     }
 
     fun showErrorSnack(@StringRes msg: Int) {

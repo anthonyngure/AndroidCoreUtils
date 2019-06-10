@@ -117,4 +117,14 @@ object DatesHelper {
     fun toDateTimeDisplayString(timestamp: Long): String {
         return SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT).format(Date(timestamp))
     }
+
+    fun formatToSqlDate(timeInMillis: Long): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        return simpleDateFormat.format(Date(timeInMillis))
+    }
+
+    fun formatToSqlTime(timeInMillis: Long): String {
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
+        return simpleDateFormat.format(Date(timeInMillis))
+    }
 }

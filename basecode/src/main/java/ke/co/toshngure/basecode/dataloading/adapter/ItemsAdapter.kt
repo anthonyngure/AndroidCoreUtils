@@ -59,8 +59,8 @@ class ItemsAdapter<LoadedModel>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
-        BeeLog.i(TAG, "onBindViewHolder, payloads = $payloads")
-        if (payloads.isNotEmpty()) {
+        BeeLog.i(TAG, "onBindViewHolder, position -> $position, payloads -> $payloads")
+        /*if (payloads.isNotEmpty()) {
             val item = getItem(position)
             item?.let {
                 @Suppress("UNCHECKED_CAST")
@@ -68,7 +68,9 @@ class ItemsAdapter<LoadedModel>(
             }
         } else {
             onBindViewHolder(holder, position)
-        }
+        }*/
+
+        onBindViewHolder(holder, position)
     }
 
     private fun shouldShowBottom(): Boolean {

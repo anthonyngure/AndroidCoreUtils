@@ -1,9 +1,11 @@
 package ke.co.toshngure.androidcoreutils.photos
 
 import android.view.View
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ke.co.toshngure.androidcoreutils.Extras
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
+import ke.co.toshngure.basecode.app.LoadingConfig
 import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder

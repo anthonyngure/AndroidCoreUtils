@@ -24,6 +24,9 @@ class App : Application() {
         fun getInstance(): App = mInstance
 
         class NetworkUtilsCallback : NetworkUtils.Callback {
+            override fun getCommonParams(): Map<String, String> {
+                return mapOf()
+            }
 
             override fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String {
                 BeeLog.i(TAG, responseBody)

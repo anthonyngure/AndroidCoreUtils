@@ -49,19 +49,24 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
         mAdapter = ItemsAdapter(mConfig.diffUtilItemCallback, mConfig.layoutRes,
                 this::createItemViewHolder, mConfig.itemClickListener, mItemRepository)
+
         mAdapter.setHasStableIds(true)
 
 
         listRV.apply {
             layoutManager = LinearLayoutManager(listRV.context)
-            // itemAnimator = SlideInUpAnimator(OvershootInterpolator(1f))
-            itemAnimator = SlideInUpAnimator()
             adapter = mAdapter
         }
+
+        if (mConfig.itemAnimator != null){
+            listRV.itemAnimator = mConfig.itemAnimator
+        }
+
         if (mConfig.withDivider) {
             listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
         }
-        listRV.isNestedScrollingEnabled = false
+
+        // listRV.isNestedScrollingEnabled = false
 
         onSetUpRecyclerView(listRV)
 

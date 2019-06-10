@@ -9,6 +9,7 @@
 package ke.co.toshngure.basecode.util
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -90,6 +91,17 @@ object BaseUtils {
         return CURRENCY_CODE + String.format(Locale.ENGLISH, PRICE_FORMAT, price)
     }
 
+
+    fun formatPrice(price: String?): String {
+        val amount = try {
+            price?.toDouble() ?: 0.0
+        } catch (e : Exception){
+            BeeLog.e(e)
+            0.0
+        }
+        return formatPrice(amount)
+    }
+
     fun openUrl(context: Context, url: String) {
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(url)
@@ -144,9 +156,12 @@ object BaseUtils {
 
 
     fun cacheInput(editText: EditText, @StringRes key: Int, prefUtils: PrefUtilsImpl) {
+        // Get cached text
         val currentInput = prefUtils.getString(key)
+        // Set current text to the cached value
         editText.setText(currentInput)
-        editText.setSelection(currentInput!!.length)
+        // Set cursor to the end of the text
+        editText.setSelection(editText.text?.length ?: 0)
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
@@ -218,6 +233,34 @@ object BaseUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Method checks if the app is in background or not
+     */
+    fun appIsInBackground(context: Context): Boolean {
+        var isInBackground = true
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            val runningProcesses = am.runningAppProcesses
+            for (processInfo in runningProcesses) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    for (activeProcess in processInfo.pkgList) {
+                        if (activeProcess == context.packageName) {
+                            isInBackground = false
+                        }
+                    }
+                }
+            }
+        } else {
+            val taskInfo = am.getRunningTasks(1)
+            val componentInfo = taskInfo[0].topActivity
+            if (componentInfo.packageName == context.packageName) {
+                isInBackground = false
+            }
+        }
+
+        return isInBackground
     }
 
 

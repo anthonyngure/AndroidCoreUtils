@@ -74,7 +74,7 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
         return sharedPreferences.getBoolean(resolveKey(key), false)
     }
 
-    protected fun clear() {
+    public fun clear() {
         sharedPreferences.edit().clear().apply()
         invalidate()
     }

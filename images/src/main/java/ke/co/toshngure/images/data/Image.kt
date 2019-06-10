@@ -45,7 +45,7 @@ data class Image(
             }
 
             override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
-                return oldItem.selected && newItem.selected
+                return oldItem.selected == newItem.selected
                         && oldItem.compressedPath == newItem.compressedPath
                         && oldItem.croppedPath == newItem.croppedPath
             }

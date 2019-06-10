@@ -15,7 +15,7 @@ abstract class ItemRepository<Model, LoadedModel> {
 
     protected var arguments : Bundle? = null
 
-    private lateinit var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>
+    private var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>? = null
 
     private var mItemRepositoryConfig: ItemRepositoryConfig<Model, LoadedModel>
 
@@ -44,12 +44,12 @@ abstract class ItemRepository<Model, LoadedModel> {
      */
     @MainThread
     internal fun refresh() {
-        mBoundaryCallback.refresh()
+        mBoundaryCallback?.refresh()
     }
 
     @MainThread
     internal fun retry() {
-        mBoundaryCallback.retry()
+        mBoundaryCallback?.retry()
     }
 
     /**

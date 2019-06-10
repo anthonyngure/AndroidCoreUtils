@@ -25,6 +25,10 @@ fun View.hideIf(condition: Boolean) {
     this.visibility = if (condition) View.GONE else View.VISIBLE
 }
 
+fun View.isVisible() : Boolean {
+    return this.visibility == View.VISIBLE
+}
+
 fun View.navigate(directions: NavDirections) {
     this.findNavController().navigate(directions, defaultNavOptions())
 }

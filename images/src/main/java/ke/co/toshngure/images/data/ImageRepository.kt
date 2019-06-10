@@ -15,7 +15,7 @@ class ImageRepository(private val context: Context) : ItemRepository<Image, Imag
     }
 
     override fun getItemRepositoryConfig(): ItemRepositoryConfig<Image, Image> {
-        return ItemRepositoryConfig(syncClass = Image::class.java)
+        return ItemRepositoryConfig(syncClass = Image::class.java, dbPerPage = 8)
     }
 
     override fun deleteAll() {

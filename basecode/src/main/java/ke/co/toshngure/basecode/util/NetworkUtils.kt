@@ -6,10 +6,13 @@ import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
 import ke.co.toshngure.basecode.logging.BeeLog
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.internal.platform.Platform
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
 class NetworkUtils private constructor() {
@@ -50,7 +53,7 @@ class NetworkUtils private constructor() {
             //    .BODY // Logging body
 
 
-            return OkHttpClient.Builder()
+            val builder = OkHttpClient.Builder()
 
                     .hostnameVerifier { _, _ -> true }
 
@@ -60,7 +63,45 @@ class NetworkUtils private constructor() {
 
                     .followRedirects(false)
 
-                    .addInterceptor(LoggingInterceptor.Builder()
+
+            // Add an Interceptor to the OkHttpClient.
+            builder.addInterceptor { chain ->
+
+
+                // Get the request from the chain.
+                val original = chain.request()
+
+                // Get url
+                val url = original.url().newBuilder()
+                // Get common params
+                val commonParams = mCallback.getCommonParams()
+                // Add common params to the url
+                for (key in commonParams.keys) {
+                    url.addQueryParameter(key, commonParams[key])
+                }
+
+                val request = original.newBuilder()
+                        .url(url.build())
+                        .method(original.method(), original.body())
+                        .header("Accept", "application/json")
+                        .header("Authorization", "Bearer ${mCallback.getAuthToken()}")
+
+                // Add the modified request to the chain.
+                val response = chain.proceed(request.build())
+
+
+                if (response.code() == 401 || response.code() == 403) {
+                    mCallback.onAuthError(response.code())
+                    mClientInstance?.dispatcher()?.cancelAll()
+                }
+
+                response
+            }
+
+            builder.addInterceptor(ChuckInterceptor(mCallback.getContext()))
+
+            builder.addInterceptor(
+                    LoggingInterceptor.Builder()
                             .loggable(BeeLog.DEBUG)
                             .setLevel(Level.BASIC)
                             .log(Platform.INFO)
@@ -76,34 +117,9 @@ class NetworkUtils private constructor() {
                             //                  }
                             //              })
                             //              .executor(Executors.newSingleThreadExecutor())
-                            .build())
-
-                    .addInterceptor(ChuckInterceptor(mCallback.getContext()))
-
-                    // Add an Interceptor to the OkHttpClient.
-                    .addInterceptor { chain ->
-
-                        val original = chain.request()
-
-                        // Get the request from the chain.
-                        val request = original.newBuilder()
-                                .method(original.method(), original.body())
-                                .header("Accept", "application/json")
-                                .header("Authorization", "Bearer ${mCallback.getAuthToken()}")
-
-                        // Add the modified request to the chain.
-                        val response = chain.proceed(request.build())
-
-
-                        if (response.code() == 401 || response.code() == 403) {
-                            mCallback.onAuthError(response.code())
-                            mClientInstance?.dispatcher()?.cancelAll()
-                        }
-
-                        response
-                    }
-
-                    .build()
+                            .build()
+            )
+            return builder.build()
         }
 
         fun canConnect(context: Context): Boolean {
@@ -119,6 +135,7 @@ class NetworkUtils private constructor() {
         fun getAuthToken(): String?
         fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String
         fun getContext(): Context
+        fun getCommonParams(): Map<String, String>
     }
 
 
