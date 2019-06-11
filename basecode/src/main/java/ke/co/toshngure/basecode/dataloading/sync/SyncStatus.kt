@@ -15,4 +15,6 @@ enum class SyncStatus(val value: String) {
     LOADING_AFTER_EXHAUSTED("LOADING_AFTER_EXHAUSTED"), // UNABLE TO GET NEWER DATA
 
     LOADED("LOADED"),
+
+    REFRESHING("REFRESHING"),
 }

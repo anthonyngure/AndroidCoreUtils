@@ -109,7 +109,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
 
 
     internal fun refresh() {
-        //recordStatus(SyncStatus.REFRESHING)
+        syncStateHelper.recordStatus(SyncStatus.REFRESHING)
     }
 
     internal fun retry() {

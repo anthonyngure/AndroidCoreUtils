@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import ke.co.toshngure.androidcoreutils.Extras
 import ke.co.toshngure.androidcoreutils.R
+import ke.co.toshngure.basecode.app.LoadingConfig
 import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
@@ -24,6 +25,11 @@ class AlbumsFragment : PagingFragment<Album, Album,Any>(), ItemsAdapter.OnItemCl
             repository = AlbumRepository(),
             itemClickListener = this
         )
+    }
+
+    override fun getLoadingConfig(): LoadingConfig {
+        return super.getLoadingConfig()
+            .copy(refreshEnabled = true)
     }
 
 

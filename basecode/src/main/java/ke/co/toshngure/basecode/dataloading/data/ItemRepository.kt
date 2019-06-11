@@ -21,7 +21,6 @@ abstract class ItemRepository<Model, LoadedModel> {
 
     init {
         mItemRepositoryConfig = this.getItemRepositoryConfig()
-        //BeeLog.i(TAG, "mItemRepositoryConfig = $mItemRepositoryConfig")
     }
 
 

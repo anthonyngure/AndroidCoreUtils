@@ -293,6 +293,8 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
 
+    protected fun getRefreshLayout() : SwipeRefreshLayout? { return swipeRefreshLayout }
+
     protected open fun onHideLoading() {
         onHideLoading(loadingLayout)
         onHideLoading(loadingLayout, collapsibleViewContainer)
