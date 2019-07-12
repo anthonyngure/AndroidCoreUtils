@@ -78,7 +78,7 @@ interface ApiService {
         private fun buildInstance(baseUrl: String): ApiService {
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .client(NetworkUtils.getClientInstance())
+                .client(NetworkUtils.getClientInstance(App.getInstance()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)
