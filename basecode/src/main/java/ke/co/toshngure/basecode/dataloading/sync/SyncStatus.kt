@@ -17,4 +17,5 @@ enum class SyncStatus(val value: String) {
     LOADED("LOADED"),
 
     REFRESHING("REFRESHING"),
+    REFRESHING_FAILED("REFRESHING_FAILED"),
 }

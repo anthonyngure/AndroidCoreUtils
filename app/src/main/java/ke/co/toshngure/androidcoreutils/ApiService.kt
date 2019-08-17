@@ -25,7 +25,7 @@ interface ApiService {
 
     @GET("/posts")
     fun posts(
-        @Query("_start") start: Long,
+        @Query("_start") start: Long = 0,
         @Query("_limit") perPage: Int = 10,
         @Query("_order") order: String = "desc",
         @QueryMap params: Map<String, String> = mapOf()
@@ -33,7 +33,7 @@ interface ApiService {
 
     @GET("/albums")
     fun albums(
-        @Query("_start") start: Long,
+        @Query("_start") start: Long = 0,
         @Query("_limit") perPage: Int = 10,
         @Query("_order") order: String = "desc",
         @QueryMap params: Map<String, String> = mapOf()
@@ -78,7 +78,7 @@ interface ApiService {
         private fun buildInstance(baseUrl: String): ApiService {
             return Retrofit.Builder()
                 .baseUrl(baseUrl)
-                .client(NetworkUtils.getClientInstance(App.getInstance()))
+                .client(NetworkUtils.getClientInstance())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)

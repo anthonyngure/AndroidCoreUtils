@@ -1,7 +1,6 @@
 package ke.co.toshngure.basecode.dataloading.data
 
 import androidx.annotation.WorkerThread
-import ke.co.toshngure.basecode.dataloading.sync.SyncResponse
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
@@ -51,12 +50,11 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
     internal fun recordFailure(error: String) {
         executeAsync {
             val syncState = loadSyncState()
-            val syncStatus = SyncStatus.valueOf(syncState.status)
-            when (syncStatus) {
+            when (SyncStatus.valueOf(syncState.status)) {
                 SyncStatus.LOADING_INITIAL -> syncState.status = SyncStatus.LOADING_INITIAL_FAILED.value
                 SyncStatus.LOADING_BEFORE -> syncState.status = SyncStatus.LOADING_BEFORE_FAILED.value
                 SyncStatus.LOADING_AFTER -> syncState.status = SyncStatus.LOADING_AFTER_FAILED.value
-                //SyncStatus.REFRESHING -> syncState.status = SyncStatus.REFRESHING_FAILED.value
+                SyncStatus.REFRESHING -> syncState.status = SyncStatus.REFRESHING_FAILED.value
                 else -> {
                 }
             }

@@ -11,6 +11,7 @@ package ke.co.toshngure.basecode.util
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
+import ke.co.toshngure.basecode.logging.BeeLog
 
 /**
  * Created by Anthony Ngure on 16/02/2017.
@@ -19,7 +20,7 @@ import androidx.annotation.StringRes
 
 open class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
 
-    protected open fun invalidate(){}
+    protected open fun invalidate() {}
 
     open fun remove(@StringRes key: Int) {
         sharedPreferences.edit().remove(resolveKey(key)).apply()
@@ -36,11 +37,21 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
     }
 
     fun getString(@StringRes key: Int, defVal: String): String? {
-        return sharedPreferences.getString(resolveKey(key), defVal)
+        return try {
+            sharedPreferences.getString(resolveKey(key), defVal)
+        } catch (e: Exception){
+            BeeLog.e(e)
+            defVal
+        }
     }
 
     fun getInt(@StringRes key: Int): Int {
-        return sharedPreferences.getInt(resolveKey(key), 0)
+        return try {
+            sharedPreferences.getInt(resolveKey(key), 0)
+        } catch (ex: Exception){
+            BeeLog.e(ex)
+            0
+        }
     }
 
     fun writeLong(@StringRes key: Int, value: Long) {
@@ -49,16 +60,31 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
     }
 
     fun getLong(@StringRes key: Int): Long {
-        return sharedPreferences.getLong(resolveKey(key), 0)
+        return try {
+            sharedPreferences.getLong(resolveKey(key), 0)
+        } catch (e: Exception) {
+            BeeLog.e(e)
+            0
+        }
     }
 
-    fun getLong(@StringRes key: Int, defVal: Int): Long {
-        return sharedPreferences.getLong(resolveKey(key), defVal.toLong())
+    fun getLong(@StringRes key: Int, defVal: Long): Long {
+        return try {
+            sharedPreferences.getLong(resolveKey(key), defVal.toLong())
+        } catch (ex: Exception) {
+            BeeLog.e(ex)
+            defVal
+        }
     }
 
 
     fun getBoolean(@StringRes key: Int, defVal: Boolean): Boolean {
-        return sharedPreferences.getBoolean(resolveKey(key), defVal)
+        return try {
+            sharedPreferences.getBoolean(resolveKey(key), defVal)
+        } catch (ex: Exception) {
+            BeeLog.e(ex)
+            defVal
+        }
     }
 
     fun writeInt(@StringRes key: Int, `val`: Int) {
@@ -71,7 +97,12 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
     }
 
     fun getBoolean(@StringRes key: Int): Boolean {
-        return sharedPreferences.getBoolean(resolveKey(key), false)
+        return try {
+            sharedPreferences.getBoolean(resolveKey(key), false)
+        } catch (e: Exception) {
+            BeeLog.e(e)
+            false
+        }
     }
 
     public fun clear() {
@@ -83,6 +114,10 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
         return "key_" + context.resources.getResourceEntryName(key)
         //return String.valueOf("key_" + key);
         //return getContext().getString(key).trim().replaceAll(" ","");
+    }
+
+    companion object {
+        private const val TAG = "PrefUtilsImpl"
     }
 
 

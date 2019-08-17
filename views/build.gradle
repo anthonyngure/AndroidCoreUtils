@@ -14,10 +14,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.anthonyngure'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -59,19 +59,19 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //Android X
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
 
     // Google Material
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
     // https://github.com/bumptech/glide
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.7.1"
-    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
     implementation project(':basecode')
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

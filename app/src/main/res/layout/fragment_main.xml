@@ -36,6 +36,11 @@
                     style="@style/MainButtons"
                     android:text="@string/images_picker"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/smsRetrieverBtn"
+                style="@style/MainButtons"
+                android:text="@string/sms_retriever"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

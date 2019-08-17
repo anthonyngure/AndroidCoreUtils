@@ -6,10 +6,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.anthonyngure'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -48,7 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
 
     // ViewModel and LiveData
@@ -60,24 +60,30 @@ dependencies {
     implementation "androidx.paging:paging-runtime:2.1.0"
 
     /*Room*/
-    implementation "androidx.room:room-runtime:2.0.0"
-    kapt "androidx.room:room-compiler:2.0.0"
+    implementation "androidx.room:room-runtime:2.1.0"
+    kapt "androidx.room:room-compiler:2.1.0"
 
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+
+    implementation 'com.google.android.gms:play-services-base:17.1.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:17.1.0'
+    //Optional for phone number hint
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 
     // Navigation
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
 
     /*Retrofit*/
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
     // https://github.com/wasabeef/recyclerview-animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 
     //Google material
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha09'
 
     //OKHttp Logging Interceptor
     //https://github.com/ihsanbal/LoggingInterceptor
@@ -96,15 +102,15 @@ dependencies {
 
     // Glide
     // https://github.com/bumptech/glide
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.7.1"
-    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
     // https://github.com/jgilfelt/chuck
     debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
     releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

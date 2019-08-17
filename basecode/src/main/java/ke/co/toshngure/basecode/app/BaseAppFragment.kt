@@ -51,17 +51,19 @@ import retrofit2.Response
  * Email : anthonyngure25@gmail.com.
  */
 
-abstract class BaseAppFragment<D> : Fragment() {
+abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+
 
     internal lateinit var mLoadingConfig: LoadingConfig
 
     private var mPermissionsRationale =
-            "Required permissions have been denied. Please allow requested permissions to proceed\n" +
-                    "\n Go to [Setting] > [Permission]"
+        "Required permissions have been denied. Please allow requested permissions to proceed\n" +
+                "\n Go to [Setting] > [Permission]"
 
     private var mActiveRetrofitCallback: CancelableCallback? = null
 
-    private inner class RequiredPermissionsListener(private val navigationAction: () -> Unit) : PermissionListener {
+    private inner class RequiredPermissionsListener(private val navigationAction: () -> Unit) :
+        PermissionListener {
 
 
         override fun onPermissionGranted() {
@@ -77,7 +79,11 @@ abstract class BaseAppFragment<D> : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.basecode_fragment_base_app, container, false)
     }
 
@@ -95,7 +101,8 @@ abstract class BaseAppFragment<D> : Fragment() {
         loadingLayout.hide()
         if (mLoadingConfig.withLoadingLayoutAtTop) {
             loadingLayout.gravity = Gravity.TOP or Gravity.CENTER
-            (loadingProgressBar.layoutParams as LinearLayout.LayoutParams).topMargin = BaseUtils.dpToPx(56)
+            (loadingProgressBar.layoutParams as LinearLayout.LayoutParams).topMargin =
+                BaseUtils.dpToPx(56)
         } else {
             loadingLayout.gravity = Gravity.CENTER
         }
@@ -128,9 +135,9 @@ abstract class BaseAppFragment<D> : Fragment() {
         swipeRefreshLayout.isEnabled = mLoadingConfig.refreshEnabled
 
         swipeRefreshLayout.setColorSchemeResources(
-                R.color.colorPrimary,
-                R.color.colorAccent,
-                R.color.colorPrimaryDark
+            R.color.colorPrimary,
+            R.color.colorAccent,
+            R.color.colorPrimaryDark
         )
 
         swipeRefreshLayout.setOnRefreshListener {
@@ -139,6 +146,8 @@ abstract class BaseAppFragment<D> : Fragment() {
                 makeRequest()
             }
         }
+
+        swipeRefreshLayout.setOnRefreshListener(this)
 
 
     }
@@ -153,17 +162,37 @@ abstract class BaseAppFragment<D> : Fragment() {
      */
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
-    protected open fun onSetUpTopFab(topFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+    protected open fun onSetUpTopFab(
+        topFab: FloatingActionButton,
+        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
+    ) {
+
         topFab.setImageResource(iconRes)
-        BaseUtils.tintImageView(topFab, ContextCompat.getColor(topFab.context, android.R.color.white))
+        BaseUtils.tintImageView(
+            topFab,
+            ContextCompat.getColor(topFab.context, android.R.color.white)
+        )
+
     }
 
-    protected open fun onSetUpBottomFab(bottomFab: FloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+    protected open fun onSetUpBottomFab(
+        bottomFab: FloatingActionButton,
+        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
+    ) {
+
         bottomFab.setImageResource(iconRes)
-        BaseUtils.tintImageView(bottomFab, ContextCompat.getColor(topFab.context, android.R.color.white))
+        BaseUtils.tintImageView(
+            bottomFab,
+            ContextCompat.getColor(topFab.context, android.R.color.white)
+        )
+
     }
 
-    protected open fun onSetUpBottomExtendedFab(extendedBottomFab: ExtendedFloatingActionButton, @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp) {
+    protected open fun onSetUpBottomExtendedFab(
+        extendedBottomFab: ExtendedFloatingActionButton,
+        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
+    ) {
+
         extendedBottomFab.setIconResource(iconRes)
         extendedBottomFab.setIconTintResource(android.R.color.white)
 
@@ -172,17 +201,28 @@ abstract class BaseAppFragment<D> : Fragment() {
             extendedBottomFab.postDelayed({
                 contentViewContainer?.let {
                     val params = contentViewContainer.layoutParams as LinearLayout.LayoutParams
-                    if (extendedBottomFab.isVisible()){
+                    if (extendedBottomFab.isVisible()) {
                         params.setMargins(0, 0, 0, BaseUtils.dpToPx(78))
-                    } else{
+                    } else {
                         params.setMargins(0, 0, 0, 0)
                     }
                 }
             }, 1000)
         }
+
+        extendedBottomFab.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(v: View?) {
+                BeeLog.i(TAG, "extendedBottomFab -> onViewDetachedFromWindow")
+            }
+
+            override fun onViewAttachedToWindow(v: View?) {
+                BeeLog.i(TAG, "extendedBottomFab -> onViewAttachedToWindow")
+            }
+
+        })
     }
 
-    public fun toast(message: Any) {
+    protected fun toast(message: Any) {
 
         try {
             Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT).show()
@@ -192,18 +232,17 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     }
 
-    public fun toastDebug(msg: Any) {
+    protected fun toastDebug(msg: Any) {
         if (BeeLog.DEBUG) {
             toast(msg)
         }
     }
 
-    public fun toast(@StringRes string: Int) {
+    protected fun toast(@StringRes string: Int) {
         toast(getString(string))
     }
 
     protected fun makeRequest() {
-
         getApiCall()?.let { call ->
             onShowLoading()
             val callback = CancelableCallback()
@@ -248,8 +287,10 @@ abstract class BaseAppFragment<D> : Fragment() {
                 mActiveRetrofitCallback = null
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()
-                    DataHandlerTask(this@BaseAppFragment::processDataInBackground,
-                            this@BaseAppFragment::onDataReady).execute(body)
+                    DataHandlerTask(
+                        this@BaseAppFragment::processDataInBackground,
+                        this@BaseAppFragment::onDataReady
+                    ).execute(body)
                 } else if (response.code() == 404) {
                     errorLayout.show()
                     errorMessageTV.setText(mLoadingConfig.noDataMessage)
@@ -271,19 +312,32 @@ abstract class BaseAppFragment<D> : Fragment() {
         onShowLoading(loadingLayout)
         onShowLoading(loadingLayout, collapsibleViewContainer)
         onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
-        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
+        onShowLoading(
+            loadingLayout,
+            collapsibleViewContainer,
+            topViewContainer,
+            contentViewContainer
+        )
     }
 
     protected open fun onShowLoading(loadingLayout: LinearLayout?) {}
 
-    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?) {}
-
-    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?) {
+    protected open fun onShowLoading(
+        loadingLayout: LinearLayout?,
+        collapsibleViewContainer: FrameLayout?
+    ) {
     }
 
-    protected open fun onShowLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
+    protected open fun onShowLoading(
+        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+        topViewContainer: FrameLayout?
+    ) {
+    }
+
+    protected open fun onShowLoading(
+        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+        topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?
+    ) {
 
         collapsibleViewContainer?.hideIf(mLoadingConfig.showLoading) // Should be hidden when showing loading layout
         loadingLayout?.showIf(mLoadingConfig.showLoading)
@@ -292,27 +346,53 @@ abstract class BaseAppFragment<D> : Fragment() {
         loadingMessageTV.setText(mLoadingConfig.loadingMessage)
     }
 
+    override fun onRefresh() {
 
-    protected fun getRefreshLayout() : SwipeRefreshLayout? { return swipeRefreshLayout }
+    }
+
+    protected fun expandCollapsingView() {
+        appBarLayout.setExpanded(true)
+    }
+
+    protected fun collapseCollapsingView() {
+        appBarLayout.setExpanded(false)
+    }
+
+    protected fun getRefreshLayout(): SwipeRefreshLayout? {
+        return swipeRefreshLayout
+    }
 
     protected open fun onHideLoading() {
         onHideLoading(loadingLayout)
         onHideLoading(loadingLayout, collapsibleViewContainer)
         onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
-        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer, contentViewContainer)
+        onHideLoading(
+            loadingLayout,
+            collapsibleViewContainer,
+            topViewContainer,
+            contentViewContainer
+        )
     }
 
     protected open fun onHideLoading(loadingLayout: LinearLayout?) {}
 
-    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?) {}
+    protected open fun onHideLoading(
+        loadingLayout: LinearLayout?,
+        collapsibleViewContainer: FrameLayout?
+    ) {
+    }
 
-    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?) {
+    protected open fun onHideLoading(
+        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+        topViewContainer: FrameLayout?
+    ) {
     }
 
 
-    protected open fun onHideLoading(loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-                                     topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?) {
+    protected open fun onHideLoading(
+        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
+        topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?
+    ) {
         collapsibleViewContainer?.show()
         loadingLayout?.hide()
         noDataLayout?.hide()
@@ -320,7 +400,7 @@ abstract class BaseAppFragment<D> : Fragment() {
         if (swipeRefreshLayout?.isRefreshing == true) {
             swipeRefreshLayout?.isRefreshing = false
         }
-        extendedBottomFab.hide()
+        extendedBottomFab?.hide()
     }
 
     protected open fun processDataInBackground(data: D): D {
@@ -332,8 +412,9 @@ abstract class BaseAppFragment<D> : Fragment() {
     }
 
     private class DataHandlerTask<D>(
-            private val processData: (data: D) -> D,
-            private val onFinish: (data: D) -> Unit) : AsyncTask<D, Void, D>() {
+        private val processData: (data: D) -> D,
+        private val onFinish: (data: D) -> Unit
+    ) : AsyncTask<D, Void, D>() {
         override fun doInBackground(vararg params: D): D {
             return processData(params[0])
         }
@@ -354,11 +435,11 @@ abstract class BaseAppFragment<D> : Fragment() {
         if (mLoadingConfig.showErrorDialog) {
             activity?.let {
                 AlertDialog.Builder(it)
-                        .setCancelable(false)
-                        .setMessage(message ?: getString(R.string.message_connection_error))
-                        .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
-                        .setNegativeButton(R.string.close) { _, _ -> }
-                        .show()
+                    .setCancelable(false)
+                    .setMessage(message ?: getString(R.string.message_connection_error))
+                    .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
+                    .setNegativeButton(R.string.close) { _, _ -> }
+                    .show()
             }
         }
 
@@ -371,7 +452,8 @@ abstract class BaseAppFragment<D> : Fragment() {
 
     protected fun showErrorSnack(msg: String) {
         view?.let {
-            Snackbar.make(it, msg, Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok) {}.show()
+            Snackbar.make(it, msg, Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok) {}
+                .show()
         }
     }
 
@@ -389,19 +471,25 @@ abstract class BaseAppFragment<D> : Fragment() {
         showErrorSnack(getString(msg))
     }
 
-    fun navigateWithPermissionsCheck(directions: NavDirections, permissions: Array<String> = arrayOf(),
-                                     popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false) {
+    fun navigateWithPermissionsCheck(
+        directions: NavDirections, permissions: Array<String> = arrayOf(),
+        popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false
+    ) {
 
         handleActionWithPermissions(*permissions, action = {
-            view?.findNavController()?.navigate(directions, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+            view?.findNavController()
+                ?.navigate(directions, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
 
     }
 
-    fun navigateWithPermissionsCheck(@IdRes resId: Int, args: Bundle? = null, permissions: Array<String> = arrayOf(),
-                                     popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false) {
+    fun navigateWithPermissionsCheck(
+        @IdRes resId: Int, args: Bundle? = null, permissions: Array<String> = arrayOf(),
+        popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false
+    ) {
         handleActionWithPermissions(*permissions, action = {
-            view?.findNavController()?.navigate(resId, args, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+            view?.findNavController()
+                ?.navigate(resId, args, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
     }
 
@@ -411,33 +499,40 @@ abstract class BaseAppFragment<D> : Fragment() {
         })
     }
 
-    fun startActivityWithPermissionsCheck(intent: Intent, requestCode: Int, vararg permissions: String) {
+    fun startActivityWithPermissionsCheck(
+        intent: Intent,
+        requestCode: Int,
+        vararg permissions: String
+    ) {
         handleActionWithPermissions(*permissions, action = {
             startActivityForResult(intent, requestCode)
         })
     }
 
-    private fun defaultNavOptions(popUpToDestinationId: Int = 0, popUpToInclusive: Boolean = false): NavOptions {
+    private fun defaultNavOptions(
+        popUpToDestinationId: Int = 0,
+        popUpToInclusive: Boolean = false
+    ): NavOptions {
         return if (popUpToDestinationId != 0) {
             NavOptions.Builder()
-                    .setPopUpTo(popUpToDestinationId, popUpToInclusive)
-                    .build()
+                .setPopUpTo(popUpToDestinationId, popUpToInclusive)
+                .build()
         } else {
             NavOptions.Builder()
-                    .setEnterAnim(R.anim.slide_in_right)
-                    .setExitAnim(R.anim.slide_out_left)
-                    .setPopEnterAnim(R.anim.slide_in_left)
-                    .setPopExitAnim(R.anim.slide_out_right).build()
+                .setEnterAnim(R.anim.slide_in_right)
+                .setExitAnim(R.anim.slide_out_left)
+                .setPopEnterAnim(R.anim.slide_in_left)
+                .setPopExitAnim(R.anim.slide_out_right).build()
         }
     }
 
     private fun handleActionWithPermissions(vararg permissions: String, action: () -> Unit) {
         if (!permissions.isNullOrEmpty()) {
             TedPermission.with(context)
-                    .setPermissionListener(RequiredPermissionsListener(action))
-                    .setDeniedMessage(mPermissionsRationale)
-                    .setPermissions(*permissions)
-                    .check()
+                .setPermissionListener(RequiredPermissionsListener(action))
+                .setDeniedMessage(mPermissionsRationale)
+                .setPermissions(*permissions)
+                .check()
         } else {
             action.invoke()
         }

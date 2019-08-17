@@ -17,6 +17,7 @@ import java.io.File
 import java.lang.ref.WeakReference
 
 
+@Suppress("DEPRECATION")
 class PicturePreviewActivity : BaseAppActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

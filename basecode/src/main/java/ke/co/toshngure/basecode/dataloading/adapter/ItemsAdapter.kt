@@ -23,6 +23,7 @@ class ItemsAdapter<LoadedModel>(
 
     interface OnItemClickListener<T> {
         fun onClick(item: T)
+        
     }
 
     private var syncState: SyncState? = null
@@ -58,9 +59,9 @@ class ItemsAdapter<LoadedModel>(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+    /*override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         BeeLog.i(TAG, "onBindViewHolder, position -> $position, payloads -> $payloads")
-        /*if (payloads.isNotEmpty()) {
+        if (payloads.isNotEmpty()) {
             val item = getItem(position)
             item?.let {
                 @Suppress("UNCHECKED_CAST")
@@ -68,10 +69,9 @@ class ItemsAdapter<LoadedModel>(
             }
         } else {
             onBindViewHolder(holder, position)
-        }*/
-
-        onBindViewHolder(holder, position)
-    }
+        }
+        //onBindViewHolder(holder, position)
+    }*/
 
     private fun shouldShowBottom(): Boolean {
         return syncState?.let {

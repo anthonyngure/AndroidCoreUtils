@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package ke.co.toshngure.images.fragment
 
 import android.Manifest
@@ -55,8 +57,8 @@ import java.util.*
 
 @Suppress("DEPRECATION")
 open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
-        LoaderManager.LoaderCallbacks<Cursor>,
-        ItemsAdapter.OnItemClickListener<Image> {
+    LoaderManager.LoaderCallbacks<Cursor>,
+    ItemsAdapter.OnItemClickListener<Image> {
 
 
     private val mPickedImagesListAdapter = PickedImagesListAdapter()
@@ -77,11 +79,12 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
 
     override fun getPagingConfig(): PagingConfig<Image, Image> {
         return PagingConfig(
-                layoutRes = R.layout.item_image_selection,
-                repository = ImageRepository(activity!!),
-                diffUtilItemCallback = Image.DIFF_UTIL_ITEM_CALLBACK,
-                itemClickListener = this,
-                withDivider = false
+            layoutRes = R.layout.item_image_selection,
+            repository = ImageRepository(activity!!),
+            diffUtilItemCallback = Image.DIFF_UTIL_ITEM_CALLBACK,
+            itemClickListener = this,
+            withDivider = false,
+            itemAnimator = null
         )
     }
 
@@ -94,10 +97,9 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
     }
 
     override fun onClick(item: Image) {
-        val maxImages = maximumImages()
         // When only one image is selectable
         // Un select all first and select the clicked one
-        when (maxImages) {
+        when (val maxImages = maximumImages()) {
             1 -> SelectAndCompressTask(this::getContext, maxImages).execute(item)
             // If it is a selection and the maximum has been reached, alert the user
             // It is a selection if image is not selected
@@ -108,6 +110,8 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
                     executeAsync { ImagesDatabase.getInstance(activity!!).images().update(item.copy(selected = false)) }
                 } else {
                     SelectAndCompressTask(this::getContext, maxImages).execute(item)
+                    // Collapse
+                    expandCollapsingView()
                 }
             }
         }
@@ -121,9 +125,8 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
         }
     }
 
-
-    override fun onSetUpTopView(container: FrameLayout) {
-        super.onSetUpTopView(container)
+    override fun onSetUpCollapsibleView(container: FrameLayout) {
+        super.onSetUpCollapsibleView(container)
         layoutInflater.inflate(R.layout.fragment_images_picker_top_view, container, true)
     }
 
@@ -137,10 +140,12 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
 
         cameraIV.setOnClickListener {
             val intent = Intent(context, CameraActivity::class.java)
-            startActivityWithPermissionsCheck(intent, CAMERA_REQUEST_CODE,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            startActivityWithPermissionsCheck(
+                intent, CAMERA_REQUEST_CODE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         }
 
         foldersMS.setOnItemSelectedListener { _, _, _, item ->
@@ -244,7 +249,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
                 val resultUri = UCrop.getOutput(it)
                 executeAsync {
                     ImagesDatabase.getInstance(activity!!).images()
-                            .update(mCropingImage.copy(croppedPath = resultUri?.path))
+                        .update(mCropingImage.copy(croppedPath = resultUri?.path))
                 }
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
@@ -302,8 +307,8 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
             val pickedImageView = holder.itemView as PickedImageView
             val image = mPickedImageList[position]
             pickedImageView.setImage(
-                    image, this@ImagesPickerFragment,
-                    mPrefUtils, this@ImagesPickerFragment::cropImage
+                image, this@ImagesPickerFragment,
+                mPrefUtils, this@ImagesPickerFragment::cropImage
             )
         }
 
@@ -322,24 +327,25 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
             options.setShowCropFrame(true)
             options.setShowCropGrid(true)
             UCrop.of(Uri.fromFile(File(image.resolvePath())), destinationUri)
-                    .withOptions(options)
-                    .withAspectRatio(1f, 1f)
-                    .withMaxResultSize(640, 480)
-                    .start(ctx, this, CROP_REQUEST_CODE)
+                .withOptions(options)
+                .withAspectRatio(1f, 1f)
+                .withMaxResultSize(640, 480)
+                .start(ctx, this, CROP_REQUEST_CODE)
         }
     }
 
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val projection = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_ADDED
         )
-        return CursorLoader(activity!!, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                null, null, MediaStore.Images.Media.DATE_ADDED + " DESC LIMIT 1008"
+        return CursorLoader(
+            activity!!, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
+            null, null, MediaStore.Images.Media.DATE_ADDED + " DESC LIMIT 1008"
         )
     }
 
@@ -359,8 +365,8 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
                             val file = makeSafeFile(path)
                             if (file != null && file.exists() && !file.isHidden) {
                                 val image = Image(
-                                        name = name, path = path, sizeInBytes = file.length(),
-                                        bucket = bucket, dateAdded = dateAdded
+                                    name = name, path = path, sizeInBytes = file.length(),
+                                    bucket = bucket, dateAdded = dateAdded
                                 )
                                 //Add to all folders
                                 images.add(image)
@@ -393,7 +399,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
 
     @Suppress("DEPRECATION")
     class SelectAndCompressTask(private val getContext: () -> Context?, private val maxImages: Int = 1) :
-            AsyncTask<Image, Void, Image>() {
+        AsyncTask<Image, Void, Image>() {
 
         private var mProgressDialog: ProgressDialog? = null
 
@@ -424,24 +430,24 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
 
             if (sizeInKB > 75 && image.compressedPath.isNullOrEmpty()) {
                 val compressedImage = Compressor(getContext())
-                        .setMaxWidth(640)
-                        .setMaxHeight(480)
-                        .setQuality(85)
-                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                        .setDestinationDirectoryPath(getContext()?.cacheDir?.absolutePath)
-                        .compressToFile(actualImage)
+                    .setMaxWidth(640)
+                    .setMaxHeight(480)
+                    .setQuality(85)
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                    .setDestinationDirectoryPath(getContext()?.cacheDir?.absolutePath)
+                    .compressToFile(actualImage)
                 val imageUpdate = image.copy(
-                        selected = true,
-                        selectedAt = Calendar.getInstance().timeInMillis,
-                        sizeInBytes = compressedImage.length(),
-                        compressedPath = compressedImage.path
+                    selected = true,
+                    selectedAt = Calendar.getInstance().timeInMillis,
+                    sizeInBytes = compressedImage.length(),
+                    compressedPath = compressedImage.path
                 )
                 ImagesDatabase.getInstance(getContext()!!).images().insert(imageUpdate)
                 return imageUpdate
             } else {
                 val imageUpdate = image.copy(
-                        selected = true,
-                        selectedAt = Calendar.getInstance().timeInMillis
+                    selected = true,
+                    selectedAt = Calendar.getInstance().timeInMillis
                 )
                 ImagesDatabase.getInstance(getContext()!!).images().insert(imageUpdate)
                 return imageUpdate

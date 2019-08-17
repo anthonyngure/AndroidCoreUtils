@@ -15,19 +15,19 @@
             android:id="@+id/postsFragment"
             android:name="ke.co.toshngure.androidcoreutils.posts.PostsFragment"
             android:label="@string/posts"
-            tools:layout="@layout/fragment_base"/>
+            tools:layout="@layout/basecode_fragment_base_app"/>
 
     <fragment
             android:id="@+id/albumsFragment"
             android:name="ke.co.toshngure.androidcoreutils.albums.AlbumsFragment"
             android:label="@string/albums"
-            tools:layout="@layout/fragment_base"/>
+            tools:layout="@layout/basecode_fragment_base_app"/>
 
     <fragment
             android:id="@+id/photosFragment"
             android:name="ke.co.toshngure.androidcoreutils.photos.PhotosFragment"
             android:label="@string/photos"
-            tools:layout="@layout/fragment_base">
+            tools:layout="@layout/basecode_fragment_base_app">
 
         <argument
                 android:name="albumId"
@@ -46,7 +46,12 @@
             android:id="@+id/usersFragment"
             android:name="ke.co.toshngure.androidcoreutils.users.UsersFragment"
             android:label="@string/users"
-            tools:layout="@layout/fragment_base"/>
+            tools:layout="@layout/basecode_fragment_base_app"/>
 
+    <fragment
+        android:id="@+id/smsRetrieverFragment"
+        android:name="ke.co.toshngure.androidcoreutils.fragment.SmsRetrieverFragment"
+        android:label="@string/sms_retriever"
+        tools:layout="@layout/basecode_fragment_base_app"/>
 
 </navigation>

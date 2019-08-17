@@ -29,10 +29,13 @@ class MainFragment : BaseAppFragment<Any>() {
         albumsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.albumsFragment) }
 
         imagesPickerBtn.setOnClickListener {
-            navigateWithPermissionsCheck(R.id.testImagesPickerFragment, null,
+            navigateWithPermissionsCheck(
+                R.id.testImagesPickerFragment, null,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             )
         }
+
+        smsRetrieverBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.smsRetrieverFragment) }
 
         clearFab.setOnClickListener {
             runBlocking(Dispatchers.IO) {

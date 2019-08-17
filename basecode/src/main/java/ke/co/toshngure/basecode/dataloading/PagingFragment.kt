@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
@@ -23,8 +21,8 @@ import ke.co.toshngure.basecode.extensions.hide
 import ke.co.toshngure.basecode.extensions.show
 import ke.co.toshngure.basecode.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
-import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
+import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 
 
 abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
@@ -105,7 +103,13 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
                 statusTV.text = syncStatus.name
 
                 when (syncStatus) {
+                    SyncStatus.REFRESHING -> {
+                        swipeRefreshLayout?.isRefreshing = true
+                    }
 
+                    SyncStatus.REFRESHING_FAILED -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                    }
 
                     //region INITIAL DATA
                     SyncStatus.LOADING_INITIAL -> {
@@ -157,16 +161,14 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         })[ItemListViewModel::class.java]
     }
 
-
-    override fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
-        super.onSetUpSwipeRefreshLayout(swipeRefreshLayout)
-        swipeRefreshLayout.setOnRefreshListener { onRefresh(swipeRefreshLayout) }
-    }
-
     protected fun loadWithArgs(args: Bundle?) {
         mItemListViewModel.loadWithArgs(args)
     }
 
+    override fun onRefresh() {
+        super.onRefresh()
+        mItemRepository.refresh()
+    }
 
     private fun retry() {
         mItemRepository.retry()
@@ -187,9 +189,6 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    protected open fun onRefresh(swipeRefreshLayout: SwipeRefreshLayout?) {
     }
 
     protected open fun onSetUpRecyclerView(recyclerView: RecyclerView) {}

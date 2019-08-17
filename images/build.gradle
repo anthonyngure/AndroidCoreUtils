@@ -6,10 +6,10 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.anthonyngure'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,7 +58,8 @@ dependencies {
     implementation project(':views')
 
     //Android X
-    implementation "androidx.appcompat:appcompat:1.1.0-alpha05"
+    implementation "androidx.appcompat:appcompat:1.1.0-rc01"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.exifinterface:exifinterface:1.0.0'
 
     // ViewModel and LiveData
@@ -72,8 +73,8 @@ dependencies {
     implementation "androidx.paging:paging-runtime:2.1.0"
 
     /*Room*/
-    implementation "androidx.room:room-runtime:2.0.0"
-    kapt "androidx.room:room-compiler:2.0.0"
+    implementation "androidx.room:room-runtime:2.1.0"
+    kapt "androidx.room:room-compiler:2.1.0"
 
     // https://github.com/Yalantis/uCrop
     implementation 'com.github.yalantis:ucrop:2.2.2'
@@ -97,6 +98,6 @@ dependencies {
     implementation 'com.github.shts:StoriesProgressView:3.0.0'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

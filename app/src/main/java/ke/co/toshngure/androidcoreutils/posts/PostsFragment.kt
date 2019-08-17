@@ -40,8 +40,4 @@ class PostsFragment : PagingFragment<Post, Post,Any>() {
         return LoadingConfig(refreshEnabled = true)
     }
 
-    override fun onRefresh(swipeRefreshLayout: SwipeRefreshLayout?) {
-        super.onRefresh(swipeRefreshLayout)
-    }
-
 }

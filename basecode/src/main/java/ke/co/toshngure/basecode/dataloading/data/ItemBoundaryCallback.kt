@@ -12,7 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) :
-        PagedList.BoundaryCallback<LoadedModel>() {
+    PagedList.BoundaryCallback<LoadedModel>() {
 
     private var mItemAtEndId = 0L
     internal val syncStateHelper = SyncStateHelper(repository.getSyncClass(), repository.getTab())
@@ -91,15 +91,23 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                         BeeLog.i(getTag(), "Data empty, recordExhausted()")
                         syncStateHelper.recordExhausted()
                     } else {
-                        repository.insertItemsIntoDb(data)
-                        syncStateHelper.recordStatus(SyncStatus.LOADED)
+                        executeAsync {
+                            val syncState = syncStateHelper.loadSyncState()
+                            // When refreshing we have to delete
+                            if (SyncStatus.valueOf(syncState.status) == SyncStatus.REFRESHING) {
+                                repository.deleteAll()
+                            }
+                            repository.insertItemsIntoDb(data)
+                            syncStateHelper.recordStatus(SyncStatus.LOADED)
+                        }
+
                     }
 
                 } else {
                     val errorBody = response.errorBody()
                     errorBody?.let {
                         val errorMessage = NetworkUtils.getCallback()
-                                .getErrorMessageFromResponseBody(response.code(), it)
+                            .getErrorMessageFromResponseBody(response.code(), it)
                         syncStateHelper.recordFailure(errorMessage)
                     } ?: syncStateHelper.recordFailure(response.message())
                 }
@@ -109,7 +117,15 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
 
 
     internal fun refresh() {
-        syncStateHelper.recordStatus(SyncStatus.REFRESHING)
+        repository.getRefreshAPICall()?.let {
+            // Refresh data
+            syncStateHelper.runIfPossible(SyncStatus.REFRESHING) {
+                it.enqueue(createCallback())
+            }
+        } ?: run {
+            syncStateHelper.recordStatus(SyncStatus.LOADED)
+            BeeLog.w(getTag(), "refresh, refresh call is null!")
+        }
     }
 
     internal fun retry() {

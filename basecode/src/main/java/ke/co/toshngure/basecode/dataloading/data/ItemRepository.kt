@@ -82,9 +82,9 @@ abstract class ItemRepository<Model, LoadedModel> {
     }
 
 
-    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? {
-        return null
-    }
+    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? { return null }
+
+    open fun getRefreshAPICall(): Call<List<Model>>? { return null }
 
     /**
      * To save items into the db, called inside a transaction in background
@@ -96,7 +96,7 @@ abstract class ItemRepository<Model, LoadedModel> {
     /**
      * To delete all cached items
      */
-    protected open fun deleteAll() {}
+    open fun deleteAll() {}
 
 
     /**

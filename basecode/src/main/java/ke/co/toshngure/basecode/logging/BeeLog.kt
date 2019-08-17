@@ -37,6 +37,13 @@ object BeeLog {
         }
     }
 
+    fun v(subTag: String, message: Any?) {
+        if (DEBUG) {
+            Log.v(tag, "$subTag : $message")
+            addToHistory(subTag, message.toString())
+        }
+    }
+
     fun e(subTag: String, message: Any?) {
         if (DEBUG) {
             Log.e(tag, "$subTag : $message")

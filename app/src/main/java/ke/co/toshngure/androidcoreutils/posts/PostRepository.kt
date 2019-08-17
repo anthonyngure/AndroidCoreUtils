@@ -1,7 +1,6 @@
 package ke.co.toshngure.androidcoreutils.posts
 
 import androidx.paging.DataSource
-import androidx.room.RoomDatabase
 import ke.co.toshngure.androidcoreutils.ApiService
 import ke.co.toshngure.androidcoreutils.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
@@ -9,10 +8,7 @@ import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
 import retrofit2.Call
 
-class PostRepository() : ItemRepository<Post, Post>() {
-
-
-
+class PostRepository : ItemRepository<Post, Post>() {
 
     override fun getItemId(item: Post): Long {
         return item.id
@@ -20,6 +16,10 @@ class PostRepository() : ItemRepository<Post, Post>() {
 
     override fun getAPICall(before: Long, after: Long): Call<List<Post>> {
         return ApiService.getTypicodeInstance().posts(before)
+    }
+
+    override fun getRefreshAPICall(): Call<List<Post>>? {
+        return ApiService.getTypicodeInstance().posts()
     }
 
     override fun deleteAll() {

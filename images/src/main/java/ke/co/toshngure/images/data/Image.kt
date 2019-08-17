@@ -49,6 +49,11 @@ data class Image(
                         && oldItem.compressedPath == newItem.compressedPath
                         && oldItem.croppedPath == newItem.croppedPath
             }
+
+            override fun getChangePayload(oldItem: Image, newItem: Image): Any? {
+                // return super.getChangePayload(oldItem, newItem)
+                return newItem
+            }
         }
     }
 
