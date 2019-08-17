@@ -110,8 +110,6 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
                     executeAsync { ImagesDatabase.getInstance(activity!!).images().update(item.copy(selected = false)) }
                 } else {
                     SelectAndCompressTask(this::getContext, maxImages).execute(item)
-                    // Collapse
-                    expandCollapsingView()
                 }
             }
         }
@@ -207,13 +205,13 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
         })
     }
 
-    override fun onShowLoading(loadingLayout: LinearLayout?) {
-        super.onShowLoading(loadingLayout)
+    override fun onShowLoading(loadingLayout: LinearLayout?, contentViewContainer: FrameLayout?) {
+        super.onShowLoading(loadingLayout, contentViewContainer)
         mDoneMenuItem?.isVisible = false
     }
 
-    override fun onHideLoading(loadingLayout: LinearLayout?) {
-        super.onHideLoading(loadingLayout)
+    override fun onHideLoading(loadingLayout: LinearLayout?, contentViewContainer: FrameLayout?) {
+        super.onHideLoading(loadingLayout, contentViewContainer)
         mDoneMenuItem?.isVisible = true
     }
 
@@ -326,7 +324,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
             options.setToolbarCancelDrawable(R.drawable.ic_clear_black_24dp)
             options.setShowCropFrame(true)
             options.setShowCropGrid(true)
-            UCrop.of(Uri.fromFile(File(image.resolvePath())), destinationUri)
+            UCrop.of(Uri.fromFile(File(image.resolvePath().toString())), destinationUri)
                 .withOptions(options)
                 .withAspectRatio(1f, 1f)
                 .withMaxResultSize(640, 480)

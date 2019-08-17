@@ -52,8 +52,9 @@ object BaseUtils {
     }
 
     fun isValidPhone(phoneNo: String?): Boolean {
-        val phone = phoneNo?.trim { it <= ' ' }
-        return !TextUtils.isEmpty(phone) && Patterns.PHONE.matcher(phone).matches() && phone?.length == 10
+        return phoneNo?.let {
+            !TextUtils.isEmpty(it) && Patterns.PHONE.matcher(it).matches() && it.length == 10
+        } ?: false
     }
 
     fun tintProgressBar(progressBar: ProgressBar, @ColorInt color: Int) {

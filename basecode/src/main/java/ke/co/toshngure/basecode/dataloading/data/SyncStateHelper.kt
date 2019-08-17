@@ -47,7 +47,7 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
         }
     }
 
-    internal fun recordFailure(error: String) {
+    internal fun recordFailure(error: String?) {
         executeAsync {
             val syncState = loadSyncState()
             when (SyncStatus.valueOf(syncState.status)) {

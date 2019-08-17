@@ -63,7 +63,7 @@ class LogItemsFragment : PagingFragment<LogItem, LogItem, Any>() {
     }
 
     companion object {
-        const val EXTRA_SUB_TAG = "${BuildConfig.APPLICATION_ID}_extra_sub_tag"
+        const val EXTRA_SUB_TAG = "${BuildConfig.LIBRARY_PACKAGE_NAME}_extra_sub_tag"
         private const val ALL_SUB_TAGS = "All sub tags"
     }
 }

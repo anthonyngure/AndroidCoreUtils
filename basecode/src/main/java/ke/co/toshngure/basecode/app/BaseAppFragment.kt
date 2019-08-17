@@ -20,24 +20,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
-import ke.co.toshngure.basecode.extensions.*
+import ke.co.toshngure.basecode.extensions.hide
+import ke.co.toshngure.basecode.extensions.show
+import ke.co.toshngure.basecode.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.NetworkUtils
@@ -117,13 +115,9 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         errorLayout.hide()
 
-        onSetUpCollapsibleView(collapsibleViewContainer)
         onSetUpSwipeRefreshLayout(swipeRefreshLayout)
-        onSetUpTopView(topViewContainer)
+
         onSetUpContentView(contentViewContainer)
-        onSetUpTopFab(topFab)
-        onSetUpBottomFab(bottomFab)
-        onSetUpBottomExtendedFab(extendedBottomFab)
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -162,67 +156,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
      */
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
-    protected open fun onSetUpTopFab(
-        topFab: FloatingActionButton,
-        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
-    ) {
-
-        topFab.setImageResource(iconRes)
-        BaseUtils.tintImageView(
-            topFab,
-            ContextCompat.getColor(topFab.context, android.R.color.white)
-        )
-
-    }
-
-    protected open fun onSetUpBottomFab(
-        bottomFab: FloatingActionButton,
-        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
-    ) {
-
-        bottomFab.setImageResource(iconRes)
-        BaseUtils.tintImageView(
-            bottomFab,
-            ContextCompat.getColor(topFab.context, android.R.color.white)
-        )
-
-    }
-
-    protected open fun onSetUpBottomExtendedFab(
-        extendedBottomFab: ExtendedFloatingActionButton,
-        @DrawableRes iconRes: Int = R.drawable.ic_cloud_off_black_24dp
-    ) {
-
-        extendedBottomFab.setIconResource(iconRes)
-        extendedBottomFab.setIconTintResource(android.R.color.white)
-
-        // When the extended fab is shown, we have to set some margin bottom to the contentViewContainer
-        extendedBottomFab.viewTreeObserver.addOnGlobalLayoutListener {
-            extendedBottomFab.postDelayed({
-                contentViewContainer?.let {
-                    val params = contentViewContainer.layoutParams as LinearLayout.LayoutParams
-                    if (extendedBottomFab.isVisible()) {
-                        params.setMargins(0, 0, 0, BaseUtils.dpToPx(78))
-                    } else {
-                        params.setMargins(0, 0, 0, 0)
-                    }
-                }
-            }, 1000)
-        }
-
-        extendedBottomFab.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(v: View?) {
-                BeeLog.i(TAG, "extendedBottomFab -> onViewDetachedFromWindow")
-            }
-
-            override fun onViewAttachedToWindow(v: View?) {
-                BeeLog.i(TAG, "extendedBottomFab -> onViewAttachedToWindow")
-            }
-
-        })
-    }
-
-    protected fun toast(message: Any) {
+    fun toast(message: Any) {
 
         try {
             Toast.makeText(context, message.toString(), Toast.LENGTH_SHORT).show()
@@ -244,7 +178,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     protected fun makeRequest() {
         getApiCall()?.let { call ->
-            onShowLoading()
+            onShowLoading(loadingLayout, contentViewContainer)
             val callback = CancelableCallback()
             call.enqueue(callback)
             mActiveRetrofitCallback = callback
@@ -269,7 +203,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         override fun onFailure(call: Call<D>, t: Throwable) {
             BeeLog.e(TAG, "onFailure")
             BeeLog.e(TAG, t)
-            onHideLoading()
+            onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
                 mActiveRetrofitCallback = null
                 if (BeeLog.DEBUG) {
@@ -282,7 +216,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         override fun onResponse(call: Call<D>, response: Response<D>) {
             BeeLog.e(TAG, "onResponse, $response")
-            onHideLoading()
+            onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
                 mActiveRetrofitCallback = null
                 if (response.isSuccessful && response.body() != null) {
@@ -308,38 +242,10 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         } ?: response.message()
     }
 
-    protected open fun onShowLoading() {
-        onShowLoading(loadingLayout)
-        onShowLoading(loadingLayout, collapsibleViewContainer)
-        onShowLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
-        onShowLoading(
-            loadingLayout,
-            collapsibleViewContainer,
-            topViewContainer,
-            contentViewContainer
-        )
-    }
-
-    protected open fun onShowLoading(loadingLayout: LinearLayout?) {}
-
     protected open fun onShowLoading(
         loadingLayout: LinearLayout?,
-        collapsibleViewContainer: FrameLayout?
+        contentViewContainer: FrameLayout?
     ) {
-    }
-
-    protected open fun onShowLoading(
-        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-        topViewContainer: FrameLayout?
-    ) {
-    }
-
-    protected open fun onShowLoading(
-        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-        topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?
-    ) {
-
-        collapsibleViewContainer?.hideIf(mLoadingConfig.showLoading) // Should be hidden when showing loading layout
         loadingLayout?.showIf(mLoadingConfig.showLoading)
         noDataLayout?.hide()
         errorLayout?.hide()
@@ -350,57 +256,19 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     }
 
-    protected fun expandCollapsingView() {
-        appBarLayout.setExpanded(true)
-    }
-
-    protected fun collapseCollapsingView() {
-        appBarLayout.setExpanded(false)
-    }
-
     protected fun getRefreshLayout(): SwipeRefreshLayout? {
         return swipeRefreshLayout
     }
 
-    protected open fun onHideLoading() {
-        onHideLoading(loadingLayout)
-        onHideLoading(loadingLayout, collapsibleViewContainer)
-        onHideLoading(loadingLayout, collapsibleViewContainer, topViewContainer)
-        onHideLoading(
-            loadingLayout,
-            collapsibleViewContainer,
-            topViewContainer,
-            contentViewContainer
-        )
-    }
-
-    protected open fun onHideLoading(loadingLayout: LinearLayout?) {}
-
     protected open fun onHideLoading(
-        loadingLayout: LinearLayout?,
-        collapsibleViewContainer: FrameLayout?
+        loadingLayout: LinearLayout?, contentViewContainer: FrameLayout?
     ) {
-    }
-
-    protected open fun onHideLoading(
-        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-        topViewContainer: FrameLayout?
-    ) {
-    }
-
-
-    protected open fun onHideLoading(
-        loadingLayout: LinearLayout?, collapsibleViewContainer: FrameLayout?,
-        topViewContainer: FrameLayout?, contentViewContainer: FrameLayout?
-    ) {
-        collapsibleViewContainer?.show()
         loadingLayout?.hide()
         noDataLayout?.hide()
         errorLayout?.hide()
         if (swipeRefreshLayout?.isRefreshing == true) {
             swipeRefreshLayout?.isRefreshing = false
         }
-        extendedBottomFab?.hide()
     }
 
     protected open fun processDataInBackground(data: D): D {

@@ -1,64 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ke.co.toshngure.basecode.view.NestedScrollCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentScrim="@android:color/transparent"
-            app:expandedTitleTextAppearance="@style/TransparentText"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <FrameLayout
-                android:id="@+id/collapsibleViewContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.85"
-                tools:background="@android:color/holo_green_dark"
-                tools:layout_height="200dp" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
+    <!--region Content Layout-->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/contentViewContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/topViewContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:background="@color/colorAccent"
-                tools:layout_height="100dp" />
-
-            <FrameLayout
-                android:id="@+id/contentViewContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:background="@color/colorPrimary" />
-
-        </LinearLayout>
+            tools:background="@color/colorPrimary" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <!--endregion-->
 
 
     <!--region Loading Layout-->
@@ -170,49 +130,4 @@
         android:background="?attr/colorAccent"
         android:textColor="?attr/colorPrimary" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/topFab"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_cloud_queue_black_24dp"
-        android:tint="@android:color/white"
-        android:visibility="gone"
-        app:backgroundTint="?attr/colorPrimary"
-        app:fabSize="mini"
-        app:layout_anchor="@id/appBarLayout"
-        app:layout_anchorGravity="bottom|end"
-        tools:visibility="visible" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/bottomFab"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_cloud_queue_black_24dp"
-        android:tint="@android:color/white"
-        android:visibility="gone"
-        app:backgroundTint="?attr/colorPrimary"
-        tools:visibility="visible" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/extendedBottomFab"
-        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
-        android:text="@string/app_name"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        android:maxLines="2"
-        android:ellipsize="end"
-        app:backgroundTint="?attr/colorPrimary"
-        app:icon="@drawable/ic_cloud_queue_black_24dp"
-        app:iconTint="@android:color/white"
-        tools:visibility="visible" />
-
-</ke.co.toshngure.basecode.view.NestedScrollCoordinatorLayout>
+</FrameLayout>
