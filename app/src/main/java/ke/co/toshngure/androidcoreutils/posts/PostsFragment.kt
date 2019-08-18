@@ -26,16 +26,6 @@ class PostsFragment : PagingFragment<Post, Post,Any>() {
         return PostViewHolder(itemView, GlideApp.with(this))
     }
 
-    override fun onSetUpCollapsibleView(container: FrameLayout) {
-        super.onSetUpCollapsibleView(container)
-        layoutInflater.inflate(R.layout.fragment_posts_collapsible_view, container, true)
-    }
-
-    override fun onSetUpTopView(container: FrameLayout) {
-        super.onSetUpTopView(container)
-        layoutInflater.inflate(R.layout.fragment_posts_top_view, container, true)
-    }
-
     override fun getLoadingConfig(): LoadingConfig {
         return LoadingConfig(refreshEnabled = true)
     }

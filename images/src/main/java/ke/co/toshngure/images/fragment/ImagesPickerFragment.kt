@@ -123,11 +123,6 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
         }
     }
 
-    override fun onSetUpCollapsibleView(container: FrameLayout) {
-        super.onSetUpCollapsibleView(container)
-        layoutInflater.inflate(R.layout.fragment_images_picker_top_view, container, true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

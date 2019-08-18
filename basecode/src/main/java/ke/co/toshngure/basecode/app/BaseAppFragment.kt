@@ -146,10 +146,6 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     }
 
-    protected open fun onSetUpCollapsibleView(container: FrameLayout) {}
-
-    protected open fun onSetUpTopView(container: FrameLayout) {}
-
     /**
      * For this to work make sure the root inflated at {@link #onSetUpTopView(FrameLayout)
      * is {@link NestedScrollView}

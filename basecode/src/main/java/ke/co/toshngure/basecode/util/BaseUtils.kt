@@ -6,6 +6,8 @@
  * Email : anthonyngure25@gmail.com
  */
 
+@file:Suppress("DEPRECATION")
+
 package ke.co.toshngure.basecode.util
 
 import android.app.Activity
@@ -220,7 +222,7 @@ object BaseUtils {
         return colorFromTheme
     }
 
-    fun tintMenu(activity: Activity, menu: Menu?, @ColorInt color: Int) {
+    fun tintMenu(menu: Menu?, @ColorInt color: Int) {
         if (menu != null && menu.size() > 0) {
             for (i in 0 until menu.size()) {
                 val item = menu.getItem(i)

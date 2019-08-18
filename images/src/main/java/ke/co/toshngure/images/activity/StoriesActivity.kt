@@ -3,7 +3,6 @@ package ke.co.toshngure.images.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -86,32 +85,36 @@ class StoriesActivity : BaseAppActivity(), StoriesProgressView.StoriesListener {
 
     private fun showHowToViewStories() {
         TapTargetSequence(this)
-                .target(TapTarget.forView(reverse, "View Previous", "Tap to view previous")
-                        .outerCircleAlpha(0.8f)
-                        .outerCircleColorInt(BaseUtils.getColor(this, R.attr.colorPrimary))
-                        .transparentTarget(true)
-                        .cancelable(true))
-                .target(TapTarget.forView(skip, "View Next", "Tap to skip")
-                        .outerCircleAlpha(0.8f)
-                        .outerCircleColorInt(BaseUtils.getColor(this, R.attr.colorPrimary))
-                        .transparentTarget(true)
-                        .cancelable(true))
-                .listener(object : TapTargetSequence.Listener {
+            .target(
+                TapTarget.forView(reverse, "View Previous", "Tap to view previous")
+                    .outerCircleAlpha(0.8f)
+                    .outerCircleColorInt(BaseUtils.getColor(this, R.attr.colorPrimary))
+                    .transparentTarget(true)
+                    .cancelable(true)
+            )
+            .target(
+                TapTarget.forView(skip, "View Next", "Tap to skip")
+                    .outerCircleAlpha(0.8f)
+                    .outerCircleColorInt(BaseUtils.getColor(this, R.attr.colorPrimary))
+                    .transparentTarget(true)
+                    .cancelable(true)
+            )
+            .listener(object : TapTargetSequence.Listener {
 
-                    override fun onSequenceCanceled(lastTarget: TapTarget?) {
+                override fun onSequenceCanceled(lastTarget: TapTarget?) {
 
-                    }
+                }
 
-                    override fun onSequenceFinish() {
-                        mPrefUtils.writeBoolean(R.string.pref_learnt_viewing_stories, true)
-                        start()
-                    }
+                override fun onSequenceFinish() {
+                    mPrefUtils.writeBoolean(R.string.pref_learnt_viewing_stories, true)
+                    start()
+                }
 
-                    override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
+                override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
 
-                    }
+                }
 
-                }).start()
+            }).start()
     }
 
     override fun onNext() {
@@ -144,7 +147,7 @@ class StoriesActivity : BaseAppActivity(), StoriesProgressView.StoriesListener {
             val intent = Intent(context, StoriesActivity::class.java)
             intent.putParcelableArrayListExtra(EXTRA_STORIES, stories)
             intent.putExtra(EXTRA_START, start)
-            if (stories.size > 0 && start < stories.size){
+            if (stories.size > 0 && start < stories.size) {
                 context.startActivity(intent)
             }
         }
