@@ -118,6 +118,8 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         onSetUpSwipeRefreshLayout(swipeRefreshLayout)
 
         onSetUpContentView(contentViewContainer)
+
+        onSetUpBottomViewContainer(bottomViewContainer)
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -146,11 +148,9 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     }
 
-    /**
-     * For this to work make sure the root inflated at {@link #onSetUpTopView(FrameLayout)
-     * is {@link NestedScrollView}
-     */
     protected open fun onSetUpContentView(container: FrameLayout) {}
+
+    protected open fun onSetUpBottomViewContainer(container: FrameLayout) {}
 
     fun toast(message: Any) {
 
