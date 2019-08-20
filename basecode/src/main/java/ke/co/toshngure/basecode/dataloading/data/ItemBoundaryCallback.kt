@@ -144,7 +144,15 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                         }
                     } ?: run {
                         BeeLog.i(getTag(), "retry, connection is disabled!")
-                        syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
+                        // Try refresh if a refresh call is provided
+                        repository.getRefreshAPICall()?.let {
+                            syncStateHelper.runIfPossible(SyncStatus.REFRESHING) {
+                                it.enqueue(createCallback())
+                            }
+                        } ?: run {
+                            syncStateHelper.recordStatus(SyncStatus.LOADING_INITIAL_EXHAUSTED)
+                        }
+
                     }
                 }
                 SyncStatus.LOADING_BEFORE_FAILED,
