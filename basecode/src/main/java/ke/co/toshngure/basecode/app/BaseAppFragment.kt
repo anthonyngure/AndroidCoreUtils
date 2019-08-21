@@ -149,7 +149,9 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
 
     }
-    protected open fun onSetUpTopViewContainer(container: FrameLayout) {}
+    protected open fun onSetUpTopViewContainer(container: FrameLayout) {
+
+    }
 
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
