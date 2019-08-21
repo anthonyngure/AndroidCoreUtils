@@ -20,17 +20,26 @@
                 android:id="@+id/bottomViewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:background="@color/colorAccent"
                 android:layout_alignParentBottom="true"
-                tools:layout_height="100dp" />
+                tools:layout_height="100dp"
+                tools:background="@color/colorPrimary"/>
+
+            <FrameLayout
+                android:id="@+id/topViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                tools:layout_height="100dp"
+                tools:background="@color/colorPrimary"/>
 
             <FrameLayout
                 android:id="@+id/contentViewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/bottomViewContainer"
-                android:layout_alignParentTop="true"
-                tools:background="@color/colorPrimary" />
+                android:layout_below="@id/topViewContainer"
+                tools:background="@color/colorAccent"/>
+
 
         </RelativeLayout>
 

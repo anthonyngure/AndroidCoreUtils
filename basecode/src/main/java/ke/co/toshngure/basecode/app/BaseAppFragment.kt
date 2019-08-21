@@ -120,6 +120,8 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         onSetUpContentView(contentViewContainer)
 
         onSetUpBottomViewContainer(bottomViewContainer)
+
+        onSetUpTopViewContainer(topViewContainer)
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -147,10 +149,12 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
 
     }
+    protected open fun onSetUpTopViewContainer(container: FrameLayout) {}
 
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
     protected open fun onSetUpBottomViewContainer(container: FrameLayout) {}
+
 
     fun toast(message: Any) {
 
