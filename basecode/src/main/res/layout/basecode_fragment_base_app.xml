@@ -11,11 +11,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/contentViewContainer"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="@color/colorPrimary" />
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/bottomViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                tools:layout_height="100dp"
+                tools:background="@color/colorPrimary"/>
+
+            <FrameLayout
+                android:id="@+id/topViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                tools:layout_height="100dp"
+                tools:background="@color/colorPrimary"/>
+
+            <FrameLayout
+                android:id="@+id/contentViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bottomViewContainer"
+                android:layout_below="@id/topViewContainer"
+                tools:background="@color/colorAccent"/>
+
+
+        </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <!--endregion-->

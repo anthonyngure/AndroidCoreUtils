@@ -115,6 +115,11 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
         }
     }
 
+    override fun onSetUpTopViewContainer(container: FrameLayout) {
+        super.onSetUpTopViewContainer(container)
+        layoutInflater.inflate(R.layout.fragment_images_picker_top_view, container, true)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
