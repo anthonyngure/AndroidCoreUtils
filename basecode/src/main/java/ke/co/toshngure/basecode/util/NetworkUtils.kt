@@ -67,7 +67,6 @@ class NetworkUtils private constructor() {
             // Add an Interceptor to the OkHttpClient.
             builder.addInterceptor { chain ->
 
-
                 // Get the request from the chain.
                 val original = chain.request()
 

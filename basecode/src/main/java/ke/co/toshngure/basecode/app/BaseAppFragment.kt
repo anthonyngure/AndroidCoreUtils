@@ -146,10 +146,6 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     }
 
-    /**
-     * For this to work make sure the root inflated at {@link #onSetUpTopView(FrameLayout)
-     * is {@link NestedScrollView}
-     */
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
     fun toast(message: Any) {

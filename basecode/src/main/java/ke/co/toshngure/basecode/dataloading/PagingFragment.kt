@@ -64,8 +64,6 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
             listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
         }
 
-        // listRV.isNestedScrollingEnabled = false
-
         onSetUpRecyclerView(listRV)
 
         noDataLayout.setOnClickListener { mItemRepository.retry() }
@@ -81,13 +79,13 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         @Suppress("UNCHECKED_CAST")
         mItemListViewModel = getViewModel() as ItemListViewModel<Model, LoadedModel>
 
-        mItemListViewModel.items.observe(this, Observer {
+        mItemListViewModel.items.observe(viewLifecycleOwner, Observer {
             mAdapter.submitList(it)
         })
 
-        mItemListViewModel.syncState.observe(this, Observer {
+        mItemListViewModel.syncState.observe(viewLifecycleOwner, Observer {
 
-            //BeeLog.i(TAG, it)
+            BeeLog.i(TAG, it)
 
             swipeRefreshLayout.isRefreshing = false
 
