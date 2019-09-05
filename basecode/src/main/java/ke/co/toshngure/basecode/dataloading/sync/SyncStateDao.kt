@@ -14,6 +14,9 @@ interface SyncStateDao : ItemDao<SyncState> {
     @Query("SELECT * FROM sync_states WHERE model = :model AND tab = :tab")
     fun findLive(model: String, tab: String = ""): LiveData<SyncState?>
 
+    @Query("DELETE FROM sync_states WHERE model = :model AND tab = :tab")
+    fun delete(model: String, tab: String = ""): LiveData<SyncState?>
+
     @Query("DELETE FROM sync_states")
     fun deleteAll()
 }
