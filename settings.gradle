@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':geo', ':extensions'
 include ':images'
 include ':basecode'
 include ':views'

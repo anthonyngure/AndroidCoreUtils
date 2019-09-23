@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/AppWidget">
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/mapButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:iconGravity="textStart"
+            app:icon="@drawable/ic_location_on_black_24dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/locationTIL"
+            style="@style/AppWidget.TextInputLayout"
+            android:layout_toLeftOf="@id/mapButton"
+            android:layout_toStartOf="@id/mapButton"
+            android:layout_centerVertical="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/locationET"
+                style="@style/AppWidget.TextInputEditText"
+                android:hint="@string/hint_location"
+                android:imeActionLabel="@string/register"
+                android:imeOptions="actionNext" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</RelativeLayout>

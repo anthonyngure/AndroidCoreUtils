@@ -10,6 +10,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/basecode" />
+            <option value="$PROJECT_DIR$/extensions" />
+            <option value="$PROJECT_DIR$/geo" />
             <option value="$PROJECT_DIR$/images" />
             <option value="$PROJECT_DIR$/views" />
           </set>

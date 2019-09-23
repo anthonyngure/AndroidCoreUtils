@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Geo</string>
+    <string name="drag_the_map_to_pick_a_location">Drag map to pick a location...</string>
+</resources>
