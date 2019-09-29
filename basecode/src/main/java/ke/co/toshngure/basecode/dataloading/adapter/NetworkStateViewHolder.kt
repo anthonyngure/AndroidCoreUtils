@@ -8,9 +8,9 @@ import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
-import ke.co.toshngure.basecode.extensions.hide
-import ke.co.toshngure.basecode.extensions.show
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.extensions.hide
+import ke.co.toshngure.extensions.show
 import kotlinx.android.synthetic.main.basecode_item_network_state.view.*
 
 /**

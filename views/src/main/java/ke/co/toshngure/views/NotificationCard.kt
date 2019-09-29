@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.StringRes
-import ke.co.toshngure.basecode.extensions.hide
-import ke.co.toshngure.basecode.extensions.showIf
+import ke.co.toshngure.extensions.hide
+import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.util.PrefUtilsImpl
 import kotlinx.android.synthetic.main.view_notification_card.view.*
 

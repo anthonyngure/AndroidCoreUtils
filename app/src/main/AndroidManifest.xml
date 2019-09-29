@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ke.co.toshngure.androidcoreutils">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -12,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"

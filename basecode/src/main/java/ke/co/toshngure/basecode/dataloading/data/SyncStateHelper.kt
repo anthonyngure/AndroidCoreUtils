@@ -4,7 +4,7 @@ import androidx.annotation.WorkerThread
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
-import ke.co.toshngure.basecode.extensions.executeAsync
+import ke.co.toshngure.extensions.executeAsync
 
 class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val syncTab: String = "") {
 

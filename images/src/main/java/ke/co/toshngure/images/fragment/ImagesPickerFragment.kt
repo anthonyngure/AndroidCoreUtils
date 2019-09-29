@@ -36,7 +36,7 @@ import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.util.GridSpacingItemDecoration
-import ke.co.toshngure.basecode.extensions.executeAsync
+import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.PrefUtilsImpl

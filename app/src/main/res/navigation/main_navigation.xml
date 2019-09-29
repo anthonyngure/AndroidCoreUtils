@@ -54,4 +54,11 @@
         android:label="@string/sms_retriever"
         tools:layout="@layout/basecode_fragment_base_app"/>
 
+    <fragment
+        android:id="@+id/gpxFragment"
+        android:name="ke.co.toshngure.androidcoreutils.fragment.GPXFragment"
+        android:label="@string/gpx"
+        tools:layout="@layout/basecode_fragment_base_app"/>
+
+
 </navigation>

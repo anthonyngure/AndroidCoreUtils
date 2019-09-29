@@ -33,9 +33,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
-import ke.co.toshngure.basecode.extensions.hide
-import ke.co.toshngure.basecode.extensions.show
-import ke.co.toshngure.basecode.extensions.showIf
+import ke.co.toshngure.extensions.hide
+import ke.co.toshngure.extensions.show
+import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.NetworkUtils

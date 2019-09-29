@@ -9,7 +9,7 @@ import androidx.appcompat.widget.Toolbar
 import com.otaliastudios.cameraview.AspectRatio
 import com.otaliastudios.cameraview.PictureResult
 import ke.co.toshngure.basecode.app.BaseAppActivity
-import ke.co.toshngure.basecode.extensions.executeAsync
+import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.images.R
 import ke.co.toshngure.images.data.Image
 import kotlinx.android.synthetic.main.activity_picture_preview.*

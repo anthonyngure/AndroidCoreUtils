@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import ke.co.toshngure.basecode.app.GlideApp
-import ke.co.toshngure.basecode.extensions.executeAsync
-import ke.co.toshngure.basecode.extensions.showIf
+import ke.co.toshngure.extensions.executeAsync
+import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.PrefUtilsImpl

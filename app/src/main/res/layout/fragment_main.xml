@@ -41,6 +41,11 @@
                 style="@style/MainButtons"
                 android:text="@string/sms_retriever"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/gpxBtn"
+                style="@style/MainButtons"
+                android:text="@string/gpx"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

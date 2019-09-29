@@ -76,7 +76,7 @@ class NetworkUtils private constructor() {
                 val commonParams = mCallback.getCommonParams()
                 // Add common params to the url
                 for (key in commonParams.keys) {
-                    url.addQueryParameter(key, commonParams[key])
+                    url.addQueryParameter(key, commonParams[key].toString())
                 }
 
                 val request = original.newBuilder()
@@ -134,7 +134,7 @@ class NetworkUtils private constructor() {
         fun getAuthToken(): String?
         fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String
         fun getContext(): Context
-        fun getCommonParams(): Map<String, String>
+        fun getCommonParams(): Map<String, Any>
     }
 
 

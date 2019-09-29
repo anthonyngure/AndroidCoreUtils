@@ -137,6 +137,10 @@ dependencies {
         implementation "androidx.room:room-runtime:2.1.0"
         kapt "androidx.room:room-compiler:2.1.0"
 
+
+        // Google Play services
+        implementation 'com.google.android.gms:play-services-location:17.0.0'
+
         /*Retrofit*/
         implementation 'com.squareup.retrofit2:retrofit:2.6.1'
         implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
@@ -144,6 +148,7 @@ dependencies {
         implementation project(':basecode')
         implementation project(':images')
         implementation project(':views')
+        implementation project(':extensions')
 
         implementation 'com.facebook.stetho:stetho:1.5.1'
         implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'

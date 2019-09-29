@@ -6,9 +6,8 @@ import android.view.View
 import android.widget.FrameLayout
 import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
+import ke.co.toshngure.extensions.executeAsync
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 
 class MainFragment : BaseAppFragment<Any>() {
 
@@ -31,18 +30,29 @@ class MainFragment : BaseAppFragment<Any>() {
         imagesPickerBtn.setOnClickListener {
             navigateWithPermissionsCheck(
                 R.id.testImagesPickerFragment, null,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
             )
         }
 
         smsRetrieverBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.smsRetrieverFragment) }
 
         clearFab.setOnClickListener {
-            runBlocking(Dispatchers.IO) {
+            executeAsync {
+
                 AppDatabase.getInstance().clearAllTables()
 
                 SyncStatesDatabase.getInstance().clearAllTables()
             }
+        }
+
+        gpxBtn.setOnClickListener {
+            navigateWithPermissionsCheck(
+                R.id.gpxFragment, null,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
+            )
         }
     }
 
