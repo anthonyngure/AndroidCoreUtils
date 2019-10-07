@@ -122,6 +122,8 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         onSetUpBottomViewContainer(bottomViewContainer)
 
         onSetUpTopViewContainer(topViewContainer)
+
+        onSetUpCollapsibleViewContainer(collapsibleViewContainer)
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -149,9 +151,10 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
 
     }
-    protected open fun onSetUpTopViewContainer(container: FrameLayout) {
 
-    }
+    protected open fun onSetUpTopViewContainer(container: FrameLayout) {}
+
+    protected open fun onSetUpCollapsibleViewContainer(container: FrameLayout) {}
 
     protected open fun onSetUpContentView(container: FrameLayout) {}
 

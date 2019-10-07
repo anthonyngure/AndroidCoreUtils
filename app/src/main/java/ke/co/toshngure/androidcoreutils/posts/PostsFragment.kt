@@ -11,8 +11,9 @@ import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.extensions.executeAsync
+import kotlinx.android.synthetic.main.fragment_posts_collapsible_view.*
 
-class PostsFragment : PagingFragment<Post, Post,Any>() {
+class PostsFragment : PagingFragment<Post, Post, Any>() {
 
 
     override fun getPagingConfig(): PagingConfig<Post, Post> {
@@ -38,5 +39,14 @@ class PostsFragment : PagingFragment<Post, Post,Any>() {
             AppDatabase.getInstance().posts().deleteAll()
         }
     }
+
+    override fun onSetUpCollapsibleViewContainer(container: FrameLayout) {
+        super.onSetUpCollapsibleViewContainer(container)
+        layoutInflater.inflate(R.layout.fragment_posts_collapsible_view, container, true)
+        button.setOnClickListener {
+            toast("Hello")
+        }
+    }
+
 
 }
