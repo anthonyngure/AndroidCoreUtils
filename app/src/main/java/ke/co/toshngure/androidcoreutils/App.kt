@@ -16,7 +16,7 @@ class App : Application() {
         mInstance = this
         NetworkUtils.init(NetworkUtilsCallback())
         SyncStatesDatabase.init(this)
-        BeeLog.init(BuildConfig.DEBUG, TAG, this)
+        BeeLog.init(this, TAG, BuildConfig.DEBUG)
         Stetho.initializeWithDefaults(this)
 
     }
@@ -35,9 +35,13 @@ class App : Application() {
                 return mapOf()
             }
 
-            override fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String {
+            override fun getErrorMessageFromResponseBody(
+                statusCode: Int,
+                responseBody: ResponseBody?
+            ): String {
                 BeeLog.i(TAG, responseBody)
-                return responseBody?.string() ?:  mInstance.getString(R.string.message_connection_error)
+                return responseBody?.string()
+                    ?: mInstance.getString(R.string.message_connection_error)
             }
 
             override fun getContext(): Context {
