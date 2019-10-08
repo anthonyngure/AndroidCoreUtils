@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.85"
-                tools:background="@android:color/holo_green_dark"
+                tools:background="@android:color/holo_red_dark"
                 tools:layout_height="200dp" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

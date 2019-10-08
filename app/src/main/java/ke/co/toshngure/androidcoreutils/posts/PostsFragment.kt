@@ -3,6 +3,8 @@ package ke.co.toshngure.androidcoreutils.posts
 import android.view.View
 import android.widget.FrameLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import ke.co.toshngure.androidcoreutils.AppDatabase
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
@@ -40,8 +42,16 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
         }
     }
 
-    override fun onSetUpCollapsibleViewContainer(container: FrameLayout) {
-        super.onSetUpCollapsibleViewContainer(container)
+    override fun onSetUpCollapsibleViewContainer(
+        appBarLayout: AppBarLayout,
+        collapsingToolbarLayout: CollapsingToolbarLayout,
+        container: FrameLayout
+    ) {
+        super.onSetUpCollapsibleViewContainer(appBarLayout, collapsingToolbarLayout, container)
+
+        appBarLayout.setOnDragListener { _, _ -> false }
+        collapsingToolbarLayout.setOnDragListener { _, _ -> false }
+
         layoutInflater.inflate(R.layout.fragment_posts_collapsible_view, container, true)
         button.setOnClickListener {
             toast("Hello")

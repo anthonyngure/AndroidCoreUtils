@@ -6,13 +6,10 @@ import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
 import ke.co.toshngure.basecode.logging.BeeLog
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.internal.platform.Platform
-import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 
 class NetworkUtils private constructor() {
@@ -57,10 +54,10 @@ class NetworkUtils private constructor() {
 
                 .hostnameVerifier { _, _ -> true }
 
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-
+                .connectTimeout(mCallback.getConnectTimeoutInSeconds(), TimeUnit.SECONDS)
+                .writeTimeout(mCallback.getWriteTimeoutInSeconds(), TimeUnit.SECONDS)
+                .readTimeout(mCallback.getReadTimeoutInSeconds(), TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
                 .followRedirects(false)
 
 
@@ -121,8 +118,10 @@ class NetworkUtils private constructor() {
             return builder.build()
         }
 
+        @Suppress("unused")
         fun canConnect(context: Context): Boolean {
-            val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connMgr =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connMgr.activeNetworkInfo
             return networkInfo != null && networkInfo.isConnected
         }
@@ -135,6 +134,17 @@ class NetworkUtils private constructor() {
         fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String
         fun getContext(): Context
         fun getCommonParams(): Map<String, Any>
+        fun getReadTimeoutInSeconds(): Long {
+            return 60
+        }
+
+        fun getWriteTimeoutInSeconds(): Long {
+            return 60
+        }
+
+        fun getConnectTimeoutInSeconds(): Long {
+            return 30
+        }
     }
 
 

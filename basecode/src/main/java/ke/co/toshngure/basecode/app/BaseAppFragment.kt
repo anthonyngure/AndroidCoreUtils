@@ -29,6 +29,8 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
@@ -123,7 +125,11 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         onSetUpTopViewContainer(topViewContainer)
 
-        onSetUpCollapsibleViewContainer(collapsibleViewContainer)
+        onSetUpCollapsibleViewContainer(
+            appBarLayout,
+            collapsingToolbarLayout,
+            collapsibleViewContainer
+        )
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
@@ -154,12 +160,17 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     protected open fun onSetUpTopViewContainer(container: FrameLayout) {}
 
-    protected open fun onSetUpCollapsibleViewContainer(container: FrameLayout) {}
+
+    protected open fun onSetUpCollapsibleViewContainer(
+        appBarLayout: AppBarLayout,
+        collapsingToolbarLayout: CollapsingToolbarLayout,
+        container: FrameLayout
+    ) {
+    }
 
     protected open fun onSetUpContentView(container: FrameLayout) {}
 
     protected open fun onSetUpBottomViewContainer(container: FrameLayout) {}
-
 
     fun toast(message: Any) {
 
