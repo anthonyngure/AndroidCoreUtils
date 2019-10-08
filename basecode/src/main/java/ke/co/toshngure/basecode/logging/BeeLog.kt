@@ -23,14 +23,23 @@ object BeeLog {
     var DEBUG = false
     private var tag: String? = null
     private var debugSwitchClicks = 0
+    private var logListener: LogListener? = null
 
-    fun init(debug: Boolean, logTag: String, context: Context) {
+
+    fun init(context: Context, logTag: String, debug: Boolean): BeeLog {
         LogItemsDatabase.init(context)
         tag = logTag
         DEBUG = debug
+        return this
+    }
+
+    fun setLogListner(logListener: LogListener): BeeLog {
+        this.logListener = logListener
+        return this
     }
 
     fun d(subTag: String, message: Any?) {
+        logListener?.onLog(tag, subTag, message)
         if (DEBUG) {
             Log.d(tag, "$subTag : $message")
             addToHistory(subTag, message.toString())
@@ -38,6 +47,7 @@ object BeeLog {
     }
 
     fun v(subTag: String, message: Any?) {
+        logListener?.onLog(tag, subTag, message)
         if (DEBUG) {
             Log.v(tag, "$subTag : $message")
             addToHistory(subTag, message.toString())
@@ -45,6 +55,7 @@ object BeeLog {
     }
 
     fun e(subTag: String, message: Any?) {
+        logListener?.onLog(tag, subTag, message)
         if (DEBUG) {
             Log.e(tag, "$subTag : $message")
             addToHistory(subTag, message.toString())
@@ -52,6 +63,7 @@ object BeeLog {
     }
 
     fun e(subTag: String, e: Exception?) {
+        logListener?.onLog(tag, subTag, e)
         if (DEBUG) {
             if (e != null) {
                 Log.e(tag, subTag + " : " + e.localizedMessage)
@@ -62,6 +74,7 @@ object BeeLog {
     }
 
     fun e(e: Exception?) {
+        logListener?.onLog(tag, "Exception", e)
         if (DEBUG) {
             if (e != null) {
                 Log.e(tag, " : " + e.localizedMessage)
@@ -72,6 +85,7 @@ object BeeLog {
     }
 
     fun w(subTag: String, message: Any?) {
+        logListener?.onLog(tag, subTag, message)
         if (DEBUG) {
             Log.w(tag, "$subTag : $message")
             addToHistory(subTag, message.toString())
@@ -80,6 +94,7 @@ object BeeLog {
 
 
     fun i(subTag: String, message: Any?) {
+        logListener?.onLog(tag, subTag, message)
         if (DEBUG) {
             Log.i(tag, "$subTag : $message")
             addToHistory(subTag, message.toString())
@@ -89,19 +104,21 @@ object BeeLog {
     private fun addToHistory(subTag: String?, message: String?) {
         executeAsync {
             val logItem = LogItem(title = subTag.toString(), details = message.toString())
-            if (subTag?.contains("LogItem") == false){
+            if (subTag?.contains("LogItem") == false) {
                 LogItemsDatabase.getInstance().logItems().insert(logItem)
             }
         }
     }
 
     fun e(subTag: String, e: Throwable) {
+        logListener?.onLog(tag, subTag, e)
         if (DEBUG) {
             Log.e(tag, subTag + " : " + e.message)
             addToHistory(subTag, e.message)
         }
     }
 
+    @Suppress("unused")
     fun switchDebugWithViewClicks(subTag: String, view: View, clicks: Int = 20) {
         view.setOnClickListener {
             if (debugSwitchClicks == clicks) {
@@ -112,6 +129,10 @@ object BeeLog {
             this.debugSwitchClicks++
             i(subTag, "switchDebugWithViewClicks $debugSwitchClicks")
         }
+    }
+
+    interface LogListener {
+        fun onLog(tag: String?, subTag: String?, log: Any?)
     }
 
 }

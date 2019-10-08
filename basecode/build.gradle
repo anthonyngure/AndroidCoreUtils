@@ -79,8 +79,8 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.1.0"
 
     /*Retrofit*/
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
 
     // https://github.com/wasabeef/recyclerview-animators
     implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
