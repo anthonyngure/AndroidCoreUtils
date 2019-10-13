@@ -221,14 +221,14 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
             BeeLog.e(TAG, "onFailure, Call isCanceled -> ${call.isCanceled}")
             BeeLog.e(TAG, "onFailure, Call isExecuted -> ${call.isExecuted}")
             BeeLog.e(TAG, "onFailure, Call -> $call")
-            BeeLog.e(TAG, t)
             onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
                 mActiveRetrofitCallback = null
                 if (BeeLog.DEBUG) {
                     showNetworkErrorDialog(t.localizedMessage)
                 } else {
-                    showNetworkErrorDialog(getString(R.string.message_connection_error))
+                    showNetworkErrorDialog(t.localizedMessage)
+                    // showNetworkErrorDialog(getString(R.string.message_connection_error))
                 }
             }
         }
