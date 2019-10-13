@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -227,8 +228,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
                 if (BeeLog.DEBUG) {
                     showNetworkErrorDialog(t.localizedMessage)
                 } else {
-                    showNetworkErrorDialog(t.localizedMessage)
-                    // showNetworkErrorDialog(getString(R.string.message_connection_error))
+                    showNetworkErrorDialog(getString(R.string.message_connection_error))
                 }
             }
         }
@@ -431,6 +431,10 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
     protected fun setTitle(title: String?) {
         (activity as AppCompatActivity).supportActionBar?.title = title
+    }
+
+    protected fun getStatusTV(): TextView{
+        return statusTV
     }
 
     companion object {
