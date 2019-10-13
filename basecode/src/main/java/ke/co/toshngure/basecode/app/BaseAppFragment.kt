@@ -217,7 +217,10 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         }
 
         override fun onFailure(call: Call<D>, t: Throwable) {
-            BeeLog.e(TAG, "onFailure")
+            BeeLog.e(TAG, "onFailure, throwable -> $t")
+            BeeLog.e(TAG, "onFailure, Call isCanceled -> ${call.isCanceled}")
+            BeeLog.e(TAG, "onFailure, Call isExecuted -> ${call.isExecuted}")
+            BeeLog.e(TAG, "onFailure, Call -> $call")
             BeeLog.e(TAG, t)
             onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
@@ -231,7 +234,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         }
 
         override fun onResponse(call: Call<D>, response: Response<D>) {
-            BeeLog.e(TAG, "onResponse, $response")
+            BeeLog.i(TAG, "onResponse, $response")
             onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
                 mActiveRetrofitCallback = null
