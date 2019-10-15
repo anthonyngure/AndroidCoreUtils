@@ -433,10 +433,6 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         (activity as AppCompatActivity).supportActionBar?.title = title
     }
 
-    protected fun getStatusTV(): TextView{
-        return statusTV
-    }
-
     companion object {
         const val TAG = "BaseAppFragment"
     }
