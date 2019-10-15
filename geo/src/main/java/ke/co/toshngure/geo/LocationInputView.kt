@@ -48,6 +48,7 @@ class LocationInputView @JvmOverloads constructor(
     private var mLocation: Location? = null
     private var onLocationChangedListener: OnLocationChangedListener? = null
     private var mPickLocationRequestCode = 100
+    private lateinit var mMapsApiKey: String
 
     init {
 
@@ -253,6 +254,7 @@ class LocationInputView @JvmOverloads constructor(
     }
 
     fun  initLocationPicker(fragment: Fragment, mapsApiKey: String, requestCode: Int = 100): LocationInputView {
+        this.mMapsApiKey = mapsApiKey
         this.mPickLocationRequestCode = requestCode
         mapButton.show()
         mapButton.setOnClickListener {
@@ -261,7 +263,8 @@ class LocationInputView @JvmOverloads constructor(
         return this
     }
 
-    fun initLocationPicker(activity: FragmentActivity, requestCode: Int = 100): LocationInputView {
+    fun initLocationPicker(activity: FragmentActivity, mapsApiKey: String, requestCode: Int = 100): LocationInputView {
+        this.mMapsApiKey = mapsApiKey
         this.mPickLocationRequestCode = requestCode
         mapButton.show()
         mapButton.setOnClickListener {
