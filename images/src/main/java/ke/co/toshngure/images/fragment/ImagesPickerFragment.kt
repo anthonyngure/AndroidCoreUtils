@@ -354,7 +354,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
                     val images = arrayListOf<Image>()
                     if (c.moveToLast()) {
                         do {
-                            //val id = c.getLong(c.getColumnIndex(MediaStore.Images.Media._ID))
+                            // val id = c.getLong(c.getColumnIndex(MediaStore.Images.Media._ID))
                             val name = c.getString(c.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
                             val path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA))
                             val bucket = c.getString(c.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
