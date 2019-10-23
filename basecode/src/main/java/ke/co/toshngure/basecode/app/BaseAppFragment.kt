@@ -268,7 +268,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         loadingLayout?.showIf(mLoadingConfig.showLoading)
         noDataLayout?.hide()
         errorLayout?.hide()
-        loadingMessageTV.setText(mLoadingConfig.loadingMessage)
+        loadingMessageTV?.setText(mLoadingConfig.loadingMessage)
     }
 
     override fun onRefresh() {
