@@ -22,7 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -54,6 +56,13 @@ public class NetworkImage extends FrameLayout {
     protected ImageView mErrorButton;
     protected ProgressBar mProgressBar;
     private LoadingCallBack loadingCallBack;
+    private boolean noRetry = false;
+
+    @NonNull
+    private Drawable placeholder = new ColorDrawable(Color.LTGRAY);
+
+    @NonNull
+    private Drawable error = new ColorDrawable(Color.LTGRAY);
 
     public NetworkImage(Context context) {
         this(context, null);
@@ -124,9 +133,9 @@ public class NetworkImage extends FrameLayout {
 
         glideRequests.load(networkPath)
                 .centerCrop()
-                .placeholder(new ColorDrawable(Color.LTGRAY))
-                .error(R.drawable.ic_place_holder)
-                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack))
+                .placeholder(placeholder)
+                .error(error)
+                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack, noRetry))
                 .into(mImageView);
     }
 
@@ -137,7 +146,7 @@ public class NetworkImage extends FrameLayout {
                 .centerCrop()
                 .placeholder(new ColorDrawable(Color.LTGRAY))
                 .error(R.drawable.ic_place_holder)
-                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack))
+                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack, noRetry))
                 .into(mImageView);
     }
 
@@ -148,7 +157,7 @@ public class NetworkImage extends FrameLayout {
                 .centerCrop()
                 .placeholder(new ColorDrawable(Color.LTGRAY))
                 .error(R.drawable.ic_place_holder)
-                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack))
+                .listener(new Listener(mImageView, mProgressBar, mErrorButton, loadingCallBack, noRetry))
                 .into(mImageView);
     }
 
@@ -157,19 +166,55 @@ public class NetworkImage extends FrameLayout {
         return this;
     }
 
-    public void setImageDrawable(Drawable drawable) {
+    public NetworkImage setImageDrawable(Drawable drawable) {
         mImageView.setImageDrawable(drawable);
         mImageView.setVisibility(VISIBLE);
         mProgressBar.setVisibility(GONE);
         mErrorButton.setVisibility(GONE);
+        return this;
     }
 
-    public void setImageResource(@DrawableRes int resId) {
+    public NetworkImage setImageUri(Uri uri) {
+        mImageView.setImageURI(uri);
+        mImageView.setVisibility(VISIBLE);
+        mProgressBar.setVisibility(GONE);
+        mErrorButton.setVisibility(GONE);
+        return this;
+    }
+
+    public NetworkImage setScaleType(ImageView.ScaleType scaleType) {
+        mImageView.setScaleType(scaleType);
+        return this;
+    }
+
+
+    public NetworkImage setImageBackgroundColor(@ColorInt int color) {
+        mBackgroundImageView.setImageDrawable(new ColorDrawable(color));
+        return this;
+    }
+
+
+    public NetworkImage setImageResource(@DrawableRes int resId) {
         Drawable drawable = AppCompatResources.getDrawable(getContext(), resId);
         ;
         mImageView.setImageDrawable(drawable);
+        return this;
     }
 
+    public NetworkImage setPlaceholderDrawable(@NonNull Drawable drawable) {
+        this.placeholder = drawable;
+        return this;
+    }
+
+    public NetworkImage setErrorDrawable(Drawable drawable) {
+        this.error = drawable;
+        return this;
+    }
+
+    public NetworkImage setNoRetry() {
+        this.noRetry = true;
+        return this;
+    }
 
     public interface LoadingCallBack {
         void onSuccess(Drawable drawable);
@@ -185,23 +230,22 @@ public class NetworkImage extends FrameLayout {
         final WeakReference<ImageView> imageViewWeakReference;
         final WeakReference<ProgressBar> progressBarWeakReference;
         final WeakReference<ImageView> errorImageViewWeakReference;
+        final WeakReference<Boolean> noRetryWeakReference;
         final WeakReference<LoadingCallBack> loadingCallBackWeakReference;
 
-        private Listener(ImageView imageView, ProgressBar progressBar, ImageView errorImageView, LoadingCallBack loadingCallBack) {
+        private Listener(ImageView imageView, ProgressBar progressBar, ImageView errorImageView,
+                         LoadingCallBack loadingCallBack, Boolean noRetry) {
             imageViewWeakReference = new WeakReference<>(imageView);
             progressBarWeakReference = new WeakReference<>(progressBar);
             errorImageViewWeakReference = new WeakReference<>(errorImageView);
             loadingCallBackWeakReference = new WeakReference<>(loadingCallBack);
+            noRetryWeakReference = new WeakReference<>(noRetry);
         }
 
 
         @Override
         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-            try {
-                Log.e(TAG, String.valueOf(e));
-            } catch (Exception e1) {
-                Log.e(TAG, e1.toString());
-            }
+            Log.e(TAG, String.valueOf(e));
 
             ProgressBar progressBar = progressBarWeakReference.get();
             if (progressBar != null) {
@@ -209,8 +253,10 @@ public class NetworkImage extends FrameLayout {
             }
 
             ImageView errorImageView = errorImageViewWeakReference.get();
+
+            boolean noRetry = noRetryWeakReference.get();
             if (errorImageView != null) {
-                errorImageView.setVisibility(VISIBLE);
+                errorImageView.setVisibility(noRetry ? GONE : VISIBLE);
             }
 
             return false;
