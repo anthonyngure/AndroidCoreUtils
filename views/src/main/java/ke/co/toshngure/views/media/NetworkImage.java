@@ -58,10 +58,10 @@ public class NetworkImage extends FrameLayout {
     private LoadingCallBack loadingCallBack;
     private boolean noRetry = false;
 
-    @NonNull
+    @Nullable
     private Drawable placeholder = new ColorDrawable(Color.LTGRAY);
 
-    @NonNull
+    @Nullable
     private Drawable error = new ColorDrawable(Color.LTGRAY);
 
     public NetworkImage(Context context) {
@@ -201,12 +201,12 @@ public class NetworkImage extends FrameLayout {
         return this;
     }
 
-    public NetworkImage setPlaceholderDrawable(@NonNull Drawable drawable) {
+    public NetworkImage setPlaceholderDrawable(@Nullable Drawable drawable) {
         this.placeholder = drawable;
         return this;
     }
 
-    public NetworkImage setErrorDrawable(Drawable drawable) {
+    public NetworkImage setErrorDrawable(@Nullable Drawable drawable) {
         this.error = drawable;
         return this;
     }
