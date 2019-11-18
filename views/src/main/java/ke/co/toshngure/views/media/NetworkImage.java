@@ -196,7 +196,6 @@ public class NetworkImage extends FrameLayout {
 
     public NetworkImage setImageResource(@DrawableRes int resId) {
         Drawable drawable = AppCompatResources.getDrawable(getContext(), resId);
-        ;
         mImageView.setImageDrawable(drawable);
         return this;
     }
