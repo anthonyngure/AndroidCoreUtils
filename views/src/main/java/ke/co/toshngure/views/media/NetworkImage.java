@@ -203,6 +203,7 @@ public class NetworkImage extends FrameLayout {
 
     public NetworkImage setPlaceholderDrawable(@Nullable Drawable drawable) {
         this.placeholder = drawable;
+        // 0702 238 023
         return this;
     }
 
