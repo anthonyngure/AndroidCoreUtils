@@ -25,6 +25,11 @@ class LogItemsFragment : PagingFragment<LogItem, LogItem, Any>() {
         return LogItemViewHolder(itemView)
     }
 
+    override fun onSetUpTopViewContainer(container: FrameLayout) {
+        super.onSetUpTopViewContainer(container)
+        layoutInflater.inflate(R.layout.basecode_fragment_log_items_top_view, container, true)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
