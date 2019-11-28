@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.util
+package ke.co.toshngure.basecode.net
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -6,6 +6,7 @@ import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
 import ke.co.toshngure.basecode.logging.BeeLog
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.internal.platform.Platform
@@ -22,13 +23,15 @@ class NetworkUtils private constructor() {
         private var mClientInstance: OkHttpClient? = null
 
         fun init(callback: Callback) {
-            mInstance = NetworkUtils()
+            mInstance =
+                NetworkUtils()
             mCallback = callback
         }
 
         fun getClientInstance(): OkHttpClient {
             return mClientInstance ?: synchronized(this) {
-                mClientInstance ?: buildClient().also { mClientInstance = it }
+                mClientInstance
+                    ?: buildClient().also { mClientInstance = it }
             }
         }
 
@@ -42,15 +45,12 @@ class NetworkUtils private constructor() {
 
         private fun buildClient(): OkHttpClient {
 
-
-            // .BASIC)
-            // .NONE // No logs
-            //   .BASIC // Logging url,method,headers and body.
-            //   .HEADERS // Logging headers
-            //    .BODY // Logging body
-
+            val cacheSize = (5 * 1024 * 1024).toLong()
+            val appCache = Cache(mCallback.getContext().cacheDir, cacheSize)
 
             val builder = OkHttpClient.Builder()
+
+                .cache(appCache)
 
                 .hostnameVerifier { _, _ -> true }
 
@@ -60,42 +60,13 @@ class NetworkUtils private constructor() {
                 .retryOnConnectionFailure(false)
                 .followRedirects(false)
 
+            // Add common params interceptor
+            builder.addInterceptor(CommonParamsInterceptor(mCallback))
 
-            // Add an Interceptor to the OkHttpClient.
-            builder.addInterceptor { chain ->
-
-                // Get the request from the chain.
-                val original = chain.request()
-
-                // Get url
-                val url = original.url().newBuilder()
-                // Get common params
-                val commonParams = mCallback.getCommonParams()
-                // Add common params to the url
-                for (key in commonParams.keys) {
-                    url.addQueryParameter(key, commonParams[key].toString())
-                }
-
-                val request = original.newBuilder()
-                    .url(url.build())
-                    .method(original.method(), original.body())
-                    .header("Accept", "application/json")
-                    .header("Authorization", "Bearer ${mCallback.getAuthToken()}")
-
-                // Add the modified request to the chain.
-                val response = chain.proceed(request.build())
-
-
-                if (response.code() == 401 || response.code() == 403) {
-                    mCallback.onAuthError(response.code())
-                    mClientInstance?.dispatcher()?.cancelAll()
-                }
-
-                response
-            }
-
+            // Add chuck
             builder.addInterceptor(ChuckInterceptor(mCallback.getContext()))
 
+            // Add logging interceptor
             builder.addInterceptor(
                 LoggingInterceptor.Builder()
                     .loggable(BeeLog.DEBUG)
@@ -105,20 +76,20 @@ class NetworkUtils private constructor() {
                     .response("OkHttpClientResponse")
                     //.addHeader("version", BuildConfig.VERSION_NAME)
                     //.addQueryParam("query", "0")
-                    .enableAndroidStudio_v3_LogsHack(true) /* enable fix for logCat logging issues with pretty format */
-                    //              .logger(new Logger() {
-                    //                  @Override
-                    //                  public void log(int level, String tag, String msg) {
-                    //                      Log.w(tag, msg);
-                    //                  }
-                    //              })
-                    //              .executor(Executors.newSingleThreadExecutor())
+                    /* enable fix for logCat logging issues with pretty format */
+                    .enableAndroidStudio_v3_LogsHack(true)
                     .build()
             )
+
+            // Add cache interceptor
+            builder.addInterceptor(CacheInterceptor(mCallback))
+
+            // Add authorization interceptor
+            builder.addInterceptor(AuthorizationInterceptor(mClientInstance, mCallback))
+
             return builder.build()
         }
 
-        @Suppress("unused")
         fun canConnect(context: Context): Boolean {
             val connMgr =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

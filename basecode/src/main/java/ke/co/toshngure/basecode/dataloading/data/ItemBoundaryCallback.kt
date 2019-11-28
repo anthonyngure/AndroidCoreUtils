@@ -5,7 +5,7 @@ import androidx.paging.PagedList
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtils
 import ke.co.toshngure.extensions.executeAsync
 import retrofit2.Call
 import retrofit2.Callback

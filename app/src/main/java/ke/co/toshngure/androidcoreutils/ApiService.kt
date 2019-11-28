@@ -4,7 +4,7 @@ import ke.co.toshngure.androidcoreutils.albums.Album
 import ke.co.toshngure.androidcoreutils.photos.Photo
 import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.androidcoreutils.users.User
-import ke.co.toshngure.basecode.util.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtils
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,6 +30,10 @@ interface ApiService {
         @Query("_order") order: String = "desc",
         @QueryMap params: Map<String, String> = mapOf()
     ): Call<List<Post>>
+
+    @GET("/posts/{postId}")
+    fun post(@Path("postId") postId: Long): Call<Post>
+
 
     @GET("/albums")
     fun albums(

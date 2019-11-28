@@ -54,6 +54,8 @@ class MainFragment : BaseAppFragment<Any>() {
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
             )
         }
+
+        cacheTestBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.cacheTestFragment) }
     }
 
     companion object {

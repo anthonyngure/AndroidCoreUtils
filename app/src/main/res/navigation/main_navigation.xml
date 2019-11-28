@@ -61,4 +61,11 @@
         tools:layout="@layout/basecode_fragment_base_app"/>
 
 
+    <fragment
+        android:id="@+id/cacheTestFragment"
+        android:name="ke.co.toshngure.androidcoreutils.fragment.CacheTestFragment"
+        android:label="@string/gpx"
+        tools:layout="@layout/basecode_fragment_base_app"/>
+
+
 </navigation>

@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -41,7 +40,7 @@ import ke.co.toshngure.extensions.show
 import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
-import ke.co.toshngure.basecode.util.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtils
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import retrofit2.Call
 import retrofit2.Callback

@@ -5,7 +5,7 @@ import android.content.Context
 import com.facebook.stetho.Stetho
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtils
 import okhttp3.ResponseBody
 
 class App : Application() {

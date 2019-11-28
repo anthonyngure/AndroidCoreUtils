@@ -110,4 +110,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="gpx">GPX</string>
+    <string name="cache_test">Cache Test</string>
 </resources>
