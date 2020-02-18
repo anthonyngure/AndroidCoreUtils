@@ -58,5 +58,10 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
         }
     }
 
+    override fun onSetUpBottomViewContainer(container: FrameLayout) {
+        super.onSetUpBottomViewContainer(container)
+        layoutInflater.inflate(R.layout.fragment_posts_bottom_view, container, true)
+    }
+
 
 }

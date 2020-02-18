@@ -2,6 +2,8 @@
   <dictionary name="angure">
     <words>
       <w>geocoder</w>
+      <w>lato</w>
+      <w>nunito</w>
     </words>
   </dictionary>
 </component>
