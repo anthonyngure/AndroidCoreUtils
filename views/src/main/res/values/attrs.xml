@@ -4,6 +4,8 @@
         <attr name="avName" format="string|reference" />
         <attr name="avValue" format="string|reference" />
         <attr name="avShowLineView" format="boolean" />
+        <attr name="avLeftDrawable" format="reference" />
+        <attr name="avRightDrawable" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="MediaView">

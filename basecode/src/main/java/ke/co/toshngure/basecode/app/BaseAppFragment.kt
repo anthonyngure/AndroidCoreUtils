@@ -364,7 +364,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         handleActionWithPermissions(*permissions, action = {
             view?.findNavController()
-                ?.navigate(directions, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+                ?.navigate(directions, BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
 
     }
@@ -375,7 +375,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
     ) {
         handleActionWithPermissions(*permissions, action = {
             view?.findNavController()
-                ?.navigate(resId, args, defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+                ?.navigate(resId, args, BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive))
         })
     }
 
@@ -395,24 +395,8 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         })
     }
 
-    private fun defaultNavOptions(
-        popUpToDestinationId: Int = 0,
-        popUpToInclusive: Boolean = false
-    ): NavOptions {
-        return if (popUpToDestinationId != 0) {
-            NavOptions.Builder()
-                .setPopUpTo(popUpToDestinationId, popUpToInclusive)
-                .build()
-        } else {
-            NavOptions.Builder()
-                .setEnterAnim(R.anim.slide_in_right)
-                .setExitAnim(R.anim.slide_out_left)
-                .setPopEnterAnim(R.anim.slide_in_left)
-                .setPopExitAnim(R.anim.slide_out_right).build()
-        }
-    }
 
-    private fun handleActionWithPermissions(vararg permissions: String, action: () -> Unit) {
+    protected open fun handleActionWithPermissions(vararg permissions: String, action: () -> Unit) {
         if (!permissions.isNullOrEmpty()) {
             TedPermission.with(context)
                 .setPermissionListener(RequiredPermissionsListener(action))

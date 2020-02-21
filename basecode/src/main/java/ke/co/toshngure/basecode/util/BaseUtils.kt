@@ -32,6 +32,8 @@ import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.navigation.NavOptions
+import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.logging.BeeLog
 import java.util.*
 
@@ -66,6 +68,24 @@ object BaseUtils {
     fun tintImageView(imageView: ImageView, @ColorInt color: Int) {
         imageView.setColorFilter(color)
     }
+
+    fun defaultNavOptions(
+        popUpToDestinationId: Int = 0,
+        popUpToInclusive: Boolean = false
+    ): NavOptions {
+        return if (popUpToDestinationId != 0) {
+            NavOptions.Builder()
+                .setPopUpTo(popUpToDestinationId, popUpToInclusive)
+                .build()
+        } else {
+            NavOptions.Builder()
+                .setEnterAnim(R.anim.slide_in_right)
+                .setExitAnim(R.anim.slide_out_left)
+                .setPopEnterAnim(R.anim.slide_in_left)
+                .setPopExitAnim(R.anim.slide_out_right).build()
+        }
+    }
+
 
 
     fun makeCall(context: Context, phone: String?) {
