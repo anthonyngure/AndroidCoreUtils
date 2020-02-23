@@ -107,7 +107,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                     val errorBody = response.errorBody()
                     errorBody?.let {
                         val errorMessage = NetworkUtils.getCallback()
-                            .getErrorMessageFromResponseBody(response.code(), it)
+                            .getErrorMessageFromResponseBody(response.code(), it.string())
                         syncStateHelper.recordFailure(errorMessage)
                     } ?: syncStateHelper.recordFailure(response.message())
                 }
