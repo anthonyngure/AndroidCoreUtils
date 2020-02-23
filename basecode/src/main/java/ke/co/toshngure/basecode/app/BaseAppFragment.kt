@@ -308,6 +308,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
      * Invoked only when there is a response from the server
      */
     protected open fun onRequestError(statusCode: Int, response: ResponseBody): Boolean {
+
         return false
     }
 
