@@ -26,7 +26,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
-import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
@@ -42,6 +41,7 @@ import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.net.NetworkUtils
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -247,18 +247,26 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
                     errorLayout.show()
                     errorMessageTV.setText(mLoadingConfig.noDataMessage)
                 } else {
-                    showNetworkErrorDialog(getErrorMessage(response))
+                    val errorBody = response.errorBody()
+                    val errorMessage = errorBody?.let {
+                        NetworkUtils.getCallback()
+                            .getErrorMessageFromResponseBody(response.code(), it)
+                    } ?: response.message()
+
+                    // Handle the error
+                    errorBody?.let {
+                        // If the error has been handled in a child class
+                        val handledError = onRequestError(response.code(), it)
+                        if (!handledError) {
+                            showNetworkErrorDialog(errorMessage)
+                        }
+                    } ?: showNetworkErrorDialog(errorMessage)
+
                 }
             }
         }
     }
 
-    private fun getErrorMessage(response: Response<D>): String {
-        val errorBody = response.errorBody()
-        return errorBody?.let {
-            NetworkUtils.getCallback().getErrorMessageFromResponseBody(response.code(), it)
-        } ?: response.message()
-    }
 
     protected open fun onShowLoading(
         loadingLayout: LinearLayout?,
@@ -293,9 +301,17 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         return data
     }
 
-    protected open fun onDataReady(data: D) {
-
+    /**
+     * If you override this method and handle the error on your own,
+     * return true so that a dialog is not shown
+     * Not called when status code is zero
+     * Invoked only when there is a response from the server
+     */
+    protected open fun onRequestError(statusCode: Int, response: ResponseBody): Boolean {
+        return false
     }
+
+    protected open fun onDataReady(data: D) {}
 
     private class DataHandlerTask<D>(
         private val processData: (data: D) -> D,
@@ -364,7 +380,10 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
 
         handleActionWithPermissions(*permissions, action = {
             view?.findNavController()
-                ?.navigate(directions, BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+                ?.navigate(
+                    directions,
+                    BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive)
+                )
         })
 
     }
@@ -375,7 +394,11 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
     ) {
         handleActionWithPermissions(*permissions, action = {
             view?.findNavController()
-                ?.navigate(resId, args, BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive))
+                ?.navigate(
+                    resId,
+                    args,
+                    BaseUtils.defaultNavOptions(popUpToDestinationId, popUpToInclusive)
+                )
         })
     }
 
