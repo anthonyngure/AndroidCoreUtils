@@ -31,30 +31,18 @@ class App : Application() {
         fun getInstance(): App = mInstance
 
         class NetworkUtilsCallback : NetworkUtils.Callback {
-            override fun getCommonParams(): Map<String, String> {
-                return mapOf()
-            }
 
             override fun getErrorMessageFromResponseBody(
                 statusCode: Int,
-                responseBody: ResponseBody?
+                errorResponseBody: String?
             ): String {
-                BeeLog.i(TAG, responseBody)
-                return responseBody?.string()
+                BeeLog.i(TAG, errorResponseBody)
+                return errorResponseBody
                     ?: mInstance.getString(R.string.message_connection_error)
             }
 
             override fun getContext(): Context {
                 return mInstance
-            }
-
-
-            override fun onAuthError(statusCode: Int) {
-
-            }
-
-            override fun getAuthToken(): String? {
-                return null
             }
 
         }

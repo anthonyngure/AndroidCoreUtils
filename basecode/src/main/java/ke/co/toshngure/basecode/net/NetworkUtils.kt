@@ -106,7 +106,7 @@ class NetworkUtils private constructor() {
 
         fun getContext(): Context
 
-        fun getErrorMessageFromResponseBody(statusCode: Int, errorResponseBody: String): String {
+        fun getErrorMessageFromResponseBody(statusCode: Int, errorResponseBody: String?): String {
             return getContext().getString(R.string.message_connection_error)
         }
 
