@@ -34,14 +34,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
+import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.net.NetworkUtils
+import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.show
 import ke.co.toshngure.extensions.showIf
-import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.BaseUtils
-import ke.co.toshngure.basecode.net.NetworkUtils
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -247,20 +246,18 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
                     errorLayout.show()
                     errorMessageTV.setText(mLoadingConfig.noDataMessage)
                 } else {
-                    val errorBody = response.errorBody()
-                    val errorMessage = errorBody?.let {
-                        NetworkUtils.getCallback()
-                            .getErrorMessageFromResponseBody(response.code(), it)
-                    } ?: response.message()
+
+                    val errorResponseBody = response.errorBody()?.string() ?: response.message()
+
+                    val errorMessage = NetworkUtils.getCallback()
+                        .getErrorMessageFromResponseBody(response.code(), errorResponseBody)
 
                     // Handle the error
-                    errorBody?.let {
-                        // If the error has been handled in a child class
-                        val handledError = onRequestError(response.code(), it)
-                        if (!handledError) {
-                            showNetworkErrorDialog(errorMessage)
-                        }
-                    } ?: showNetworkErrorDialog(errorMessage)
+                    // If the error has been handled in a child class
+                    val handledError = onRequestError(response.code(), errorResponseBody)
+                    if (!handledError) {
+                        showNetworkErrorDialog(errorMessage)
+                    }
 
                 }
             }
@@ -307,7 +304,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
      * Not called when status code is zero
      * Invoked only when there is a response from the server
      */
-    protected open fun onRequestError(statusCode: Int, response: ResponseBody): Boolean {
+    protected open fun onRequestError(statusCode: Int, errorResponseBody: String): Boolean {
 
         return false
     }
@@ -360,6 +357,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun showSnack(msg: String) {
         view?.let {
             Snackbar.make(it, msg, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {}.show()
@@ -436,6 +434,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         setTitle(getString(title))
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun setTitle(title: String?) {
         (activity as AppCompatActivity).supportActionBar?.title = title
     }

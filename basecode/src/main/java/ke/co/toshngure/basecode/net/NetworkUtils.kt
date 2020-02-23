@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
+import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.logging.BeeLog
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -100,11 +101,27 @@ class NetworkUtils private constructor() {
     }
 
     interface Callback {
-        fun onAuthError(statusCode: Int)
-        fun getAuthToken(): String?
-        fun getErrorMessageFromResponseBody(statusCode: Int, responseBody: ResponseBody?): String
+
+
+
         fun getContext(): Context
-        fun getCommonParams(): Map<String, Any>
+
+        fun getErrorMessageFromResponseBody(statusCode: Int, errorResponseBody: String): String {
+            return getContext().getString(R.string.message_connection_error)
+        }
+
+        fun onAuthError(statusCode: Int) {
+
+        }
+
+        fun getAuthToken(): String? {
+            return null
+        }
+
+        fun getCommonParams(): Map<String, Any> {
+            return mapOf()
+        }
+
         fun getReadTimeoutInSeconds(): Long {
             return 60
         }
