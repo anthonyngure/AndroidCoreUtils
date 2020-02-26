@@ -71,26 +71,38 @@ object DatesHelper {
         } ?: Date().time
     }
 
+    fun formatSqlDate(date: String?): Long {
+        return date?.let {
+            try {
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date)
+                date.time
+            } catch (e: ParseException) {
+                BeeLog.e(e)
+                Date().time
+            }
+        } ?: Date().time
+    }
+
     fun formatToSqlTimestamp(timestamp: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
         return simpleDateFormat.format(Date(timestamp))
     }
 
     fun formatSqlTimestampForDisplay(string: String?): String {
-        var `val`: String
+        var value: String
         if (string == null) {
-            `val` = ""
+            value = ""
         } else {
             try {
                 val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(string)
-                `val` = DateFormat.getDateInstance().format(date)
+                value = DateFormat.getDateInstance().format(date)
             } catch (e: ParseException) {
-                `val` = "Unspecified"
+                value = "Unspecified"
                 e.printStackTrace()
             }
 
         }
-        return `val`
+        return value
     }
 
 
