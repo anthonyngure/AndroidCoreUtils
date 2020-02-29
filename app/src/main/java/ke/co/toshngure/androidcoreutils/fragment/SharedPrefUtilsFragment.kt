@@ -24,6 +24,7 @@ class SharedPrefUtilsFragment : Fragment() {
             val user = User(id = 1, name = "Anthony", avatarUrl = "", updatedAt = "", createdAt = "")
             PrefUtils.getInstance().saveItem(R.string.pref_user, user)
             val savedUser : User? = PrefUtils.getInstance().getItem(R.string.pref_user)
+            //PrefUtils.getInstance().getItem(R.string.pref_user)
             textTV.text = savedUser.toString()
         }
     }

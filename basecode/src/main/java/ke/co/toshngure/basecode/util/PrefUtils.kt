@@ -126,7 +126,7 @@ open class PrefUtils(
         return "key_" + context.resources.getResourceEntryName(key)
     }
 
-    inline fun <reified T> saveItem(@StringRes key: Int, item: T) {
+    fun <T> saveItem(@StringRes key: Int, item: T) {
         writeString(key, GsonBuilder().setLenient().create().toJson(item))
         invalidate()
     }
