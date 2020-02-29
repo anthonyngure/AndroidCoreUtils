@@ -11,7 +11,11 @@ package ke.co.toshngure.basecode.util
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import ke.co.toshngure.basecode.logging.BeeLog
+import java.lang.reflect.Type
+
 
 /**
  * Created by Anthony Ngure on 16/02/2017.
@@ -19,6 +23,8 @@ import ke.co.toshngure.basecode.logging.BeeLog
  */
 
 open class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
+
+    private val mItemsCache = hashMapOf<Int, Any>()
 
     protected open fun invalidate() {}
 
@@ -115,6 +121,26 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
         //return String.valueOf("key_" + key);
         //return getContext().getString(key).trim().replaceAll(" ","");
     }
+
+    fun <T> saveItem(@StringRes key: Int, item : T) {
+        writeString(key,
+            GsonBuilder().setLenient().create().toJson(item)
+        )
+        invalidate()
+    }
+
+
+    fun  <T> getItem(@StringRes key: Int): T? {
+        val userJson = getString(key)
+        return if (userJson.isNullOrEmpty()) {
+            null
+        } else {
+            val type: Type = object : TypeToken<List<T>?>() {}.type
+            val item = GsonBuilder().setLenient().create().fromJson<T>(userJson, type)
+            item
+        }
+    }
+
 
     companion object {
         private const val TAG = "PrefUtilsImpl"
