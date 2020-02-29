@@ -56,6 +56,7 @@ class MainFragment : BaseAppFragment<Any>() {
         }
 
         cacheTestBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.cacheTestFragment) }
+        sharedPrefsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.sharedPrefsFragment) }
     }
 
     companion object {

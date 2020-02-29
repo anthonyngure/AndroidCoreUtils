@@ -67,5 +67,11 @@
         android:label="@string/gpx"
         tools:layout="@layout/basecode_fragment_base_app"/>
 
+    <fragment
+        android:id="@+id/sharedPrefsFragment"
+        android:name="ke.co.toshngure.androidcoreutils.fragment.SharedPrefUtilsFragment"
+        android:label="@string/shared_prefs"
+        tools:layout="@layout/basecode_fragment_base_app"/>
+
 
 </navigation>

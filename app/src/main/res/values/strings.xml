@@ -111,4 +111,5 @@
     </string>
     <string name="gpx">GPX</string>
     <string name="cache_test">Cache Test</string>
+    <string name="shared_prefs">Shared Prefs</string>
 </resources>

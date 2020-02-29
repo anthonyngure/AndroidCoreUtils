@@ -6,6 +6,7 @@ import com.facebook.stetho.Stetho
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.net.NetworkUtils
+import ke.co.toshngure.basecode.util.PrefUtils
 import okhttp3.ResponseBody
 
 class App : Application() {
@@ -14,6 +15,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         mInstance = this
+        PrefUtils.init(this)
         NetworkUtils.init(NetworkUtilsCallback())
         SyncStatesDatabase.init(this)
         BeeLog.init(this, TAG, BuildConfig.DEBUG)

@@ -50,6 +50,11 @@
                 style="@style/MainButtons"
                 android:text="@string/gpx" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sharedPrefsBtn"
+                style="@style/MainButtons"
+                android:text="@string/shared_prefs" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

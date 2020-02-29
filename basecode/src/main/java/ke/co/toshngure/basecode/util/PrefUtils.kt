@@ -10,8 +10,8 @@ package ke.co.toshngure.basecode.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import androidx.annotation.StringRes
+import androidx.preference.PreferenceManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import ke.co.toshngure.basecode.logging.BeeLog
@@ -23,11 +23,14 @@ import java.lang.reflect.Type
  * Email : anthonyngure25@gmail.com.
  */
 
-open class PrefUtils(protected val context: Context, private val sharedPreferences: SharedPreferences) {
+open class PrefUtils(
+    protected val context: Context,
+    private val sharedPreferences: SharedPreferences
+) {
 
     private val mItemsCache = hashMapOf<Int, Any>()
 
-    private fun invalidate() {
+    fun invalidate() {
 
     }
 
@@ -48,7 +51,7 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
     fun getString(@StringRes key: Int, defVal: String): String? {
         return try {
             sharedPreferences.getString(resolveKey(key), defVal)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             BeeLog.e(e)
             defVal
         }
@@ -57,7 +60,7 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
     fun getInt(@StringRes key: Int): Int {
         return try {
             sharedPreferences.getInt(resolveKey(key), 0)
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             BeeLog.e(ex)
             0
         }
@@ -114,7 +117,7 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
         }
     }
 
-    public fun clear() {
+    fun clear() {
         sharedPreferences.edit().clear().apply()
         invalidate()
     }
@@ -123,21 +126,19 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
         return "key_" + context.resources.getResourceEntryName(key)
     }
 
-    fun <T> saveItem(@StringRes key: Int, item : T) {
-        writeString(key,
-            GsonBuilder().setLenient().create().toJson(item)
-        )
+    inline fun <reified T> saveItem(@StringRes key: Int, item: T) {
+        writeString(key, GsonBuilder().setLenient().create().toJson(item))
         invalidate()
     }
 
 
-    fun  <T> getItem(@StringRes key: Int): T? {
+    inline fun <reified T> getItem(@StringRes key: Int): T? {
         val userJson = getString(key)
         return if (userJson.isNullOrEmpty()) {
             null
         } else {
             val type: Type = object : TypeToken<T?>() {}.type
-            val item = GsonBuilder().setLenient().create().fromJson<T>(userJson, type)
+            val item = GsonBuilder().setLenient().create().fromJson<T?>(userJson, type)
             item
         }
     }
@@ -150,7 +151,10 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
         @Volatile
         private lateinit var mInstance: PrefUtils
 
-        fun init(context: Context, prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)){
+        fun init(
+            context: Context,
+            prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        ) {
             mInstance = PrefUtils(context, prefs)
         }
 
