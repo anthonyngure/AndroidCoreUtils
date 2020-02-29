@@ -136,7 +136,7 @@ open class PrefUtils(protected val context: Context, private val sharedPreferenc
         return if (userJson.isNullOrEmpty()) {
             null
         } else {
-            val type: Type = object : TypeToken<List<T>?>() {}.type
+            val type: Type = object : TypeToken<T?>() {}.type
             val item = GsonBuilder().setLenient().create().fromJson<T>(userJson, type)
             item
         }
