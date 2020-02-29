@@ -12,7 +12,7 @@ import jp.shts.android.storiesprogressview.StoriesProgressView
 import ke.co.toshngure.basecode.app.BaseAppActivity
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.util.BaseUtils
-import ke.co.toshngure.basecode.util.PrefUtilsImpl
+import ke.co.toshngure.basecode.util.PrefUtils
 import ke.co.toshngure.images.R
 import ke.co.toshngure.images.Story
 import kotlinx.android.synthetic.main.activity_stories.*
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_stories.*
 class StoriesActivity : BaseAppActivity(), StoriesProgressView.StoriesListener {
 
 
-    private lateinit var mPrefUtils: PrefUtilsImpl
+    private lateinit var mPrefUtils: PrefUtils
     private var counter = 0
     private var pressTime = 0L
     private var limit = 500L

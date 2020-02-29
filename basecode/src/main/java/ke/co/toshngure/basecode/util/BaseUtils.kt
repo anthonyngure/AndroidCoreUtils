@@ -10,7 +10,6 @@
 
 package ke.co.toshngure.basecode.util
 
-import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -178,7 +177,7 @@ object BaseUtils {
     }
 
 
-    fun cacheInput(editText: EditText, @StringRes key: Int, prefUtils: PrefUtilsImpl) {
+    fun cacheInput(editText: EditText, @StringRes key: Int, prefUtils: PrefUtils) {
         // Get cached text
         val currentInput = prefUtils.getString(key)
         // Set current text to the cached value

@@ -13,7 +13,7 @@ import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
-import ke.co.toshngure.basecode.util.PrefUtilsImpl
+import ke.co.toshngure.basecode.util.PrefUtils
 import ke.co.toshngure.basecode.util.Spanny
 import ke.co.toshngure.images.R
 import ke.co.toshngure.images.data.Image
@@ -36,7 +36,7 @@ class PickedImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         super.onMeasure(heightMeasureSpec, heightMeasureSpec)
     }
 
-    fun setImage(image: Image, fragment: Fragment, prefUtils: PrefUtilsImpl, cropHandler: (image: Image) -> Unit) {
+    fun setImage(image: Image, fragment: Fragment, prefUtils: PrefUtils, cropHandler: (image: Image) -> Unit) {
 
         mImage = image
 
@@ -64,7 +64,7 @@ class PickedImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
 
-    private fun showHowToCropAndRemoveImage(fragment: Fragment, prefUtils: PrefUtilsImpl) {
+    private fun showHowToCropAndRemoveImage(fragment: Fragment, prefUtils: PrefUtils) {
         TapTargetSequence(fragment.activity)
             .target(
                 TapTarget.forView(this, "Edit and Crop Image", "Tap to crop and edit selected image")

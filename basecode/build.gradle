@@ -62,6 +62,9 @@ dependencies {
     /*Paging*/
     implementation "androidx.paging:paging-runtime:2.1.0"
 
+    // Shared prefs
+    implementation "androidx.preference:preference-ktx:1.1.0"
+
     /*Room*/
     implementation 'androidx.room:room-runtime:2.2.1'
     kapt 'androidx.room:room-compiler:2.2.1'

@@ -39,7 +39,7 @@ import ke.co.toshngure.basecode.dataloading.util.GridSpacingItemDecoration
 import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
-import ke.co.toshngure.basecode.util.PrefUtilsImpl
+import ke.co.toshngure.basecode.util.PrefUtils
 import ke.co.toshngure.basecode.util.Spanny
 import ke.co.toshngure.images.BuildConfig
 import ke.co.toshngure.images.R
@@ -65,13 +65,13 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
     private var mPickedImageList: List<Image> = listOf()
     private var mDoneMenuItem: MenuItem? = null
     private lateinit var mGlideRequests: GlideRequests
-    private lateinit var mPrefUtils: PrefUtilsImpl
+    private lateinit var mPrefUtils: PrefUtils
     private lateinit var mCropingImage: Image
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mGlideRequests = GlideApp.with(this)
-        mPrefUtils = PrefUtilsImpl(context!!, PreferenceManager.getDefaultSharedPreferences(context))
+        mPrefUtils = PrefUtils(context!!, PreferenceManager.getDefaultSharedPreferences(context))
         executeAsync {
             ImagesDatabase.getInstance(context!!).images().clearAllSelection()
         }

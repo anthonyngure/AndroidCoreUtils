@@ -10,6 +10,7 @@ package ke.co.toshngure.basecode.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import androidx.annotation.StringRes
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -22,11 +23,13 @@ import java.lang.reflect.Type
  * Email : anthonyngure25@gmail.com.
  */
 
-open class PrefUtilsImpl(protected val context: Context, private val sharedPreferences: SharedPreferences) {
+open class PrefUtils(protected val context: Context, private val sharedPreferences: SharedPreferences) {
 
     private val mItemsCache = hashMapOf<Int, Any>()
 
-    protected open fun invalidate() {}
+    private fun invalidate() {
+
+    }
 
     open fun remove(@StringRes key: Int) {
         sharedPreferences.edit().remove(resolveKey(key)).apply()
@@ -118,8 +121,6 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
 
     private fun resolveKey(@StringRes key: Int): String {
         return "key_" + context.resources.getResourceEntryName(key)
-        //return String.valueOf("key_" + key);
-        //return getContext().getString(key).trim().replaceAll(" ","");
     }
 
     fun <T> saveItem(@StringRes key: Int, item : T) {
@@ -143,7 +144,19 @@ open class PrefUtilsImpl(protected val context: Context, private val sharedPrefe
 
 
     companion object {
-        private const val TAG = "PrefUtilsImpl"
+
+        private val TAG = PrefUtils::class.java.simpleName
+
+        @Volatile
+        private lateinit var mInstance: PrefUtils
+
+        fun init(context: Context, prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)){
+            mInstance = PrefUtils(context, prefs)
+        }
+
+        fun getInstance(): PrefUtils {
+            return mInstance
+        }
     }
 
 

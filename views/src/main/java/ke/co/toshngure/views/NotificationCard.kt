@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.showIf
-import ke.co.toshngure.basecode.util.PrefUtilsImpl
+import ke.co.toshngure.basecode.util.PrefUtils
 import kotlinx.android.synthetic.main.view_notification_card.view.*
 
 
@@ -19,14 +19,14 @@ class NotificationCard @JvmOverloads constructor(context: Context, attrs: Attrib
         LayoutInflater.from(context).inflate(R.layout.view_notification_card, this, true)
     }
 
-    fun setMessage(@StringRes heading: Int, @StringRes message: Int, prefUtilsImpl: PrefUtilsImpl) {
-        val dismissed = prefUtilsImpl.getBoolean(message, false)
+    fun setMessage(@StringRes heading: Int, @StringRes message: Int, prefUtils: PrefUtils) {
+        val dismissed = prefUtils.getBoolean(message, false)
         this.showIf(!dismissed)
         if (!dismissed){
             messageTV.setText(message)
             headingTV.setText(heading)
             dismissBtn.setOnClickListener {
-                prefUtilsImpl.writeBoolean(message, true)
+                prefUtils.writeBoolean(message, true)
                 this.hide()
             }
         }
