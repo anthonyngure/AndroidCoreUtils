@@ -32,6 +32,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.navigation.NavOptions
+import com.google.android.material.appbar.AppBarLayout
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.logging.BeeLog
 import java.util.*
@@ -85,6 +86,23 @@ object BaseUtils {
         }
     }
 
+    fun normalizePhoneNumber(number: String?): String? {
+        return number?.let {
+            val cleanedNumber = it.replace(" ", "")
+                .trim()
+            if (cleanedNumber.length < 9) {
+                return null
+            }
+            return "0" + cleanedNumber.substring(cleanedNumber.length - 9)
+        }
+    }
+
+    fun removeAppbarElevation(appBar: AppBarLayout) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBar.outlineProvider = null
+            // appBar.bringToFront();
+        }
+    }
 
 
     fun makeCall(context: Context, phone: String?) {
