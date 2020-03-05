@@ -9,7 +9,6 @@ import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.logging.BeeLog
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.internal.platform.Platform
 import java.util.concurrent.TimeUnit
 
@@ -64,8 +63,13 @@ class NetworkUtils private constructor() {
             // Add common params interceptor
             builder.addInterceptor(CommonParamsInterceptor(mCallback))
 
+            // Add common headers
+            builder.addInterceptor(CommonHeadersInterceptor(mCallback))
+
             // Add chuck
-            builder.addInterceptor(ChuckInterceptor(mCallback.getContext()))
+            if (BeeLog.DEBUG){
+                builder.addInterceptor(ChuckInterceptor(mCallback.getContext()))
+            }
 
             // Add logging interceptor
             builder.addInterceptor(
@@ -91,6 +95,7 @@ class NetworkUtils private constructor() {
             return builder.build()
         }
 
+        @Suppress("DEPRECATION")
         fun canConnect(context: Context): Boolean {
             val connMgr =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -119,6 +124,10 @@ class NetworkUtils private constructor() {
         }
 
         fun getCommonParams(): Map<String, Any> {
+            return mapOf()
+        }
+
+        fun getCommonHeaders(): Map<String, String> {
             return mapOf()
         }
 
