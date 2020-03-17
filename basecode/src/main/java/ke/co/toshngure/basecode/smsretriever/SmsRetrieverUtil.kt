@@ -1,9 +1,7 @@
 package ke.co.toshngure.basecode.smsretriever
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.Activity
+import android.content.*
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
@@ -19,11 +17,13 @@ object SmsRetrieverUtil {
 
 
     private const val TAG = "SmsRetrieverUtil"
+    private const val SMS_CONSENT_REQUEST = 200
 
     fun init(fragment: Fragment, callback: Callback) {
 
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        fragment.requireActivity().registerReceiver(SMSBroadcastReceiver(callback), intentFilter)
+        fragment.requireActivity()
+            .registerReceiver(SMSBroadcastReceiver(fragment, callback), intentFilter)
 
         val client = SmsRetriever.getClient(fragment.requireActivity())
 
@@ -50,10 +50,13 @@ object SmsRetrieverUtil {
         fun onSmsRetrieverStartSuccess() {}
         fun onSmsRetrieverStartFailure(exception: Exception) {}
         fun onSmsRetrieverTimeout() {}
-        fun onSmsRetrieverSuccess(sms: String)
+        fun onSmsRetrieverSuccess(sms: String?)
     }
 
-    private class SMSBroadcastReceiver(private val callback: Callback) : BroadcastReceiver() {
+    private class SMSBroadcastReceiver(
+        private val fragment: Fragment,
+        private val callback: Callback
+    ) : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action && intent.extras != null) {
@@ -81,6 +84,7 @@ object SmsRetrieverUtil {
             }
         }
     }
+
 
 
 }
