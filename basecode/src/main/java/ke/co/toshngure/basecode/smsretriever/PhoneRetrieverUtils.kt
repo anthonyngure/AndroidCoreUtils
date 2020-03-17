@@ -1,17 +1,18 @@
-package ke.co.toshngure.basecode.util
+package ke.co.toshngure.basecode.smsretriever
 
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
-import android.os.Bundle
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.HintRequest
-import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.util.BaseUtils
 
 /**
  * Created by Anthony Ngure on 6/13/2019
@@ -37,7 +38,8 @@ object PhoneRetrieverUtils {
         val intent = Auth.CredentialsApi.getHintPickerIntent(apiClient, hintRequest)
 
         try {
-            fragment.startIntentSenderForResult(intent.intentSender, RESOLVE_HINT, null, 0,
+            fragment.startIntentSenderForResult(intent.intentSender,
+                RESOLVE_HINT, null, 0,
                 0, 0, null)
         } catch (e: IntentSender.SendIntentException) {
             BeeLog.e(e)
@@ -47,9 +49,13 @@ object PhoneRetrieverUtils {
     fun onActivityResult(editText: EditText, requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RESOLVE_HINT && data != null && resultCode == Activity.RESULT_OK) {
             /*You will receive user selected phone number here if selected and send it to the server for request the otp*/
-            val credential: Credential = data.getParcelableExtra(Credential.EXTRA_KEY)
+            val credential: Credential? = data.getParcelableExtra(Credential.EXTRA_KEY)
             BeeLog.i(TAG, credential)
-            editText.setText(credential.id)
+            editText.setText(
+                BaseUtils.normalizePhoneNumber(
+                    credential?.id
+                )
+            )
         }
     }
 }

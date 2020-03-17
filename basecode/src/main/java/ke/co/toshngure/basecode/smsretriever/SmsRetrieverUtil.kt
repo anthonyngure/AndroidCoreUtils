@@ -15,13 +15,15 @@ import ke.co.toshngure.basecode.logging.BeeLog
  *
  * @author Anthony Ngure
  */
-class SmsRetrieverUtil(private val callback: Callback) {
+object SmsRetrieverUtil {
 
 
-    fun startSmsListener(fragment: Fragment) {
+    private const val TAG = "SmsRetrieverUtil"
+
+    fun init(fragment: Fragment, callback: Callback) {
 
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        fragment.requireActivity().registerReceiver(SMSBroadcastReceiver(), intentFilter)
+        fragment.requireActivity().registerReceiver(SMSBroadcastReceiver(callback), intentFilter)
 
         val client = SmsRetriever.getClient(fragment.requireActivity())
 
@@ -45,18 +47,19 @@ class SmsRetrieverUtil(private val callback: Callback) {
     }
 
     interface Callback {
-        fun onSmsRetrieverStartSuccess()
-        fun onSmsRetrieverStartFailure(exception: Exception)
-        fun onSmsRetrieverTimeout()
+        fun onSmsRetrieverStartSuccess() {}
+        fun onSmsRetrieverStartFailure(exception: Exception) {}
+        fun onSmsRetrieverTimeout() {}
         fun onSmsRetrieverSuccess(sms: String)
     }
 
-    private inner class SMSBroadcastReceiver : BroadcastReceiver() {
+    private class SMSBroadcastReceiver(private val callback: Callback) : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action && intent.extras != null) {
+
                 val extras = intent.extras
-                val status = extras!!.get(SmsRetriever.EXTRA_STATUS) as Status
+                val status = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
 
                 when (status.statusCode) {
                     CommonStatusCodes.SUCCESS -> {
@@ -77,10 +80,6 @@ class SmsRetrieverUtil(private val callback: Callback) {
                 }
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "SmsRetrieverUtil"
     }
 
 

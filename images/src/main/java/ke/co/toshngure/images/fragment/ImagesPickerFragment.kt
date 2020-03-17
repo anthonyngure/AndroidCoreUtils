@@ -464,7 +464,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
 
     companion object {
         const val ALL_IMAGES_FOLDER_NAME = "Gallery"
-        const val EXTRA_FOLDER = "${BuildConfig.APPLICATION_ID}.extra_folder"
+        const val EXTRA_FOLDER = ".extra_folder"
         private const val CAMERA_REQUEST_CODE = 150
         const val CROP_REQUEST_CODE = 350
     }
