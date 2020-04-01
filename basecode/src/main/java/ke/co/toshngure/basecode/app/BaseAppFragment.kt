@@ -50,7 +50,7 @@ import retrofit2.Response
  * Email : anthonyngure25@gmail.com.
  */
 
-abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     internal lateinit var mLoadingConfig: LoadingConfig
@@ -207,7 +207,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         mActiveRetrofitCallback = null
     }
 
-    private inner class CancelableCallback : Callback<D> {
+    private inner class CancelableCallback : Callback<FetchedNetworkModel> {
 
         private var canceled = false
 
@@ -215,7 +215,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
             canceled = true
         }
 
-        override fun onFailure(call: Call<D>, t: Throwable) {
+        override fun onFailure(call: Call<FetchedNetworkModel>, t: Throwable) {
             BeeLog.e(TAG, "onFailure, throwable -> $t")
             BeeLog.e(TAG, "onFailure, Call isCanceled -> ${call.isCanceled}")
             BeeLog.e(TAG, "onFailure, Call isExecuted -> ${call.isExecuted}")
@@ -231,7 +231,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
             }
         }
 
-        override fun onResponse(call: Call<D>, response: Response<D>) {
+        override fun onResponse(call: Call<FetchedNetworkModel>, response: Response<FetchedNetworkModel>) {
             BeeLog.i(TAG, "onResponse, $response")
             onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
@@ -294,7 +294,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         }
     }
 
-    protected open fun processDataInBackground(data: D): D {
+    protected open fun processDataInBackground(data: FetchedNetworkModel): FetchedNetworkModel {
         return data
     }
 
@@ -309,7 +309,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         return false
     }
 
-    protected open fun onDataReady(data: D) {}
+    protected open fun onDataReady(data: FetchedNetworkModel) {}
 
     private class DataHandlerTask<D>(
         private val processData: (data: D) -> D,
@@ -327,7 +327,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
     }
 
 
-    protected open fun getApiCall(): Call<D>? {
+    protected open fun getApiCall(): Call<FetchedNetworkModel>? {
         return null
     }
 

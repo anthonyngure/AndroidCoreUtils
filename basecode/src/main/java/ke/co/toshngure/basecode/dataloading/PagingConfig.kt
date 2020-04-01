@@ -9,13 +9,13 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 
-data class PagingConfig<Model, LoadedModel>(
+data class PagingConfig<Model, FetchedDatabaseModel>(
         @LayoutRes val layoutRes: Int,
         val withDivider: Boolean = true,
-        val diffUtilItemCallback: DiffUtil.ItemCallback<LoadedModel>,
-        val repository: ItemRepository<Model, LoadedModel>,
+        val diffUtilItemCallback: DiffUtil.ItemCallback<FetchedDatabaseModel>,
+        val repository: ItemRepository<Model, FetchedDatabaseModel>,
         val noDataLayoutClickLister: View.OnClickListener? = null,
         val errorLayoutClickLister: View.OnClickListener? = null,
-        val itemClickListener: ItemsAdapter.OnItemClickListener<LoadedModel>? = null,
+        val itemClickListener: ItemsAdapter.OnItemClickListener<FetchedDatabaseModel>? = null,
         val arguments: Bundle? = null,
         val itemAnimator: RecyclerView.ItemAnimator? = SlideInUpAnimator())

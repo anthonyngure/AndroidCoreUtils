@@ -25,12 +25,12 @@ import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 
 
-abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
+abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> : BaseAppFragment<FetchedNetworkModel>() {
 
-    private lateinit var mConfig: PagingConfig<Model, LoadedModel>
-    private lateinit var mItemListViewModel: ItemListViewModel<Model, LoadedModel>
-    private lateinit var mItemRepository: ItemRepository<Model, LoadedModel>
-    private lateinit var mAdapter: ItemsAdapter<LoadedModel>
+    private lateinit var mConfig: PagingConfig<Model, FetchedDatabaseModel>
+    private lateinit var mItemListViewModel: ItemListViewModel<Model, FetchedDatabaseModel>
+    private lateinit var mItemRepository: ItemRepository<Model, FetchedDatabaseModel>
+    private lateinit var mAdapter: ItemsAdapter<FetchedDatabaseModel>
 
 
     override fun onSetUpContentView(container: FrameLayout) {
@@ -89,7 +89,7 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
 
         @Suppress("UNCHECKED_CAST")
-        mItemListViewModel = getViewModel() as ItemListViewModel<Model, LoadedModel>
+        mItemListViewModel = getViewModel() as ItemListViewModel<Model, FetchedDatabaseModel>
 
         mItemListViewModel.items.observe(viewLifecycleOwner, Observer {
             mAdapter.submitList(it)
@@ -209,9 +209,9 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
     protected open fun onSetUpRecyclerView(recyclerView: RecyclerView) {}
 
-    protected abstract fun getPagingConfig(): PagingConfig<Model, LoadedModel>
+    protected abstract fun getPagingConfig(): PagingConfig<Model, FetchedDatabaseModel>
 
-    protected abstract fun createItemViewHolder(itemView: View): BaseItemViewHolder<LoadedModel>
+    protected abstract fun createItemViewHolder(itemView: View): BaseItemViewHolder<FetchedDatabaseModel>
 
     companion object {
         private const val TAG = "PagingFragment"
