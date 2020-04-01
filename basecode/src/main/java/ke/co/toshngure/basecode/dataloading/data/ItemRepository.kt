@@ -27,8 +27,8 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
      * every time it gets new items, boundary callback simply inserts them into the database and
      * paging library takes care of refreshing the list if necessary.
      */
-    internal fun insertItemsIntoDb(items: List<Model>) {
-        executeAsync { save(items) }
+    internal fun insertItemsIntoDb(items: List<Model>,args: Bundle?) {
+        executeAsync { save(items, args) }
     }
 
 
@@ -57,7 +57,7 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
 
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
-        mBoundaryCallback = ItemBoundaryCallback(this)
+        mBoundaryCallback = ItemBoundaryCallback(this, args)
 
         //Get config
         val dataLoadingConfig = getItemRepositoryConfig()
@@ -78,18 +78,18 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
     }
 
 
-    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? {
+    open fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Model>>? {
         return null
     }
 
-    open fun getRefreshAPICall(): Call<List<Model>>? {
+    open fun getRefreshAPICall(args: Bundle?): Call<List<Model>>? {
         return null
     }
 
     /**
      * To save items into the db, called inside a transaction in background
      */
-    protected open fun save(items: List<Model>) {
+    protected open fun save(items: List<Model>, args: Bundle?) {
         getItemDao().insert(items)
     }
 

@@ -1,5 +1,6 @@
 package ke.co.toshngure.basecode.dataloading.data
 
+import android.os.Bundle
 import androidx.annotation.MainThread
 import androidx.paging.PagedList
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
@@ -11,8 +12,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) :
-    PagedList.BoundaryCallback<LoadedModel>() {
+class ItemBoundaryCallback<Model, FetchedDatabaseModel>(
+    private val repository: ItemRepository<Model, FetchedDatabaseModel>,
+    private val args: Bundle?
+) :
+    PagedList.BoundaryCallback<FetchedDatabaseModel>() {
 
     private var mItemAtEndId = 0L
     internal val syncStateHelper = SyncStateHelper(repository.getSyncClass(), repository.getTab())
@@ -25,7 +29,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
     override fun onZeroItemsLoaded() {
         super.onZeroItemsLoaded()
         BeeLog.i(getTag(), "onZeroItemsLoaded")
-        repository.getAPICall(0, 0)?.let {
+        repository.getAPICall(0, 0, args)?.let {
             syncStateHelper.recordStatus(SyncStatus.LOADED)
             syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
                 it.enqueue(createCallback())
@@ -41,14 +45,14 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
      * Requests additional data from the network, appending the results to the end of the database's existing data.
      */
     @MainThread
-    override fun onItemAtEndLoaded(itemAtEnd: LoadedModel) {
+    override fun onItemAtEndLoaded(itemAtEnd: FetchedDatabaseModel) {
         super.onItemAtEndLoaded(itemAtEnd)
 
         mItemAtEndId = repository.getItemId(itemAtEnd)
 
         BeeLog.i(getTag(), "onItemAtEndLoaded, id = $mItemAtEndId")
 
-        repository.getAPICall(mItemAtEndId, 0)?.let {
+        repository.getAPICall(mItemAtEndId, 0, args)?.let {
             if (repository.getPaginates()) {
                 //When the last item is loaded we will request more data from network if the repo paginates
                 syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
@@ -64,7 +68,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
 
     }
 
-    override fun onItemAtFrontLoaded(itemAtFront: LoadedModel) {
+    override fun onItemAtFrontLoaded(itemAtFront: FetchedDatabaseModel) {
         super.onItemAtFrontLoaded(itemAtFront)
         BeeLog.i(getTag(), "onItemAtFrontLoaded, id = " + repository.getItemId(itemAtFront))
         syncStateHelper.recordStatus(SyncStatus.LOADED)
@@ -97,7 +101,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                             if (SyncStatus.valueOf(syncState.status) == SyncStatus.REFRESHING) {
                                 repository.deleteAll()
                             }
-                            repository.insertItemsIntoDb(data)
+                            repository.insertItemsIntoDb(data, args)
                             syncStateHelper.recordStatus(SyncStatus.LOADED)
                         }
 
@@ -117,7 +121,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
 
 
     internal fun refresh() {
-        repository.getRefreshAPICall()?.let {
+        repository.getRefreshAPICall(args)?.let {
             // Refresh data
             syncStateHelper.runIfPossible(SyncStatus.REFRESHING) {
                 it.enqueue(createCallback())
@@ -138,14 +142,14 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                 SyncStatus.LOADING_INITIAL_EXHAUSTED,
                 SyncStatus.LOADING_INITIAL_FAILED -> {
                     // If it does not connect, just ignore the retry
-                    repository.getAPICall(0, 0)?.let {
+                    repository.getAPICall(0, 0, args)?.let {
                         syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
                             it.enqueue(createCallback())
                         }
                     } ?: run {
                         BeeLog.i(getTag(), "retry, connection is disabled!")
                         // Try refresh if a refresh call is provided
-                        repository.getRefreshAPICall()?.let {
+                        repository.getRefreshAPICall(args)?.let {
                             syncStateHelper.runIfPossible(SyncStatus.REFRESHING) {
                                 it.enqueue(createCallback())
                             }
@@ -158,7 +162,7 @@ class ItemBoundaryCallback<Model, LoadedModel>(private val repository: ItemRepos
                 SyncStatus.LOADING_BEFORE_FAILED,
                 SyncStatus.LOADING_BEFORE_EXHAUSTED -> {
                     syncStateHelper.runIfPossible(SyncStatus.LOADING_BEFORE) {
-                        repository.getAPICall(mItemAtEndId, 0)?.enqueue(createCallback())
+                        repository.getAPICall(mItemAtEndId, 0, args)?.enqueue(createCallback())
                     }
                 }
                 SyncStatus.LOADING_AFTER_FAILED,
