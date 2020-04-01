@@ -12,12 +12,11 @@ import retrofit2.Call
 class UserRepository : ItemRepository<User, User>() {
 
 
-
     override fun getItemId(item: User): Long {
         return item.id
     }
 
-    override fun getAPICall(before: Long, after: Long): Call<List<User>> {
+    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<User>> {
         return ApiService.getTypicodeInstance().users(before)
     }
 

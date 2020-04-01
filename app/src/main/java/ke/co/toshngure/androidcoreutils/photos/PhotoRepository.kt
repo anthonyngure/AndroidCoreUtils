@@ -12,11 +12,11 @@ import retrofit2.Call
 class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>() {
 
 
-    override fun save(items: List<Photo>) {
+    override fun save(items: List<Photo>, args: Bundle?) {
         for (item in items) {
             item.albumId = albumId
         }
-        super.save(items)
+        super.save(items, args)
     }
 
 
@@ -24,7 +24,7 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
         return item.id
     }
 
-    override fun getAPICall(before: Long, after: Long): Call<List<Photo>> {
+    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Photo>> {
         return ApiService.getTypicodeInstance().photos(albumId, before)
     }
 

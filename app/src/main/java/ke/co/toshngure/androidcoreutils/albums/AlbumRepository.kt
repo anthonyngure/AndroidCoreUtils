@@ -15,11 +15,11 @@ class AlbumRepository : ItemRepository<Album, Album>() {
         return AppDatabase.getInstance().albums().deleteAll()
     }
 
-    override fun getAPICall(before: Long, after: Long): Call<List<Album>> {
+    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Album>> {
         return ApiService.getTypicodeInstance().albums(before)
     }
 
-    override fun getRefreshAPICall(): Call<List<Album>>? {
+    override fun getRefreshAPICall(args: Bundle?): Call<List<Album>>? {
         return ApiService.getTypicodeInstance().albums()
     }
 

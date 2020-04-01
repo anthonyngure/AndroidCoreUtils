@@ -15,11 +15,11 @@ class PostRepository : ItemRepository<Post, Post>() {
         return item.id
     }
 
-    override fun getAPICall(before: Long, after: Long): Call<List<Post>> {
+    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Post>> {
         return ApiService.getTypicodeInstance().posts(before)
     }
 
-    override fun getRefreshAPICall(): Call<List<Post>>? {
+    override fun getRefreshAPICall(args: Bundle?): Call<List<Post>>? {
         return ApiService.getTypicodeInstance().posts()
     }
 
