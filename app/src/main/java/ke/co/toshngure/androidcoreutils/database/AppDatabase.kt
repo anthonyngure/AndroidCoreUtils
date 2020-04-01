@@ -1,9 +1,10 @@
-package ke.co.toshngure.androidcoreutils
+package ke.co.toshngure.androidcoreutils.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import ke.co.toshngure.androidcoreutils.App
 import ke.co.toshngure.androidcoreutils.albums.Album
 import ke.co.toshngure.androidcoreutils.photos.PhotoDao
 import ke.co.toshngure.androidcoreutils.posts.PostDao
@@ -14,7 +15,7 @@ import ke.co.toshngure.androidcoreutils.users.User
 import ke.co.toshngure.androidcoreutils.users.UserDao
 
 
-@Database(entities = [Post::class, Album::class, Photo::class, User::class], version = 3, exportSchema = false)
+@Database(entities = [Post::class, Album::class, Photo::class, User::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun posts(): PostDao
@@ -31,8 +32,13 @@ abstract class AppDatabase : RoomDatabase() {
         private var instance: AppDatabase? = null
 
         fun getInstance(): AppDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(App.getInstance()).also { instance = it }
+            return instance
+                ?: synchronized(this) {
+                instance
+                    ?: buildDatabase(
+                        App.getInstance()
+                    )
+                        .also { instance = it }
             }
         }
 

@@ -1,6 +1,5 @@
 package ke.co.toshngure.androidcoreutils
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -18,8 +17,6 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        toolbar.setOnClickListener { v -> startActivity(Intent(this, MaterialActivity::class.java)) }
 
         val navController = Navigation.findNavController(this, R.id.navHostFragment)
 

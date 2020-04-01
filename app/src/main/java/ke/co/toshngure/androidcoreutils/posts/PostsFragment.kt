@@ -1,11 +1,7 @@
 package ke.co.toshngure.androidcoreutils.posts
 
 import android.view.View
-import android.widget.FrameLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.app.LoadingConfig
@@ -13,7 +9,6 @@ import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.extensions.executeAsync
-import kotlinx.android.synthetic.main.fragment_posts_collapsible_view.*
 
 class PostsFragment : PagingFragment<Post, Post, Any>() {
 
@@ -42,7 +37,7 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
         }
     }
 
-    override fun onSetUpCollapsibleViewContainer(
+    /*override fun onSetUpCollapsibleViewContainer(
         appBarLayout: AppBarLayout,
         collapsingToolbarLayout: CollapsingToolbarLayout,
         container: FrameLayout
@@ -61,7 +56,7 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
     override fun onSetUpBottomViewContainer(container: FrameLayout) {
         super.onSetUpBottomViewContainer(container)
         layoutInflater.inflate(R.layout.fragment_posts_bottom_view, container, true)
-    }
+    }*/
 
 
 }

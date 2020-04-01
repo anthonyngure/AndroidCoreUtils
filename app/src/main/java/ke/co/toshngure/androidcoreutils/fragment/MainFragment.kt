@@ -1,9 +1,11 @@
-package ke.co.toshngure.androidcoreutils
+package ke.co.toshngure.androidcoreutils.fragment
 
 import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import ke.co.toshngure.androidcoreutils.R
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.extensions.executeAsync
@@ -56,7 +58,10 @@ class MainFragment : BaseAppFragment<Any>() {
         }
 
         cacheTestBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.cacheTestFragment) }
+
         sharedPrefsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.sharedPrefsFragment) }
+
+        logsBtn.setOnClickListener { navigateWithPermissionsCheck(R.id.fragment_logs) }
     }
 
     companion object {

@@ -55,6 +55,11 @@
                 style="@style/MainButtons"
                 android:text="@string/shared_prefs" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/logsBtn"
+                style="@style/MainButtons"
+                android:text="@string/log_items" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -2,7 +2,7 @@ package ke.co.toshngure.androidcoreutils.fragment
 
 import android.widget.FrameLayout
 import com.google.gson.Gson
-import ke.co.toshngure.androidcoreutils.ApiService
+import ke.co.toshngure.androidcoreutils.api.ApiService
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.basecode.app.BaseAppFragment

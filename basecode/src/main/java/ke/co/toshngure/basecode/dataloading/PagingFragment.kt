@@ -6,7 +6,6 @@ import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +14,13 @@ import ke.co.toshngure.basecode.app.BaseAppFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
+import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.show
 import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.extensions.hide
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 
@@ -36,7 +35,8 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
 
     override fun onSetUpContentView(container: FrameLayout) {
         super.onSetUpContentView(container)
-        LayoutInflater.from(container.context).inflate(R.layout.basecode_fragment_paging, container, true)
+        LayoutInflater.from(container.context)
+            .inflate(R.layout.basecode_fragment_paging, container, true)
     }
 
 
@@ -44,32 +44,43 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         super.onViewCreated(view, savedInstanceState)
 
         mConfig = getPagingConfig()
+
         mItemRepository = mConfig.repository
 
-        mAdapter = ItemsAdapter(mConfig.diffUtilItemCallback, mConfig.layoutRes,
-                this::createItemViewHolder, mConfig.itemClickListener, mItemRepository)
+        mAdapter = ItemsAdapter(
+            mConfig.diffUtilItemCallback, mConfig.layoutRes,
+            this::createItemViewHolder, mConfig.itemClickListener, mItemRepository
+        )
 
         mAdapter.setHasStableIds(true)
-
 
         listRV.apply {
             layoutManager = LinearLayoutManager(listRV.context)
             adapter = mAdapter
         }
 
-        if (mConfig.itemAnimator != null){
+        if (mConfig.itemAnimator != null) {
             listRV.itemAnimator = mConfig.itemAnimator
         }
 
         if (mConfig.withDivider) {
-            listRV.addItemDecoration(DividerItemDecoration(listRV.context, DividerItemDecoration.VERTICAL))
+            listRV.addItemDecoration(
+                DividerItemDecoration(
+                    listRV.context,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
         }
 
         onSetUpRecyclerView(listRV)
 
-        noDataLayout.setOnClickListener { mItemRepository.retry() }
+        noDataLayout.setOnClickListener {
+            mConfig.noDataLayoutClickLister?.onClick(it) ?: mItemRepository.retry()
+        }
 
-        errorLayout.setOnClickListener { mItemRepository.retry() }
+        errorLayout.setOnClickListener {
+            mConfig.errorLayoutClickLister?.onClick(it) ?: mItemRepository.retry()
+        }
     }
 
 
@@ -85,74 +96,80 @@ abstract class PagingFragment<Model, LoadedModel, D> : BaseAppFragment<D>() {
         })
 
         mItemListViewModel.syncState.observe(viewLifecycleOwner, Observer {
-
-            BeeLog.i(TAG, it)
-
-            swipeRefreshLayout.isRefreshing = false
-
-            mAdapter.setSyncState(it)
-
-            loadingLayout.hide()
-            noDataLayout.hide()
-            errorLayout.hide()
-
-            it?.let { syncState ->
-
-                val syncStatus = SyncStatus.valueOf(syncState.status)
-                statusTV.text = syncStatus.name
-
-                when (syncStatus) {
-                    SyncStatus.REFRESHING -> {
-                        swipeRefreshLayout?.isRefreshing = true
-                    }
-
-                    SyncStatus.REFRESHING_FAILED -> {
-                        swipeRefreshLayout?.isRefreshing = false
-                    }
-
-                    //region INITIAL DATA
-                    SyncStatus.LOADING_INITIAL -> {
-                        loadingLayout?.show()
-                    }
-                    SyncStatus.LOADING_INITIAL_FAILED -> {
-                        errorLayout?.show()
-                        errorMessageTV?.text = syncState.error
-                    }
-                    SyncStatus.LOADING_INITIAL_EXHAUSTED -> {
-                        noDataLayout?.showIf(mLoadingConfig.showNoDataLayout)
-                    }
-                    //endregion
-
-                    //region OLD DATA
-                    SyncStatus.LOADING_AFTER -> {
-
-                    }
-                    SyncStatus.LOADING_AFTER_FAILED -> {
-
-                    }
-                    SyncStatus.LOADING_AFTER_EXHAUSTED -> {
-                    }
-                    //endregion
-
-                    SyncStatus.LOADED -> {
-                    }
-                    else -> {
-
-                    }
-                }
-            } ?: run {
-                BeeLog.i(TAG, "SyncState is null")
-                loadingLayout?.show()
-            }
+            onSyncStateChanged(it)
         })
 
-        mItemListViewModel.loadWithArgs(mConfig.arguments)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        mItemListViewModel.loadWithArgs(mConfig.arguments)
+    }
+
+    private fun onSyncStateChanged(it: SyncState?) {
+        BeeLog.i(TAG, it)
+
+        swipeRefreshLayout.isRefreshing = false
+
+        mAdapter.setSyncState(it)
+
+        loadingLayout.hide()
+        noDataLayout.hide()
+        errorLayout.hide()
+
+        it?.let { syncState ->
+
+            val syncStatus = SyncStatus.valueOf(syncState.status)
+            statusTV.text = syncStatus.name
+
+            when (syncStatus) {
+                SyncStatus.REFRESHING -> {
+                    swipeRefreshLayout?.isRefreshing = true
+                }
+
+                SyncStatus.REFRESHING_FAILED -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                }
+
+                //region INITIAL DATA
+                SyncStatus.LOADING_INITIAL -> {
+                    loadingLayout?.show()
+                }
+                SyncStatus.LOADING_INITIAL_FAILED -> {
+                    errorLayout?.show()
+                    errorMessageTV?.text = syncState.error
+                }
+                SyncStatus.LOADING_INITIAL_EXHAUSTED -> {
+                    noDataLayout?.showIf(mLoadingConfig.showNoDataLayout)
+                }
+                //endregion
+
+                //region OLD DATA
+                SyncStatus.LOADING_AFTER -> {
+
+                }
+                SyncStatus.LOADING_AFTER_FAILED -> {
+
+                }
+                SyncStatus.LOADING_AFTER_EXHAUSTED -> {
+                }
+                //endregion
+
+                SyncStatus.LOADED -> {
+                }
+                else -> {
+
+                }
+            }
+        } ?: run {
+            BeeLog.i(TAG, "SyncState is null")
+            loadingLayout?.show()
+        }
     }
 
 
     private fun getViewModel(): ItemListViewModel<*, *> {
-        return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <M : ViewModel?> create(modelClass: Class<M>): M {
                 @Suppress("UNCHECKED_CAST")
                 return ItemListViewModel(mItemRepository) as M

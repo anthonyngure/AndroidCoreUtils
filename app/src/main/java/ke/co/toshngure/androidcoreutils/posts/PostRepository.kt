@@ -1,8 +1,9 @@
 package ke.co.toshngure.androidcoreutils.posts
 
+import android.os.Bundle
 import androidx.paging.DataSource
-import ke.co.toshngure.androidcoreutils.ApiService
-import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.api.ApiService
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
@@ -37,7 +38,7 @@ class PostRepository : ItemRepository<Post, Post>() {
         return AppDatabase.getInstance().posts()
     }
 
-    override fun getItemDataSource(): DataSource.Factory<Int, Post> {
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, Post> {
         return AppDatabase.getInstance().posts().getAllPaged()
     }
 }

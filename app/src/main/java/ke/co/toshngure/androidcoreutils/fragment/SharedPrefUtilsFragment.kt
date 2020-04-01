@@ -21,7 +21,7 @@ class SharedPrefUtilsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button.setOnClickListener {
-            val user = User(id = 1, name = "Anthony", avatarUrl = "", updatedAt = "", createdAt = "")
+            val user = User(id = 1, name = "Anthony")
             PrefUtils.getInstance().saveItem(R.string.pref_user, user)
             val savedUser : User? = PrefUtils.getInstance().getItem(R.string.pref_user)
             //PrefUtils.getInstance().getItem(R.string.pref_user)

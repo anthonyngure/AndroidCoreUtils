@@ -1,4 +1,4 @@
-package ke.co.toshngure.androidcoreutils
+package ke.co.toshngure.androidcoreutils.fragment
 
 import ke.co.toshngure.images.fragment.ImagesPickerFragment
 

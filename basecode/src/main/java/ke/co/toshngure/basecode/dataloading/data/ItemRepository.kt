@@ -6,18 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.extensions.executeAsync
 import retrofit2.Call
 
 
-abstract class ItemRepository<Model, LoadedModel> {
+abstract class ItemRepository<Model, DatabaseFetchedModel> {
 
-    protected var arguments : Bundle? = null
 
-    private var mBoundaryCallback: ItemBoundaryCallback<Model, LoadedModel>? = null
+    private var mBoundaryCallback: ItemBoundaryCallback<Model, DatabaseFetchedModel>? = null
 
-    private var mItemRepositoryConfig: ItemRepositoryConfig<Model, LoadedModel>
+    private var mItemRepositoryConfig: ItemRepositoryConfig<Model, DatabaseFetchedModel>
 
     init {
         mItemRepositoryConfig = this.getItemRepositoryConfig()
@@ -55,9 +53,7 @@ abstract class ItemRepository<Model, LoadedModel> {
      * Returns a Listing for posts.
      */
     @MainThread
-    fun list(args: Bundle?): LiveData<PagedList<LoadedModel>> {
-
-        this.arguments = args
+    fun list(args: Bundle?): LiveData<PagedList<DatabaseFetchedModel>> {
 
         // create a boundary callback which will observe when the user reaches to the edges of
         // the list and update the database with extra data.
@@ -67,24 +63,28 @@ abstract class ItemRepository<Model, LoadedModel> {
         val dataLoadingConfig = getItemRepositoryConfig()
 
         // create a data source factory from Room
-        val dataSourceFactory = getItemDataSource()
+        val dataSourceFactory = getItemDataSource(args)
 
         val config: PagedList.Config = PagedList.Config.Builder()
-                .setEnablePlaceholders(true)
-                .setPageSize(dataLoadingConfig.dbPerPage)
-                .build()
+            .setEnablePlaceholders(true)
+            .setPageSize(dataLoadingConfig.dbPerPage)
+            .build()
 
 
         val builder = LivePagedListBuilder(dataSourceFactory, config)
-                .setBoundaryCallback(mBoundaryCallback)
+            .setBoundaryCallback(mBoundaryCallback)
 
         return builder.build()
     }
 
 
-    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? { return null }
+    open fun getAPICall(before: Long, after: Long): Call<List<Model>>? {
+        return null
+    }
 
-    open fun getRefreshAPICall(): Call<List<Model>>? { return null }
+    open fun getRefreshAPICall(): Call<List<Model>>? {
+        return null
+    }
 
     /**
      * To save items into the db, called inside a transaction in background
@@ -123,12 +123,12 @@ abstract class ItemRepository<Model, LoadedModel> {
     /**
      * To get id of an item
      */
-    abstract fun getItemId(item: LoadedModel): Long
+    abstract fun getItemId(item: DatabaseFetchedModel): Long
 
 
-    abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model, LoadedModel>
+    abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model, DatabaseFetchedModel>
 
-    abstract fun getItemDataSource(): DataSource.Factory<Int, LoadedModel>
+    abstract fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, DatabaseFetchedModel>
 
     abstract fun getItemDao(): ItemDao<Model>
 

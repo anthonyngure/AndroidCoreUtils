@@ -1,4 +1,4 @@
-package ke.co.toshngure.androidcoreutils
+package ke.co.toshngure.androidcoreutils.util
 
 object Extras {
 

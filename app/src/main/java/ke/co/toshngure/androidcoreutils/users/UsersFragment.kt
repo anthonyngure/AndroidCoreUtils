@@ -2,7 +2,6 @@ package ke.co.toshngure.androidcoreutils.users
 
 import android.view.View
 import ke.co.toshngure.androidcoreutils.R
-import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.dataloading.PagingConfig
 import ke.co.toshngure.basecode.dataloading.PagingFragment
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
@@ -25,7 +24,7 @@ class UsersFragment : PagingFragment<User, User, Any>(), ItemsAdapter.OnItemClic
     }
 
     override fun createItemViewHolder(itemView: View): BaseItemViewHolder<User> {
-        return UserViewHolder(itemView, GlideApp.with(this))
+        return UserViewHolder(itemView)
     }
 
 }

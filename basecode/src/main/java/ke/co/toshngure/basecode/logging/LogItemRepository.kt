@@ -1,5 +1,6 @@
 package ke.co.toshngure.basecode.logging
 
+import android.os.Bundle
 import androidx.paging.DataSource
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
@@ -14,8 +15,8 @@ class LogItemRepository : ItemRepository<LogItem, LogItem>() {
         return ItemRepositoryConfig(syncClass = LogItem::class.java)
     }
 
-    override fun getItemDataSource(): DataSource.Factory<Int, LogItem> {
-        val title = arguments?.getString(LogItemsFragment.EXTRA_SUB_TAG)
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, LogItem> {
+        val title = args?.getString(LogItemsFragment.EXTRA_SUB_TAG)
         return title?.let {
             LogItemsDatabase.getInstance().logItems().getAllBySubTagPaged(it)
         } ?: LogItemsDatabase.getInstance().logItems().getAllPaged()

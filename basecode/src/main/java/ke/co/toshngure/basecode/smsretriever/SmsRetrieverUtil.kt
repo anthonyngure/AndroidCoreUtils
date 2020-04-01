@@ -12,7 +12,6 @@ import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.AppSignatureHelper
 
 /**
  * Created by Anthony Ngure on 6/13/2019
@@ -25,24 +24,23 @@ object SmsRetrieverUtil : LifecycleObserver {
     private lateinit var fragment: Fragment
     private lateinit var callback: Callback
     private const val TAG = "SmsRetrieverUtil"
-    private const val SMS_CONSENT_REQUEST = 200
+    // private const val SMS_CONSENT_REQUEST = 200
 
     fun init(fragment: Fragment, callback: Callback) {
         this.fragment = fragment
         this.callback = callback
-        fragment.viewLifecycleOwner.lifecycle.addObserver(this)
-        AppSignatureHelper.getAppSignatures(fragment.requireContext())
+        fragment.lifecycle.addObserver(this)
     }
 
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop(){
+    fun onStop() {
         BeeLog.i(TAG, "onStop")
         fragment.requireActivity().unregisterReceiver(mBroadcastReceiver)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart(){
+    fun onStart() {
         BeeLog.i(TAG, "onStart")
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
 
@@ -106,8 +104,6 @@ object SmsRetrieverUtil : LifecycleObserver {
             }
         }
     }
-
-
 
 
 }

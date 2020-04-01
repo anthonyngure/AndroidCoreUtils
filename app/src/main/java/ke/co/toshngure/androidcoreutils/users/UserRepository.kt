@@ -1,10 +1,9 @@
 package ke.co.toshngure.androidcoreutils.users
 
+import android.os.Bundle
 import androidx.paging.DataSource
-import androidx.room.RoomDatabase
-import ke.co.toshngure.androidcoreutils.ApiService
-import ke.co.toshngure.androidcoreutils.App
-import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.api.ApiService
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
@@ -19,7 +18,7 @@ class UserRepository : ItemRepository<User, User>() {
     }
 
     override fun getAPICall(before: Long, after: Long): Call<List<User>> {
-        return ApiService.getGlamHubInstance().users(before)
+        return ApiService.getTypicodeInstance().users(before)
     }
 
     override fun deleteAll() {
@@ -37,7 +36,7 @@ class UserRepository : ItemRepository<User, User>() {
         return AppDatabase.getInstance().users()
     }
 
-    override fun getItemDataSource(): DataSource.Factory<Int, User> {
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, User> {
         return AppDatabase.getInstance().users().getAllPaged()
     }
 }

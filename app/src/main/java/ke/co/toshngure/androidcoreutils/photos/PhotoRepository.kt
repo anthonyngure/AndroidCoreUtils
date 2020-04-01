@@ -1,8 +1,9 @@
 package ke.co.toshngure.androidcoreutils.photos
 
+import android.os.Bundle
 import androidx.paging.DataSource
-import ke.co.toshngure.androidcoreutils.ApiService
-import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.api.ApiService
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
@@ -38,7 +39,7 @@ class PhotoRepository(private val albumId: Long) : ItemRepository<Photo, Photo>(
         return AppDatabase.getInstance().photos()
     }
 
-    override fun getItemDataSource(): DataSource.Factory<Int, Photo> {
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, Photo> {
         return AppDatabase.getInstance().photos().getAllPaged(albumId)
     }
 }

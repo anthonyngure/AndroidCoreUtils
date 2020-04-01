@@ -1,17 +1,21 @@
 package ke.co.toshngure.androidcoreutils.users
 
+import android.graphics.Typeface
+import android.text.style.StyleSpan
 import android.view.View
-import ke.co.toshngure.basecode.app.GlideRequests
 import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.util.Spanny
 import kotlinx.android.synthetic.main.item_user.view.*
 
-class UserViewHolder(view: View, private val glide: GlideRequests) : BaseItemViewHolder<User>(view) {
-
+class UserViewHolder(view: View) : BaseItemViewHolder<User>(view) {
 
     override fun bindTo(item: User) {
         super.bindTo(item)
-        itemView.nameTV.text = Spanny(item.id.toString()).append(" - ").append(item.name)
-        //itemView.avatarNI.loadImageFromNetwork(item.avatarUrl, glide)
+        itemView.nameTV.text =
+            Spanny(item.id.toString()).append(" - ")
+                .append(item.name, StyleSpan(Typeface.BOLD))
+                .append(item.username, Typeface.NORMAL)
+        itemView.phoneTV.text = item.phone
+        itemView.emailTV.text = item.email
     }
 }

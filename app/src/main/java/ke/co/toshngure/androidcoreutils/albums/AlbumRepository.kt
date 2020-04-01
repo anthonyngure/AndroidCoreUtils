@@ -1,8 +1,9 @@
 package ke.co.toshngure.androidcoreutils.albums
 
+import android.os.Bundle
 import androidx.paging.DataSource
-import ke.co.toshngure.androidcoreutils.ApiService
-import ke.co.toshngure.androidcoreutils.AppDatabase
+import ke.co.toshngure.androidcoreutils.api.ApiService
+import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
@@ -33,7 +34,7 @@ class AlbumRepository : ItemRepository<Album, Album>() {
     }
 
 
-    override fun getItemDataSource(): DataSource.Factory<Int, Album> {
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, Album> {
         return AppDatabase.getInstance().albums().getAllPaged()
     }
 

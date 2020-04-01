@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 
-class ItemListViewModel<Model, LoadedModel>(private val repository: ItemRepository<Model, LoadedModel>) : ViewModel() {
+class ItemListViewModel<Model, DatabaseFetchedModel>(private val repository: ItemRepository<Model, DatabaseFetchedModel>) : ViewModel() {
 
     private val args = MutableLiveData<Bundle?>()
 
@@ -15,9 +15,7 @@ class ItemListViewModel<Model, LoadedModel>(private val repository: ItemReposito
         repository.list(args.value)
     }
 
-    val items = Transformations.switchMap(repoResult) {
-        it
-    }
+    val items = Transformations.switchMap(repoResult) { it }
 
     val syncState = Transformations.switchMap(repoResult) {
         val model = repository.getSyncClass().simpleName

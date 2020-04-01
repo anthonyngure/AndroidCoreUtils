@@ -1,6 +1,7 @@
 package ke.co.toshngure.images.data
 
 import android.content.Context
+import android.os.Bundle
 import androidx.paging.DataSource
 import ke.co.toshngure.basecode.dataloading.data.ItemDao
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
@@ -26,9 +27,9 @@ class ImageRepository(private val context: Context) : ItemRepository<Image, Imag
     }
 
 
-    override fun getItemDataSource(): DataSource.Factory<Int, Image> {
-        BeeLog.i(TAG, arguments)
-        return arguments?.getString(ImagesPickerFragment.EXTRA_FOLDER)?.let {
+    override fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, Image> {
+        BeeLog.i(TAG, args)
+        return args?.getString(ImagesPickerFragment.EXTRA_FOLDER)?.let {
             ImagesDatabase.getInstance(context).images().getAllPagedByFolder(it)
         } ?: ImagesDatabase.getInstance(context).images().getAllPaged()
     }

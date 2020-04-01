@@ -60,22 +60,22 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
 
     /*Paging*/
-    implementation "androidx.paging:paging-runtime:2.1.1"
+    implementation "androidx.paging:paging-runtime:2.1.2"
 
     // Shared prefs
     implementation "androidx.preference:preference-ktx:1.1.0"
 
     // Workers - kotlin + coroutines
-    implementation "androidx.work:work-runtime-ktx:2.3.3"
+    implementation "androidx.work:work-runtime-ktx:2.3.4"
 
     /*Room*/
-    implementation 'androidx.room:room-runtime:2.2.4'
-    kapt 'androidx.room:room-compiler:2.2.4'
+    implementation 'androidx.room:room-runtime:2.2.5'
+    kapt 'androidx.room:room-compiler:2.2.5'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
 
-    implementation 'com.google.android.gms:play-services-base:17.1.0'
+    implementation 'com.google.android.gms:play-services-base:17.2.1'
     implementation 'com.google.android.gms:play-services-auth-api-phone:17.4.0'
     //Optional for phone number hint
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
@@ -105,8 +105,9 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-    // https://github.com/Faltenreich/SkeletonLayout
-    implementation 'com.faltenreich:skeletonlayout:1.0.1'
+    def groupie_version = '2.8.0'
+    implementation "com.xwray:groupie:$groupie_version"
+    implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
 
     // https://github.com/ParkSangGwon/TedPermission
     implementation 'gun0912.ted:tedpermission:2.2.2'

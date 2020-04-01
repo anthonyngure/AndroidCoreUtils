@@ -21,6 +21,7 @@ import ke.co.toshngure.extensions.executeAsync
 object BeeLog {
 
     var DEBUG = false
+    var showStatusTextView = false
     private var tag: String? = null
     private var debugSwitchClicks = 0
     private var logListener: LogListener? = null
@@ -30,6 +31,11 @@ object BeeLog {
         LogItemsDatabase.init(context)
         tag = logTag
         DEBUG = debug
+        return this
+    }
+
+    fun showStatusTextView(show: Boolean): BeeLog {
+        this.showStatusTextView = show
         return this
     }
 

@@ -2,7 +2,7 @@ package ke.co.toshngure.androidcoreutils.photos
 
 import android.os.Bundle
 import android.view.View
-import ke.co.toshngure.androidcoreutils.Extras
+import ke.co.toshngure.androidcoreutils.util.Extras
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.dataloading.PagingConfig

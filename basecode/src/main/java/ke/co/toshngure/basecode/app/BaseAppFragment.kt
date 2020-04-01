@@ -95,7 +95,7 @@ abstract class BaseAppFragment<D> : Fragment(), SwipeRefreshLayout.OnRefreshList
         noDataMessageTV.setText(mLoadingConfig.noDataMessage)
         noDataIV.setImageResource(mLoadingConfig.noDataIcon)
 
-        statusTV.showIf(BeeLog.DEBUG)
+        statusTV.showIf(BeeLog.DEBUG && BeeLog.showStatusTextView)
 
         loadingLayout.hide()
         if (mLoadingConfig.withLoadingLayoutAtTop) {

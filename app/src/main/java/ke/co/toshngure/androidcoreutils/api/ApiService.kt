@@ -1,4 +1,4 @@
-package ke.co.toshngure.androidcoreutils
+package ke.co.toshngure.androidcoreutils.api
 
 import ke.co.toshngure.androidcoreutils.albums.Album
 import ke.co.toshngure.androidcoreutils.photos.Photo
@@ -15,11 +15,11 @@ import retrofit2.http.QueryMap
 
 interface ApiService {
 
-    @GET("dataTest")
+    @GET("/users")
     fun users(
-        @Query("before") before: Long = 0,
-        @Query("after") after: Long = 0,
-        @Query("perPage") perPage: Int = 10,
+        @Query("_start") start: Long = 0,
+        @Query("_limit") perPage: Int = 10,
+        @Query("_order") order: String = "desc",
         @QueryMap params: Map<String, String> = mapOf()
     ): Call<List<User>>
 
@@ -58,30 +58,20 @@ interface ApiService {
 
         private const val TAG = "ApiService"
         private const val BASE_URL = "https://jsonplaceholder.typicode.com"
-        private const val GLAMHUB_BASE_URL = "http://dev-api.glamhub.co.ke/api/v1/"
 
         // For singleton instantiation
         @Volatile
         private var instance: ApiService? = null
 
-        @Volatile
-        private var glamhub: ApiService? = null
-
         fun getTypicodeInstance(): ApiService {
             return instance ?: synchronized(this) {
-                instance ?: buildInstance(BASE_URL).also { instance = it }
+                instance ?: buildInstance().also { instance = it }
             }
         }
 
-        fun getGlamHubInstance(): ApiService {
-            return glamhub ?: synchronized(this) {
-                glamhub ?: buildInstance(GLAMHUB_BASE_URL).also { glamhub = it }
-            }
-        }
-
-        private fun buildInstance(baseUrl: String): ApiService {
+        private fun buildInstance(): ApiService {
             return Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(BASE_URL)
                 .client(NetworkUtils.getClientInstance())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
