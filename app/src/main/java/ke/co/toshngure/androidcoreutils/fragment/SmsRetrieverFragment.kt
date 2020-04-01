@@ -24,13 +24,11 @@ class SmsRetrieverFragment : BaseAppFragment<Any>(), SmsRetrieverUtil.Callback {
         super.onStart()
         PhoneRetrieverUtils.init(this)
         SmsRetrieverUtil.init(this, this)
-        AppSignatureHelper.getAppSignatures(requireContext())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         PhoneRetrieverUtils.onActivityResult(phoneET, requestCode, resultCode, data)
-        // SmsRetrieverUtil.onActivityResult(this, requestCode, resultCode, data)
     }
 
     @SuppressLint("SetTextI18n")

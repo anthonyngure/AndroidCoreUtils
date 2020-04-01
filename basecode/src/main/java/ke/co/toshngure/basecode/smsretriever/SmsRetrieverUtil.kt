@@ -1,29 +1,54 @@
 package ke.co.toshngure.basecode.smsretriever
 
-import android.app.Activity
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.util.AppSignatureHelper
 
 /**
  * Created by Anthony Ngure on 6/13/2019
  *
  * @author Anthony Ngure
  */
-object SmsRetrieverUtil {
+object SmsRetrieverUtil : LifecycleObserver {
 
-
+    private lateinit var mBroadcastReceiver: BroadcastReceiver
+    private lateinit var fragment: Fragment
+    private lateinit var callback: Callback
     private const val TAG = "SmsRetrieverUtil"
     private const val SMS_CONSENT_REQUEST = 200
 
     fun init(fragment: Fragment, callback: Callback) {
+        this.fragment = fragment
+        this.callback = callback
+        fragment.viewLifecycleOwner.lifecycle.addObserver(this)
+        AppSignatureHelper.getAppSignatures(fragment.requireContext())
+    }
 
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun onStop(){
+        BeeLog.i(TAG, "onStop")
+        fragment.requireActivity().unregisterReceiver(mBroadcastReceiver)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart(){
+        BeeLog.i(TAG, "onStart")
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        fragment.requireActivity()
-            .registerReceiver(SMSBroadcastReceiver(fragment, callback), intentFilter)
+
+        mBroadcastReceiver = SMSBroadcastReceiver(callback)
+
+        fragment.requireActivity().registerReceiver(mBroadcastReceiver, intentFilter)
 
         val client = SmsRetriever.getClient(fragment.requireActivity())
 
@@ -53,10 +78,7 @@ object SmsRetrieverUtil {
         fun onSmsRetrieverSuccess(sms: String?)
     }
 
-    private class SMSBroadcastReceiver(
-        private val fragment: Fragment,
-        private val callback: Callback
-    ) : BroadcastReceiver() {
+    private class SMSBroadcastReceiver(private val callback: Callback) : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action && intent.extras != null) {
@@ -84,6 +106,7 @@ object SmsRetrieverUtil {
             }
         }
     }
+
 
 
 

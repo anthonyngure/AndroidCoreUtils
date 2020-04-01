@@ -5,6 +5,9 @@ import android.content.Intent
 import android.content.IntentSender
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.HintRequest
@@ -18,13 +21,20 @@ import ke.co.toshngure.basecode.util.BaseUtils
  * Created by Anthony Ngure on 6/13/2019
  * @author Anthony Ngure
  */
-object PhoneRetrieverUtils {
+object PhoneRetrieverUtils : LifecycleObserver {
 
     private const val TAG = "PhoneUtils"
     private const val RESOLVE_HINT = 100
+    private lateinit var fragment: Fragment
 
     fun init(fragment: Fragment) {
+        this.fragment = fragment
+        this.fragment.viewLifecycleOwner.lifecycle.addObserver(this)
+    }
 
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun onStart(){
         val hintRequest = HintRequest.Builder()
             .setPhoneNumberIdentifierSupported(true)
             .build()
