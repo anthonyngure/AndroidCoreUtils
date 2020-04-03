@@ -183,6 +183,11 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
 
     override fun onRefresh() {
         super.onRefresh()
+        refresh()
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun refresh(){
         mItemRepository.refresh()
     }
 
