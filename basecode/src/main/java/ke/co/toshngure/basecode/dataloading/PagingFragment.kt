@@ -156,6 +156,7 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
                 //endregion
 
                 SyncStatus.LOADED -> {
+                    noDataLayout.showIf(mLoadingConfig.showNoDataLayout && mAdapter.itemCount == 0)
                 }
                 else -> {
 
