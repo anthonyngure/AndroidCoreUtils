@@ -18,12 +18,11 @@ import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
+import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.show
 import ke.co.toshngure.extensions.showIf
-import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.util.Spanny
-import ke.co.toshngure.extensions.executeAsync
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 
@@ -121,7 +120,7 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
         noDataLayout.hide()
         errorLayout.hide()
 
-        noDataMessageTV.text = Spanny().append(it.toString())
+        // noDataMessageTV.text = Spanny().append(it.toString())
 
         it?.let { syncState ->
 
