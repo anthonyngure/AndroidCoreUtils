@@ -30,7 +30,6 @@ class ItemBoundaryCallback<Model, FetchedDatabaseModel>(
         super.onZeroItemsLoaded()
         BeeLog.i(getTag(), "onZeroItemsLoaded")
         repository.getAPICall(0, 0, args)?.let {
-            syncStateHelper.recordStatus(SyncStatus.LOADED)
             syncStateHelper.runIfPossible(SyncStatus.LOADING_INITIAL) {
                 it.enqueue(createCallback())
             }

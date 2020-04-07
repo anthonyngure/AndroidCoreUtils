@@ -9,7 +9,6 @@ import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.images.fragment.ImagesPickerFragment
-import kotlin.random.Random
 
 class ImageRepository(private val context: Context) : ItemRepository<Image, Image>() {
 
@@ -17,7 +16,7 @@ class ImageRepository(private val context: Context) : ItemRepository<Image, Imag
         return item.id ?: BaseUtils.uuidToLong(item.path + "_" + item.bucket + "_" + item.name)
     }
 
-    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Image, Image> {
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Image> {
         return ItemRepositoryConfig(syncClass = Image::class.java, dbPerPage = 16)
     }
 

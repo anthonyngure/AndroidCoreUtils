@@ -4,14 +4,17 @@ import androidx.annotation.WorkerThread
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
+import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.extensions.executeAsync
 
 class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val syncTab: String = "") {
 
 
     fun runIfPossible(syncStatus: SyncStatus, request: () -> Unit) {
+        BeeLog.i(TAG, "runIfPossible -> $syncStatus")
         executeAsync {
             val syncState = loadSyncState()
+            BeeLog.i(TAG, "runIfPossible, current state -> $syncState")
             if (syncState.status != syncStatus.value && !stateIsExhaustedOrFailed(syncStatus)) {
                 recordStatus(syncStatus)
                 request.invoke()
@@ -40,6 +43,7 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
     }
 
     fun recordStatus(syncStatus: SyncStatus) {
+        BeeLog.i(TAG, "recordStatus -> $syncStatus")
         executeAsync {
             val syncState = loadSyncState()
             syncState.status = syncStatus.value
@@ -89,5 +93,9 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
             SyncStatesDatabase.getInstance().syncStates().insert(syncState)
         }
         return syncState
+    }
+
+    companion object {
+        private const val TAG = "SyncStateHelper"
     }
 }

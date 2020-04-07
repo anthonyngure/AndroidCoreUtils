@@ -15,7 +15,7 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
 
     private var mBoundaryCallback: ItemBoundaryCallback<Model, DatabaseFetchedModel>? = null
 
-    private var mItemRepositoryConfig: ItemRepositoryConfig<Model, DatabaseFetchedModel>
+    private var mItemRepositoryConfig: ItemRepositoryConfig<Model>
 
     init {
         mItemRepositoryConfig = this.getItemRepositoryConfig()
@@ -78,7 +78,7 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
     }
 
 
-    open fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Model>>? {
+    open fun getAPICall(itemAtBottomId: Long, itemAtTopId: Long, args: Bundle?): Call<List<Model>>? {
         return null
     }
 
@@ -126,7 +126,7 @@ abstract class ItemRepository<Model, DatabaseFetchedModel> {
     abstract fun getItemId(item: DatabaseFetchedModel): Long
 
 
-    abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model, DatabaseFetchedModel>
+    abstract fun getItemRepositoryConfig(): ItemRepositoryConfig<Model>
 
     abstract fun getItemDataSource(args: Bundle?): DataSource.Factory<Int, DatabaseFetchedModel>
 

@@ -15,8 +15,8 @@ class AlbumRepository : ItemRepository<Album, Album>() {
         return AppDatabase.getInstance().albums().deleteAll()
     }
 
-    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Album>> {
-        return ApiService.getTypicodeInstance().albums(before)
+    override fun getAPICall(itemAtBottomId: Long, itemAtTopId: Long, args: Bundle?): Call<List<Album>> {
+        return ApiService.getTypicodeInstance().albums(itemAtBottomId)
     }
 
     override fun getRefreshAPICall(args: Bundle?): Call<List<Album>>? {
@@ -27,7 +27,7 @@ class AlbumRepository : ItemRepository<Album, Album>() {
         return item.id
     }
 
-    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Album, Album> {
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Album> {
         return ItemRepositoryConfig(
             syncClass = Album::class.java
         )

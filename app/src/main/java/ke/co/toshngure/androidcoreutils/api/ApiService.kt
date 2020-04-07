@@ -19,7 +19,7 @@ interface ApiService {
     fun users(
         @Query("_start") start: Long = 0,
         @Query("_limit") perPage: Int = 10,
-        @Query("_order") order: String = "desc",
+        @Query("_order") order: String = "asc",
         @QueryMap params: Map<String, String> = mapOf()
     ): Call<List<User>>
 
@@ -56,6 +56,7 @@ interface ApiService {
 
     companion object {
 
+        @Suppress("unused")
         private const val TAG = "ApiService"
         private const val BASE_URL = "https://jsonplaceholder.typicode.com"
 

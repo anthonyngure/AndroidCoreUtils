@@ -16,8 +16,8 @@ class UserRepository : ItemRepository<User, User>() {
         return item.id
     }
 
-    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<User>> {
-        return ApiService.getTypicodeInstance().users(before)
+    override fun getAPICall(itemAtBottomId: Long, itemAtTopId: Long, args: Bundle?): Call<List<User>> {
+        return ApiService.getTypicodeInstance().users(itemAtBottomId)
     }
 
     override fun deleteAll() {
@@ -25,7 +25,7 @@ class UserRepository : ItemRepository<User, User>() {
     }
 
 
-    override fun getItemRepositoryConfig(): ItemRepositoryConfig<User, User> {
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<User> {
         return ItemRepositoryConfig(
             syncClass = User::class.java
         )

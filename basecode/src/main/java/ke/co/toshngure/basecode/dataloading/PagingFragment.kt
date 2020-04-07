@@ -15,17 +15,21 @@ import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
 import ke.co.toshngure.basecode.dataloading.data.ItemRepository
 import ke.co.toshngure.basecode.dataloading.sync.SyncState
+import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
 import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
 import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.show
 import ke.co.toshngure.extensions.showIf
 import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.util.Spanny
+import ke.co.toshngure.extensions.executeAsync
 import kotlinx.android.synthetic.main.basecode_fragment_base_app.*
 import kotlinx.android.synthetic.main.basecode_fragment_paging.*
 
 
-abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> : BaseAppFragment<FetchedNetworkModel>() {
+abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> :
+    BaseAppFragment<FetchedNetworkModel>() {
 
     private lateinit var mConfig: PagingConfig<Model, FetchedDatabaseModel>
     private lateinit var mItemListViewModel: ItemListViewModel<Model, FetchedDatabaseModel>
@@ -117,6 +121,8 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
         noDataLayout.hide()
         errorLayout.hide()
 
+        noDataMessageTV.text = Spanny().append(it.toString())
+
         it?.let { syncState ->
 
             val syncStatus = SyncStatus.valueOf(syncState.status)
@@ -168,6 +174,14 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        executeAsync {
+            val model = mItemRepository.getSyncClass().simpleName
+            SyncStatesDatabase.getInstance().syncStates().delete(model, mItemRepository.getTab())
+        }
+    }
+
 
     private fun getViewModel(): ItemListViewModel<*, *> {
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
@@ -188,7 +202,7 @@ abstract class PagingFragment<Model, FetchedDatabaseModel, FetchedNetworkModel> 
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun refresh(){
+    protected fun refresh() {
         mItemRepository.refresh()
     }
 

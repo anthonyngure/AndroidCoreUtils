@@ -15,8 +15,8 @@ class PostRepository : ItemRepository<Post, Post>() {
         return item.id
     }
 
-    override fun getAPICall(before: Long, after: Long, args: Bundle?): Call<List<Post>> {
-        return ApiService.getTypicodeInstance().posts(before)
+    override fun getAPICall(itemAtBottomId: Long, itemAtTopId: Long, args: Bundle?): Call<List<Post>> {
+        return ApiService.getTypicodeInstance().posts(itemAtBottomId)
     }
 
     override fun getRefreshAPICall(args: Bundle?): Call<List<Post>>? {
@@ -28,7 +28,7 @@ class PostRepository : ItemRepository<Post, Post>() {
     }
 
 
-    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Post, Post> {
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<Post> {
         return ItemRepositoryConfig(
             syncClass = Post::class.java
         )

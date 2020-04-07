@@ -1,6 +1,6 @@
 package ke.co.toshngure.basecode.dataloading.data
 
-data class ItemRepositoryConfig<Model, LoadedModel>(
+data class ItemRepositoryConfig<Model>(
         val networkPerPage: Int = NETWORK_PER_PAGE,
         val dbPerPage: Int = DB_PER_PAGE,
         val ordersDesc: Boolean = true,

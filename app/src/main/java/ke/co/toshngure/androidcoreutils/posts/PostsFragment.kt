@@ -32,9 +32,6 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        executeAsync {
-            AppDatabase.getInstance().posts().deleteAll()
-        }
     }
 
     /*override fun onSetUpCollapsibleViewContainer(

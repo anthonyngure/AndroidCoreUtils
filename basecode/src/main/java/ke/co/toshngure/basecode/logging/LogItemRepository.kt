@@ -11,7 +11,7 @@ class LogItemRepository : ItemRepository<LogItem, LogItem>() {
         return item.id
     }
 
-    override fun getItemRepositoryConfig(): ItemRepositoryConfig<LogItem, LogItem> {
+    override fun getItemRepositoryConfig(): ItemRepositoryConfig<LogItem> {
         return ItemRepositoryConfig(syncClass = LogItem::class.java)
     }
 
@@ -24,5 +24,10 @@ class LogItemRepository : ItemRepository<LogItem, LogItem>() {
 
     override fun getItemDao(): ItemDao<LogItem> {
         return LogItemsDatabase.getInstance().logItems()
+    }
+
+    override fun deleteAll() {
+        super.deleteAll()
+        LogItemsDatabase.getInstance().logItems().deleteAll()
     }
 }
