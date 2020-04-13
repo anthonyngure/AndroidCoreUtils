@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading
+package ke.co.toshngure.basecode.paging
 
 import android.os.Bundle
 import android.view.*
@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.app.BaseAppFragment
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
-import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.sync.SyncState
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
-import ke.co.toshngure.basecode.dataloading.viewmodel.ItemListViewModel
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.ItemsAdapter
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.sync.SyncState
+import ke.co.toshngure.basecode.paging.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.paging.sync.SyncStatus
+import ke.co.toshngure.basecode.paging.viewmodel.ItemListViewModel
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.extensions.hide

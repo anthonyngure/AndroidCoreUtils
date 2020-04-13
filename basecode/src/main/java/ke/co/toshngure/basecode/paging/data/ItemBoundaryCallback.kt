@@ -1,12 +1,12 @@
-package ke.co.toshngure.basecode.dataloading.data
+package ke.co.toshngure.basecode.paging.data
 
 import android.os.Bundle
 import androidx.annotation.MainThread
 import androidx.paging.PagedList
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
+import ke.co.toshngure.basecode.paging.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.paging.sync.SyncStatus
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.net.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtil
 import ke.co.toshngure.extensions.executeAsync
 import retrofit2.Call
 import retrofit2.Callback
@@ -82,7 +82,7 @@ class ItemBoundaryCallback<Model, FetchedDatabaseModel>(
                 if (BeeLog.DEBUG) {
                     syncStateHelper.recordFailure(t.localizedMessage)
                 } else {
-                    val error = NetworkUtils.getCallback().getErrorMessageFromResponseBody(0, null)
+                    val error = NetworkUtil.getCallback().getErrorMessageFromResponseBody(0, null)
                     syncStateHelper.recordFailure(error)
                 }
             }
@@ -109,7 +109,7 @@ class ItemBoundaryCallback<Model, FetchedDatabaseModel>(
                 } else {
                     val errorBody = response.errorBody()
                     errorBody?.let {
-                        val errorMessage = NetworkUtils.getCallback()
+                        val errorMessage = NetworkUtil.getCallback()
                             .getErrorMessageFromResponseBody(response.code(), it.string())
                         syncStateHelper.recordFailure(errorMessage)
                     } ?: syncStateHelper.recordFailure(response.message())

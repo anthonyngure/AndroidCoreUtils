@@ -2,7 +2,7 @@ package ke.co.toshngure.androidcoreutils.posts
 
 import androidx.paging.DataSource
 import androidx.room.*
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemDao
 
 @Dao
 interface PostDao : ItemDao<Post> {

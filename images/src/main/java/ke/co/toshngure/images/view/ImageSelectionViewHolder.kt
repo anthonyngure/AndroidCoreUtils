@@ -2,7 +2,7 @@ package ke.co.toshngure.images.view
 
 import android.view.View
 import ke.co.toshngure.basecode.app.GlideRequests
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 import ke.co.toshngure.images.data.Image
 import kotlinx.android.synthetic.main.item_image_selection.view.*
 

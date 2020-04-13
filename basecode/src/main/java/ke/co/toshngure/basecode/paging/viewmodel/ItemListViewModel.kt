@@ -1,11 +1,11 @@
-package ke.co.toshngure.basecode.dataloading.viewmodel
+package ke.co.toshngure.basecode.paging.viewmodel
 
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.sync.SyncStatesDatabase
 
 class ItemListViewModel<Model, DatabaseFetchedModel>(private val repository: ItemRepository<Model, DatabaseFetchedModel>) : ViewModel() {
 

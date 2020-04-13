@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.sync
+package ke.co.toshngure.basecode.paging.sync
 
 import android.content.Context
 import androidx.room.Database

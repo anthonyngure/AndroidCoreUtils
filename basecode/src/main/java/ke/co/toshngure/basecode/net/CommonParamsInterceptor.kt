@@ -3,7 +3,7 @@ package ke.co.toshngure.basecode.net
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class CommonParamsInterceptor(private val callback: NetworkUtils.Callback) : Interceptor {
+class CommonParamsInterceptor(private val callback: NetworkUtil.Callback) : Interceptor {
 
 
 

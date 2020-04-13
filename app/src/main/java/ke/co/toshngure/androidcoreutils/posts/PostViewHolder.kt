@@ -1,11 +1,9 @@
 package ke.co.toshngure.androidcoreutils.posts
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import ke.co.toshngure.basecode.app.GlideRequests
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.util.Spanny
 import kotlinx.android.synthetic.main.item_post.view.*
 

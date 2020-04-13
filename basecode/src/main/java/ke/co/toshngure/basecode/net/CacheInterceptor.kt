@@ -3,7 +3,7 @@ package ke.co.toshngure.basecode.net
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class CacheInterceptor(private val callback: NetworkUtils.Callback) : Interceptor {
+class CacheInterceptor(private val callback: NetworkUtil.Callback) : Interceptor {
 
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -15,7 +15,7 @@ class CacheInterceptor(private val callback: NetworkUtils.Callback) : Intercepto
         *  we initialize the request and change its header depending on whether
         *  the device is connected to Internet or not.
         */
-        request = if (NetworkUtils.canConnect(callback.getContext()))
+        request = if (NetworkUtil.canConnect(callback.getContext()))
         /*
         *  If there is Internet, get the cache that was stored 5 seconds ago.
         *  If the cache is older than 5 seconds, then discard it,

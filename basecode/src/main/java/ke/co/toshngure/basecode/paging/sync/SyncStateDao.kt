@@ -1,9 +1,9 @@
-package ke.co.toshngure.basecode.dataloading.sync
+package ke.co.toshngure.basecode.paging.sync
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemDao
 
 @Dao
 interface SyncStateDao : ItemDao<SyncState> {

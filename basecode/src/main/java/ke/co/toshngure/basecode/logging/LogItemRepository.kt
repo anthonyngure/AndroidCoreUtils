@@ -2,9 +2,9 @@ package ke.co.toshngure.basecode.logging
 
 import android.os.Bundle
 import androidx.paging.DataSource
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
+import ke.co.toshngure.basecode.paging.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.data.ItemRepositoryConfig
 
 class LogItemRepository : ItemRepository<LogItem, LogItem>() {
     override fun getItemId(item: LogItem): Long {

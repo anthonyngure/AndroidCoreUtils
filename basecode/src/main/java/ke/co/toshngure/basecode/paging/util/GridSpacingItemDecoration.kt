@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.util
+package ke.co.toshngure.basecode.paging.util
 
 import android.graphics.Rect
 import android.view.View

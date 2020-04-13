@@ -3,7 +3,7 @@ package ke.co.toshngure.androidcoreutils.photos
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Query
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemDao
 
 @Dao
 interface PhotoDao : ItemDao<Photo> {

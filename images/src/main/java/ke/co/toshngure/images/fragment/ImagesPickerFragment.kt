@@ -31,17 +31,16 @@ import id.zelory.compressor.Compressor
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.app.GlideRequests
 import ke.co.toshngure.basecode.app.LoadingConfig
-import ke.co.toshngure.basecode.dataloading.PagingConfig
-import ke.co.toshngure.basecode.dataloading.PagingFragment
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
-import ke.co.toshngure.basecode.dataloading.adapter.ItemsAdapter
-import ke.co.toshngure.basecode.dataloading.util.GridSpacingItemDecoration
+import ke.co.toshngure.basecode.paging.PagingConfig
+import ke.co.toshngure.basecode.paging.PagingFragment
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.ItemsAdapter
+import ke.co.toshngure.basecode.paging.util.GridSpacingItemDecoration
 import ke.co.toshngure.extensions.executeAsync
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.basecode.util.PrefUtils
 import ke.co.toshngure.basecode.util.Spanny
-import ke.co.toshngure.images.BuildConfig
 import ke.co.toshngure.images.R
 import ke.co.toshngure.images.activity.CameraActivity
 import ke.co.toshngure.images.data.Image
@@ -89,7 +88,7 @@ open class ImagesPickerFragment<D> : PagingFragment<Image, Image, D>(),
     }
 
     override fun getLoadingConfig(): LoadingConfig {
-        return LoadingConfig(showNoDataLayout = false)
+        return super.getLoadingConfig().copy(showNoDataLayout = false)
     }
 
     override fun createItemViewHolder(itemView: View): BaseItemViewHolder<Image> {

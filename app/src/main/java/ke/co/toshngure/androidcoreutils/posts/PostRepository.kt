@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.paging.DataSource
 import ke.co.toshngure.androidcoreutils.api.ApiService
 import ke.co.toshngure.androidcoreutils.database.AppDatabase
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
+import ke.co.toshngure.basecode.paging.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.data.ItemRepositoryConfig
 import retrofit2.Call
 
 class PostRepository : ItemRepository<Post, Post>() {

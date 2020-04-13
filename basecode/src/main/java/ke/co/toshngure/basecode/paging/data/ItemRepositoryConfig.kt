@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.data
+package ke.co.toshngure.basecode.paging.data
 
 data class ItemRepositoryConfig<Model>(
         val networkPerPage: Int = NETWORK_PER_PAGE,

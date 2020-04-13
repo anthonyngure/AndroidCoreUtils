@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading
+package ke.co.toshngure.basecode.paging
 
 enum class Status {
     RUNNING,

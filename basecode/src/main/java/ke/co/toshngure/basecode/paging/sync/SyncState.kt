@@ -1,9 +1,6 @@
-package ke.co.toshngure.basecode.dataloading.sync
+package ke.co.toshngure.basecode.paging.sync
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import ke.co.toshngure.basecode.util.DatesHelper
-import java.util.*
 
 /**
  * Created by Anthony Ngure on 20/05/2018.

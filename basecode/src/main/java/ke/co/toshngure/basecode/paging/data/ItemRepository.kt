@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.data
+package ke.co.toshngure.basecode.paging.data
 
 import android.os.Bundle
 import androidx.annotation.MainThread

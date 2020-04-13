@@ -1,7 +1,7 @@
 package ke.co.toshngure.androidcoreutils.albums
 
 import android.view.View
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 import ke.co.toshngure.basecode.util.Spanny
 import kotlinx.android.synthetic.main.item_album.view.*
 

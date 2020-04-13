@@ -7,9 +7,9 @@ import androidx.lifecycle.Observer
 import com.jaredrummler.materialspinner.MaterialSpinner
 import ke.co.toshngure.basecode.BuildConfig
 import ke.co.toshngure.basecode.R
-import ke.co.toshngure.basecode.dataloading.PagingConfig
-import ke.co.toshngure.basecode.dataloading.PagingFragment
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.PagingConfig
+import ke.co.toshngure.basecode.paging.PagingFragment
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 
 class LogItemsFragment : PagingFragment<LogItem, LogItem, Any>() {
 

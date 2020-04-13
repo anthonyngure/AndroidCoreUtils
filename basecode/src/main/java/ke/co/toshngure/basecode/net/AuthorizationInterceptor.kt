@@ -6,7 +6,7 @@ import okhttp3.Response
 
 class AuthorizationInterceptor(
     private val clientInstance: OkHttpClient?,
-    private val callback: NetworkUtils.Callback
+    private val callback: NetworkUtil.Callback
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {

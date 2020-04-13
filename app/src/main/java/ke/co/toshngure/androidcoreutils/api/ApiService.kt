@@ -4,7 +4,7 @@ import ke.co.toshngure.androidcoreutils.albums.Album
 import ke.co.toshngure.androidcoreutils.photos.Photo
 import ke.co.toshngure.androidcoreutils.posts.Post
 import ke.co.toshngure.androidcoreutils.users.User
-import ke.co.toshngure.basecode.net.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtil
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -73,7 +73,7 @@ interface ApiService {
         private fun buildInstance(): ApiService {
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(NetworkUtils.getClientInstance())
+                .client(NetworkUtil.getClientInstance())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)

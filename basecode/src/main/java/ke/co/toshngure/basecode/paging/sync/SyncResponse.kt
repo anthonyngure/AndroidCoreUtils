@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.sync
+package ke.co.toshngure.basecode.paging.sync
 
 data class SyncResponse<T>(val timestamp: String,
                            val new: List<T>,

@@ -8,6 +8,7 @@
 
 package ke.co.toshngure.basecode.app
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
@@ -35,7 +36,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import ke.co.toshngure.basecode.R
 import ke.co.toshngure.basecode.logging.BeeLog
-import ke.co.toshngure.basecode.net.NetworkUtils
+import ke.co.toshngure.basecode.net.NetworkUtil
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.extensions.hide
 import ke.co.toshngure.extensions.show
@@ -95,6 +96,8 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
         noDataMessageTV.setText(mLoadingConfig.noDataMessage)
         noDataIV.setImageResource(mLoadingConfig.noDataIcon)
 
+        errorIV.setImageResource(mLoadingConfig.errorIcon)
+
         statusTV.showIf(BeeLog.DEBUG && BeeLog.showStatusTextView)
 
         loadingLayout.hide()
@@ -111,10 +114,16 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
             noDataLayout.gravity = Gravity.TOP or Gravity.CENTER
             (noDataIV.layoutParams as LinearLayout.LayoutParams).topMargin = BaseUtils.dpToPx(56)
         } else {
-            loadingLayout.gravity = Gravity.CENTER
+            noDataLayout.gravity = Gravity.CENTER
         }
 
         errorLayout.hide()
+        if (mLoadingConfig.withErrorLayoutAtTop) {
+            errorLayout.gravity = Gravity.TOP or Gravity.CENTER
+            (errorIV.layoutParams as LinearLayout.LayoutParams).topMargin = BaseUtils.dpToPx(56)
+        } else {
+            errorLayout.gravity = Gravity.CENTER
+        }
 
         onSetUpSwipeRefreshLayout(swipeRefreshLayout)
 
@@ -132,7 +141,7 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
     }
 
     protected open fun getLoadingConfig(): LoadingConfig {
-        return LoadingConfig()
+        return NetworkUtil.getCallback().getDefaultLoadingConfig()
     }
 
     protected open fun onSetUpSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
@@ -249,7 +258,7 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
 
                     val errorResponseBody = response.errorBody()?.string() ?: response.message()
 
-                    val errorMessage = NetworkUtils.getCallback()
+                    val errorMessage = NetworkUtil.getCallback()
                         .getErrorMessageFromResponseBody(response.code(), errorResponseBody)
 
                     // Handle the error
@@ -269,6 +278,7 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
         loadingLayout: LinearLayout?,
         contentViewContainer: FrameLayout?
     ) {
+        hideKeyboard()
         loadingLayout?.showIf(mLoadingConfig.showLoading)
         noDataLayout?.hide()
         errorLayout?.hide()
@@ -441,6 +451,19 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
 
     companion object {
         const val TAG = "BaseAppFragment"
+    }
+
+    open fun hideKeyboard() {
+        activity?.let {
+            val imm = it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            //Find the currently focused view, so we can grab the correct window token from it.
+            var view = it.currentFocus
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (view == null) {
+                view = View(it)
+            }
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
 

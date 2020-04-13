@@ -3,7 +3,7 @@ package ke.co.toshngure.basecode.net
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class CommonHeadersInterceptor(private val callback: NetworkUtils.Callback) : Interceptor {
+class CommonHeadersInterceptor(private val callback: NetworkUtil.Callback) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
 

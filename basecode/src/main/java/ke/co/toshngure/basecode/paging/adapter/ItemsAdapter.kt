@@ -1,4 +1,4 @@
-package ke.co.toshngure.basecode.dataloading.adapter
+package ke.co.toshngure.basecode.paging.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,9 @@ import androidx.annotation.LayoutRes
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.sync.SyncState
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
-import ke.co.toshngure.basecode.logging.BeeLog
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.sync.SyncState
+import ke.co.toshngure.basecode.paging.sync.SyncStatus
 
 class ItemsAdapter<LoadedModel>(
         diffUtil: DiffUtil.ItemCallback<LoadedModel>,
@@ -23,7 +22,8 @@ class ItemsAdapter<LoadedModel>(
 
     interface OnItemClickListener<T> {
         fun onClick(item: T)
-        
+
+
     }
 
     private var syncState: SyncState? = null

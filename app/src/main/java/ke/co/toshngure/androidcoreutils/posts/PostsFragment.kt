@@ -1,14 +1,12 @@
 package ke.co.toshngure.androidcoreutils.posts
 
 import android.view.View
-import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.basecode.app.GlideApp
 import ke.co.toshngure.basecode.app.LoadingConfig
-import ke.co.toshngure.basecode.dataloading.PagingFragment
-import ke.co.toshngure.basecode.dataloading.PagingConfig
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
-import ke.co.toshngure.extensions.executeAsync
+import ke.co.toshngure.basecode.paging.PagingFragment
+import ke.co.toshngure.basecode.paging.PagingConfig
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 
 class PostsFragment : PagingFragment<Post, Post, Any>() {
 
@@ -27,7 +25,7 @@ class PostsFragment : PagingFragment<Post, Post, Any>() {
     }
 
     override fun getLoadingConfig(): LoadingConfig {
-        return LoadingConfig(refreshEnabled = true)
+        return super.getLoadingConfig().copy(refreshEnabled = true)
     }
 
     override fun onDestroy() {

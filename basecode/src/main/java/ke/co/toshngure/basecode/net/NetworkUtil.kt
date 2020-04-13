@@ -6,6 +6,7 @@ import com.ihsanbal.logging.Level
 import com.ihsanbal.logging.LoggingInterceptor
 import com.readystatesoftware.chuck.ChuckInterceptor
 import ke.co.toshngure.basecode.R
+import ke.co.toshngure.basecode.app.LoadingConfig
 import ke.co.toshngure.basecode.logging.BeeLog
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -13,18 +14,18 @@ import okhttp3.internal.platform.Platform
 import java.util.concurrent.TimeUnit
 
 
-class NetworkUtils private constructor() {
+class NetworkUtil private constructor() {
 
 
     companion object {
 
         private lateinit var mCallback: Callback
-        private lateinit var mInstance: NetworkUtils
+        private lateinit var mInstance: NetworkUtil
         private var mClientInstance: OkHttpClient? = null
 
         fun init(callback: Callback) {
             mInstance =
-                NetworkUtils()
+                NetworkUtil()
             mCallback = callback
         }
 
@@ -35,7 +36,7 @@ class NetworkUtils private constructor() {
             }
         }
 
-        fun getInstance(): NetworkUtils {
+        fun getInstance(): NetworkUtil {
             return mInstance
         }
 
@@ -67,7 +68,7 @@ class NetworkUtils private constructor() {
             builder.addInterceptor(CommonHeadersInterceptor(mCallback))
 
             // Add chuck
-            if (BeeLog.DEBUG){
+            if (BeeLog.DEBUG) {
                 builder.addInterceptor(ChuckInterceptor(mCallback.getContext()))
             }
 
@@ -108,7 +109,6 @@ class NetworkUtils private constructor() {
     interface Callback {
 
 
-
         fun getContext(): Context
 
         fun getErrorMessageFromResponseBody(statusCode: Int, errorResponseBody: String?): String {
@@ -122,6 +122,23 @@ class NetworkUtils private constructor() {
         fun getAuthToken(): String? {
             return null
         }
+
+        fun getDefaultLoadingConfig(): LoadingConfig {
+            return LoadingConfig(
+                refreshEnabled = false,
+                showNoDataLayout = true,
+                showLoading = true,
+                showErrorDialog = true,
+                withLoadingLayoutAtTop = false,
+                withNoDataLayoutAtTop = false,
+                withErrorLayoutAtTop = false,
+                loadingMessage = R.string.message_waiting,
+                noDataMessage = R.string.message_empty_data,
+                noDataIcon = R.drawable.ic_cloud_queue_black_24dp,
+                errorIcon = R.drawable.ic_cloud_off_black_24dp
+            )
+        }
+
 
         fun getCommonParams(): Map<String, Any> {
             return mapOf()
@@ -143,6 +160,5 @@ class NetworkUtils private constructor() {
             return 30
         }
     }
-
 
 }

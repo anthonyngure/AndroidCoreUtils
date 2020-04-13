@@ -123,8 +123,10 @@
 
         <ImageView
             android:id="@+id/noDataIV"
-            android:layout_width="94dp"
-            android:layout_height="94dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="94dp"
+            android:minHeight="94dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:contentDescription="@string/message_empty_data"
             android:src="@drawable/ic_cloud_queue_black_24dp" />
@@ -159,8 +161,10 @@
 
         <ImageView
             android:id="@+id/errorIV"
-            android:layout_width="94dp"
-            android:layout_height="94dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="94dp"
+            android:minHeight="94dp"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:contentDescription="@string/message_empty_data"
             android:src="@drawable/ic_cloud_off_black_24dp" />

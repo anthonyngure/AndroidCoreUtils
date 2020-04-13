@@ -3,9 +3,9 @@ package ke.co.toshngure.images.data
 import android.content.Context
 import android.os.Bundle
 import androidx.paging.DataSource
-import ke.co.toshngure.basecode.dataloading.data.ItemDao
-import ke.co.toshngure.basecode.dataloading.data.ItemRepository
-import ke.co.toshngure.basecode.dataloading.data.ItemRepositoryConfig
+import ke.co.toshngure.basecode.paging.data.ItemDao
+import ke.co.toshngure.basecode.paging.data.ItemRepository
+import ke.co.toshngure.basecode.paging.data.ItemRepositoryConfig
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.basecode.util.BaseUtils
 import ke.co.toshngure.images.fragment.ImagesPickerFragment

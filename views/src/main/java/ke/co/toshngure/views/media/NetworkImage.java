@@ -182,9 +182,8 @@ public class NetworkImage extends FrameLayout {
         return this;
     }
 
-    public NetworkImage setScaleType(ImageView.ScaleType scaleType) {
-        mImageView.setScaleType(scaleType);
-        return this;
+    public ImageView getImageView() {
+        return this.mImageView;
     }
 
 
@@ -215,6 +214,13 @@ public class NetworkImage extends FrameLayout {
         this.noRetry = true;
         return this;
     }
+
+
+    public NetworkImage setScaleType(ImageView.ScaleType scaleType) {
+        mImageView.setScaleType(scaleType);
+        return this;
+    }
+
 
     public interface LoadingCallBack {
         void onSuccess(Drawable drawable);

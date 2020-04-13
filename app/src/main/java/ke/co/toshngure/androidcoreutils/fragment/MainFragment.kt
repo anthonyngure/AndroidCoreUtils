@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import ke.co.toshngure.androidcoreutils.R
 import ke.co.toshngure.androidcoreutils.database.AppDatabase
 import ke.co.toshngure.basecode.app.BaseAppFragment
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.paging.sync.SyncStatesDatabase
 import ke.co.toshngure.extensions.executeAsync
 import kotlinx.android.synthetic.main.fragment_main.*
 

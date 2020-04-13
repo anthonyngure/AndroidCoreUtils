@@ -1,7 +1,7 @@
 package ke.co.toshngure.basecode.logging
 
 import android.view.View
-import ke.co.toshngure.basecode.dataloading.adapter.BaseItemViewHolder
+import ke.co.toshngure.basecode.paging.adapter.BaseItemViewHolder
 import kotlinx.android.synthetic.main.basecode_item_log_item.view.*
 
 class LogItemViewHolder(itemView: View) : BaseItemViewHolder<LogItem>(itemView) {

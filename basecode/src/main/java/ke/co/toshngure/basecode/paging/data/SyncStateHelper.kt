@@ -1,13 +1,16 @@
-package ke.co.toshngure.basecode.dataloading.data
+package ke.co.toshngure.basecode.paging.data
 
 import androidx.annotation.WorkerThread
-import ke.co.toshngure.basecode.dataloading.sync.SyncState
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatesDatabase
-import ke.co.toshngure.basecode.dataloading.sync.SyncStatus
+import ke.co.toshngure.basecode.paging.sync.SyncState
+import ke.co.toshngure.basecode.paging.sync.SyncStatesDatabase
+import ke.co.toshngure.basecode.paging.sync.SyncStatus
 import ke.co.toshngure.basecode.logging.BeeLog
 import ke.co.toshngure.extensions.executeAsync
 
-class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val syncTab: String = "") {
+class SyncStateHelper<Model>(
+    private val syncClass: Class<Model>,
+    private val syncTab: String = ""
+) {
 
 
     fun runIfPossible(syncStatus: SyncStatus, request: () -> Unit) {
@@ -55,8 +58,10 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
         executeAsync {
             val syncState = loadSyncState()
             when (SyncStatus.valueOf(syncState.status)) {
-                SyncStatus.LOADING_INITIAL -> syncState.status = SyncStatus.LOADING_INITIAL_FAILED.value
-                SyncStatus.LOADING_BEFORE -> syncState.status = SyncStatus.LOADING_BEFORE_FAILED.value
+                SyncStatus.LOADING_INITIAL -> syncState.status =
+                    SyncStatus.LOADING_INITIAL_FAILED.value
+                SyncStatus.LOADING_BEFORE -> syncState.status =
+                    SyncStatus.LOADING_BEFORE_FAILED.value
                 SyncStatus.LOADING_AFTER -> syncState.status = SyncStatus.LOADING_AFTER_FAILED.value
                 SyncStatus.REFRESHING -> syncState.status = SyncStatus.REFRESHING_FAILED.value
                 else -> {
@@ -70,11 +75,13 @@ class SyncStateHelper<Model>(private val syncClass: Class<Model>, private val sy
     internal fun recordExhausted() {
         executeAsync {
             val syncState = loadSyncState()
-            val syncStatus = SyncStatus.valueOf(syncState.status)
-            when (syncStatus) {
-                SyncStatus.LOADING_INITIAL -> syncState.status = SyncStatus.LOADING_INITIAL_EXHAUSTED.value
-                SyncStatus.LOADING_BEFORE -> syncState.status = SyncStatus.LOADING_BEFORE_EXHAUSTED.value
-                SyncStatus.LOADING_AFTER -> syncState.status = SyncStatus.LOADING_AFTER_EXHAUSTED.value
+            when (SyncStatus.valueOf(syncState.status)) {
+                SyncStatus.LOADING_INITIAL -> syncState.status =
+                    SyncStatus.LOADING_INITIAL_EXHAUSTED.value
+                SyncStatus.LOADING_BEFORE -> syncState.status =
+                    SyncStatus.LOADING_BEFORE_EXHAUSTED.value
+                SyncStatus.LOADING_AFTER -> syncState.status =
+                    SyncStatus.LOADING_AFTER_EXHAUSTED.value
                 else -> {
                 }
             }

@@ -1,5 +1,5 @@
 
-package ke.co.toshngure.basecode.dataloading.adapter
+package ke.co.toshngure.basecode.paging.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
