@@ -6,31 +6,31 @@
 
     <!--region Bottom Loading Layout-->
     <LinearLayout
-            android:id="@+id/loadingLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical|center"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_vertical_margin"
-            android:visibility="gone">
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical|center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone">
 
         <ProgressBar
-                style="@android:style/Widget.ProgressBar.Small"
-                android:id="@+id/loadingProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_vertical_margin"
-                android:layout_marginRight="@dimen/activity_vertical_margin"/>
+            android:id="@+id/loadingProgressBar"
+            style="@android:style/Widget.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin" />
 
         <TextView
-                android:id="@+id/loadingMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/message_loading"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"/>
+            android:id="@+id/loadingMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_loading"
+            android:textAppearance="?attr/textAppearanceBody2" />
 
 
     </LinearLayout>
@@ -38,32 +38,32 @@
 
     <!--region Bottom No Data Layout-->
     <LinearLayout
-            android:id="@+id/noDataLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical|center"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_vertical_margin"
-            android:visibility="gone">
+        android:id="@+id/noDataLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical|center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone">
 
         <ImageView
-                android:id="@+id/noDataIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_cloud_queue_black_24dp"
-                android:layout_marginEnd="@dimen/activity_vertical_margin"
-                android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:contentDescription="@string/message_empty_data"/>
+            android:id="@+id/noDataIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/message_empty_data"
+            android:src="@drawable/ic_cloud_queue_black_24dp" />
 
         <TextView
-                android:id="@+id/noDataMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/message_no_more_data"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"/>
+            android:id="@+id/noDataMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/message_no_more_data"
+            android:textAppearance="?attr/textAppearanceBody2" />
 
 
     </LinearLayout>
@@ -71,33 +71,33 @@
 
     <!--region Bottom Error Layout-->
     <LinearLayout
-            android:id="@+id/errorLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical|center"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_vertical_margin"
-            android:visibility="gone">
+        android:id="@+id/errorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical|center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_vertical_margin"
+        android:visibility="gone">
 
         <ImageView
-                android:id="@+id/errorIV"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_cloud_off_black_24dp"
-                android:layout_marginEnd="@dimen/activity_vertical_margin"
-                android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:contentDescription="@string/message_empty_data"/>
+            android:id="@+id/errorIV"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/message_empty_data"
+            android:src="@drawable/ic_cloud_off_black_24dp" />
 
         <TextView
-                android:id="@+id/errorMessageTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/message_connection_error"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"/>
+            android:id="@+id/errorMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/message_connection_error"
+            android:textAppearance="?attr/textAppearanceBody2" />
 
 
     </LinearLayout>

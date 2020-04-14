@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/message_loading"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:textAppearance="?attr/textAppearanceBody2"/>
 
 
     </LinearLayout>
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/message_empty_data"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+            android:textAppearance="?attr/textAppearanceBody2"/>
 
 
     </LinearLayout>
@@ -175,7 +175,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/message_connection_error"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:textAppearance="?attr/textAppearanceBody2" />
 
 
     </LinearLayout>
@@ -186,6 +186,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
+        android:textAppearance="?attr/textAppearanceCaption"
         android:background="?attr/colorAccent"
         android:textColor="?attr/colorPrimary" />
 
