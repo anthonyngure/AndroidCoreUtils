@@ -23,7 +23,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -31,6 +30,7 @@ import androidx.navigation.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
@@ -51,7 +51,8 @@ import retrofit2.Response
  * Email : anthonyngure25@gmail.com.
  */
 
-abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(),
+    SwipeRefreshLayout.OnRefreshListener {
 
 
     internal lateinit var mLoadingConfig: LoadingConfig
@@ -240,7 +241,10 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
             }
         }
 
-        override fun onResponse(call: Call<FetchedNetworkModel>, response: Response<FetchedNetworkModel>) {
+        override fun onResponse(
+            call: Call<FetchedNetworkModel>,
+            response: Response<FetchedNetworkModel>
+        ) {
             BeeLog.i(TAG, "onResponse, $response")
             onHideLoading(loadingLayout, contentViewContainer)
             if (!canceled) {
@@ -344,7 +348,7 @@ abstract class BaseAppFragment<FetchedNetworkModel> : Fragment(), SwipeRefreshLa
     private fun showNetworkErrorDialog(message: String?) {
         if (mLoadingConfig.showErrorDialog) {
             activity?.let {
-                AlertDialog.Builder(it)
+                MaterialAlertDialogBuilder(it)
                     .setCancelable(false)
                     .setMessage(message ?: getString(R.string.message_connection_error))
                     .setPositiveButton(R.string.retry) { _, _ -> makeRequest() }
